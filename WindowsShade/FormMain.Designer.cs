@@ -28,9 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.btnStart = new System.Windows.Forms.Button();
             this.plContent = new System.Windows.Forms.Panel();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.cmxTray = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.menuItemClose = new System.Windows.Forms.ToolStripMenuItem();
             this.plContent.SuspendLayout();
+            this.cmxTray.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnStart
@@ -53,6 +59,27 @@
             this.plContent.Size = new System.Drawing.Size(540, 306);
             this.plContent.TabIndex = 1;
             // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.ContextMenuStrip = this.cmxTray;
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.Visible = true;
+            // 
+            // cmxTray
+            // 
+            this.cmxTray.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItemClose});
+            this.cmxTray.Name = "cmxTray";
+            this.cmxTray.Size = new System.Drawing.Size(101, 26);
+            // 
+            // menuItemClose
+            // 
+            this.menuItemClose.Name = "menuItemClose";
+            this.menuItemClose.Size = new System.Drawing.Size(100, 22);
+            this.menuItemClose.Text = "关闭";
+            this.menuItemClose.Click += new System.EventHandler(this.menuItemClose_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 27F);
@@ -61,6 +88,7 @@
             this.Controls.Add(this.plContent);
             this.Font = new System.Drawing.Font("宋体", 20F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(7);
             this.MaximizeBox = false;
             this.Name = "FormMain";
@@ -68,6 +96,7 @@
             this.Text = "WindowsShade";
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.plContent.ResumeLayout(false);
+            this.cmxTray.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -76,6 +105,9 @@
 
         private System.Windows.Forms.Button btnStart;
         private System.Windows.Forms.Panel plContent;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.ContextMenuStrip cmxTray;
+        private System.Windows.Forms.ToolStripMenuItem menuItemClose;
     }
 }
 

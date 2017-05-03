@@ -13,10 +13,7 @@ namespace WindowsShade
 {
     public partial class FormMain : Form
     {
-        public FormMain()
-        {
-            InitializeComponent();
-        }
+        #region Members
 
         [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
         public static extern long GetWindowLong(IntPtr hwnd, int nIndex);
@@ -31,16 +28,30 @@ namespace WindowsShade
         const int WS_EX_TRANSPARENT = 0x20;
         const int WS_EX_LAYERED = 0x80000;
         const int LWA_ALPHA = 2;
+        #endregion
+
+        #region Structures & Initialize
+        public FormMain()
+        {
+            InitializeComponent();
+        }
 
         private void FormMain_Load(object sender, EventArgs e)
         {
+            this.initialize();
         }
+        private void initialize()
+        {
+            this.ShowInTaskbar = false;
+            this.notifyIcon1.Visible = true;
+        }
+        #endregion
 
+        #region Events
         private void btnStart_Click(object sender, EventArgs e)
         {
             this.start();
         }
-
         private void start()
         {
             this.plContent.Hide();
@@ -55,5 +66,14 @@ namespace WindowsShade
             SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
             SetLayeredWindowAttributes(Handle, 0, 128, LWA_ALPHA);
         }
+
+        #region Methods cmxTray
+        private void menuItemClose_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+        #endregion
+
+        #endregion
     }
 }
