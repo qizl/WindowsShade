@@ -34,6 +34,17 @@ namespace WindowsShade
 
         private void FormMain_Load(object sender, EventArgs e)
         {
+        }
+
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            this.start();
+        }
+
+        private void start()
+        {
+            this.plContent.Hide();
+
             this.BackColor = Color.Black;
             this.TopMost = true;
             this.FormBorderStyle = FormBorderStyle.None;
