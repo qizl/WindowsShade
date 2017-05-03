@@ -39,6 +39,8 @@ namespace WindowsShade
         private void FormMain_Load(object sender, EventArgs e)
         {
             this.initialize();
+
+            this.start();
         }
         private void initialize()
         {
