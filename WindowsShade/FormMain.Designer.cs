@@ -32,13 +32,13 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.btnStart = new System.Windows.Forms.Button();
             this.plContent = new System.Windows.Forms.Panel();
+            this.btnHelp = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.rbtnD2 = new System.Windows.Forms.RadioButton();
             this.rbtnD1 = new System.Windows.Forms.RadioButton();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.cmxTray = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuItemClose = new System.Windows.Forms.ToolStripMenuItem();
-            this.btnHelp = new System.Windows.Forms.Button();
             this.plContent.SuspendLayout();
             this.panel1.SuspendLayout();
             this.cmxTray.SuspendLayout();
@@ -65,6 +65,17 @@
             this.plContent.Name = "plContent";
             this.plContent.Size = new System.Drawing.Size(540, 306);
             this.plContent.TabIndex = 1;
+            // 
+            // btnHelp
+            // 
+            this.btnHelp.Font = new System.Drawing.Font("宋体", 14F);
+            this.btnHelp.Location = new System.Drawing.Point(47, 254);
+            this.btnHelp.Name = "btnHelp";
+            this.btnHelp.Size = new System.Drawing.Size(85, 31);
+            this.btnHelp.TabIndex = 2;
+            this.btnHelp.Text = "Help";
+            this.btnHelp.UseVisualStyleBackColor = true;
+            this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
             // 
             // panel1
             // 
@@ -118,17 +129,6 @@
             this.menuItemClose.Size = new System.Drawing.Size(100, 22);
             this.menuItemClose.Text = "关闭";
             this.menuItemClose.Click += new System.EventHandler(this.menuItemClose_Click);
-            // 
-            // btnHelp
-            // 
-            this.btnHelp.Font = new System.Drawing.Font("宋体", 14F);
-            this.btnHelp.Location = new System.Drawing.Point(47, 254);
-            this.btnHelp.Name = "btnHelp";
-            this.btnHelp.Size = new System.Drawing.Size(85, 31);
-            this.btnHelp.TabIndex = 2;
-            this.btnHelp.Text = "Help";
-            this.btnHelp.UseVisualStyleBackColor = true;
-            this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
             // 
             // FormMain
             // 
