@@ -40,7 +40,7 @@ namespace WindowsShade
         {
             this.initialize();
 
-            this.start();
+            //this.start();
         }
         private void initialize()
         {
@@ -62,7 +62,10 @@ namespace WindowsShade
             this.TopMost = true;
             this.FormBorderStyle = FormBorderStyle.None;
             //this.WindowState = FormWindowState.Maximized;
-            this.Location = new Point(-1920, 0);
+            if (this.rbtnD1.Checked)
+                this.Location = new Point(0, 0);
+            else if (this.rbtnD2.Checked)
+                this.Location = new Point(-1920, 0);
             this.Width = 1920 * 2;
             this.Height = 1080;
             SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);

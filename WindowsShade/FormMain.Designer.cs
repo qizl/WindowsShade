@@ -35,8 +35,12 @@
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.cmxTray = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuItemClose = new System.Windows.Forms.ToolStripMenuItem();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.rbtnD1 = new System.Windows.Forms.RadioButton();
+            this.rbtnD2 = new System.Windows.Forms.RadioButton();
             this.plContent.SuspendLayout();
             this.cmxTray.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnStart
@@ -52,6 +56,7 @@
             // 
             // plContent
             // 
+            this.plContent.Controls.Add(this.panel1);
             this.plContent.Controls.Add(this.btnStart);
             this.plContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.plContent.Location = new System.Drawing.Point(0, 0);
@@ -80,6 +85,38 @@
             this.menuItemClose.Text = "关闭";
             this.menuItemClose.Click += new System.EventHandler(this.menuItemClose_Click);
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.rbtnD2);
+            this.panel1.Controls.Add(this.rbtnD1);
+            this.panel1.Location = new System.Drawing.Point(113, 43);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(268, 59);
+            this.panel1.TabIndex = 1;
+            // 
+            // rbtnD1
+            // 
+            this.rbtnD1.AutoSize = true;
+            this.rbtnD1.Checked = true;
+            this.rbtnD1.Location = new System.Drawing.Point(22, 15);
+            this.rbtnD1.Name = "rbtnD1";
+            this.rbtnD1.Size = new System.Drawing.Size(58, 31);
+            this.rbtnD1.TabIndex = 0;
+            this.rbtnD1.TabStop = true;
+            this.rbtnD1.Text = "D1";
+            this.rbtnD1.UseVisualStyleBackColor = true;
+            // 
+            // rbtnD2
+            // 
+            this.rbtnD2.AutoSize = true;
+            this.rbtnD2.Location = new System.Drawing.Point(125, 15);
+            this.rbtnD2.Name = "rbtnD2";
+            this.rbtnD2.Size = new System.Drawing.Size(58, 31);
+            this.rbtnD2.TabIndex = 1;
+            this.rbtnD2.TabStop = true;
+            this.rbtnD2.Text = "D2";
+            this.rbtnD2.UseVisualStyleBackColor = true;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 27F);
@@ -97,6 +134,8 @@
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.plContent.ResumeLayout(false);
             this.cmxTray.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -108,6 +147,9 @@
         private System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.ContextMenuStrip cmxTray;
         private System.Windows.Forms.ToolStripMenuItem menuItemClose;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.RadioButton rbtnD2;
+        private System.Windows.Forms.RadioButton rbtnD1;
     }
 }
 
