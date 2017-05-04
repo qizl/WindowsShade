@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -70,6 +71,11 @@ namespace WindowsShade
             this.Height = 1080;
             SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
             SetLayeredWindowAttributes(Handle, 0, 128, LWA_ALPHA);
+        }
+
+        private void btnHelp_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://enjoycodes.com/Home/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
         }
 
         #region Methods cmxTray
