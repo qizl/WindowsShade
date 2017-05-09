@@ -9,8 +9,6 @@ namespace WindowsShade
     public partial class FormMain : Form
     {
         #region Members & Properties
-        public ShadeTypes ShadeType { get; private set; }
-
         private FormShade _shade = new FormShade();
         #endregion
 
@@ -28,7 +26,14 @@ namespace WindowsShade
         {
             this.ShowInTaskbar = false;
             this.notifyIcon1.Visible = true;
-            this.rbtnShadeTypes_CheckedChanged(this, null);
+            this._shade.Text = this.Text;
+
+            Common.Config = Config.Load(Common.ConfigPath);
+            if (Common.Config == null)
+                Common.Config = Common.DefaultConfig.Clone() as Config;
+            Common.Config.UpdateTime = DateTime.Now;
+            Common.Config.Save();
+            this.selectShadeType(Common.Config.ShadeType);
 
             this.Activate();
         }
@@ -39,27 +44,38 @@ namespace WindowsShade
         {
             this.Visible = false;
             this._shade.WindowState = FormWindowState.Normal;
-            this._shade.Show(this.ShadeType);
+            this._shade.Show(Common.Config.ShadeType);
             this.menuItemHidden.Text = "隐藏(&H)";
+
+            Common.Config.Save();
         }
         private void hiddenShade()
         {
             this._shade.WindowState = FormWindowState.Minimized;
             this.menuItemHidden.Text = "显示(&D)";
         }
+
+        private void selectShadeType(ShadeTypes type)
+        {
+            switch (type)
+            {
+            case ShadeTypes.D1024L: this.rbtnD1.Checked = true; break;
+            case ShadeTypes.D1920R: this.rbtnD2.Checked = true; break;
+            }
+        }
         #endregion
 
         #region Events - FormMain
         private void btnStart_Click(object sender, EventArgs e) => this.showShade();
 
-        private void btnExit_Click(object sender, EventArgs e) => this.Close();
+        private void btnMinimize_Click(object sender, EventArgs e) => this.Visible = false;
 
         private void btnHelp_Click(object sender, EventArgs e) => Process.Start("http://enjoycodes.com/Home/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
 
         private void rbtnShadeTypes_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.rbtnD1.Checked) this.ShadeType = ShadeTypes.D1024L;
-            else if (this.rbtnD2.Checked) this.ShadeType = ShadeTypes.D1920R;
+            if (this.rbtnD1.Checked) Common.Config.ShadeType = ShadeTypes.D1024L;
+            else if (this.rbtnD2.Checked) Common.Config.ShadeType = ShadeTypes.D1920R;
         }
 
         #endregion

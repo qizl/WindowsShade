@@ -54,6 +54,8 @@
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\Common.cs" />
+    <Compile Include="Models\Config.cs" />
     <Compile Include="Models\ShadeTypes.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -97,6 +99,12 @@
     <Content Include="Resources\bright2.ico" />
     <Content Include="Resources\bright2.png" />
     <Content Include="Resources\q.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharpSerializer\SharpSerializer.csproj">
+      <Project>{88AB738F-7A36-4C93-B808-B6CE2D3444B2}</Project>
+      <Name>SharpSerializer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

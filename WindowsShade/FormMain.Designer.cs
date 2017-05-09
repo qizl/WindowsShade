@@ -32,7 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.btnStart = new System.Windows.Forms.Button();
             this.plContent = new System.Windows.Forms.Panel();
-            this.btnExit = new System.Windows.Forms.Button();
+            this.btnMinimize = new System.Windows.Forms.Button();
             this.btnHelp = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.rbtnD2 = new System.Windows.Forms.RadioButton();
@@ -61,7 +61,7 @@
             // 
             // plContent
             // 
-            this.plContent.Controls.Add(this.btnExit);
+            this.plContent.Controls.Add(this.btnMinimize);
             this.plContent.Controls.Add(this.btnHelp);
             this.plContent.Controls.Add(this.panel1);
             this.plContent.Controls.Add(this.btnStart);
@@ -71,16 +71,17 @@
             this.plContent.Size = new System.Drawing.Size(540, 306);
             this.plContent.TabIndex = 1;
             // 
-            // btnExit
+            // btnMinimize
             // 
-            this.btnExit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnExit.Location = new System.Drawing.Point(208, 207);
-            this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(125, 51);
-            this.btnExit.TabIndex = 3;
-            this.btnExit.Text = "Exit";
-            this.btnExit.UseVisualStyleBackColor = true;
-            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            this.btnMinimize.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnMinimize.Font = new System.Drawing.Font("宋体", 19F);
+            this.btnMinimize.Location = new System.Drawing.Point(208, 207);
+            this.btnMinimize.Name = "btnMinimize";
+            this.btnMinimize.Size = new System.Drawing.Size(125, 51);
+            this.btnMinimize.TabIndex = 3;
+            this.btnMinimize.Text = "Minimize";
+            this.btnMinimize.UseVisualStyleBackColor = true;
+            this.btnMinimize.Click += new System.EventHandler(this.btnMinimize_Click);
             // 
             // btnHelp
             // 
@@ -142,31 +143,31 @@
             this.toolStripSeparator1,
             this.menuItemClose});
             this.cmxTray.Name = "cmxTray";
-            this.cmxTray.Size = new System.Drawing.Size(153, 98);
+            this.cmxTray.Size = new System.Drawing.Size(133, 76);
             // 
             // menuItemOpenMain
             // 
             this.menuItemOpenMain.Name = "menuItemOpenMain";
-            this.menuItemOpenMain.Size = new System.Drawing.Size(152, 22);
+            this.menuItemOpenMain.Size = new System.Drawing.Size(132, 22);
             this.menuItemOpenMain.Text = "主界面(&M)";
             this.menuItemOpenMain.Click += new System.EventHandler(this.menuItemOpenMain_Click);
             // 
             // menuItemHidden
             // 
             this.menuItemHidden.Name = "menuItemHidden";
-            this.menuItemHidden.Size = new System.Drawing.Size(152, 22);
+            this.menuItemHidden.Size = new System.Drawing.Size(132, 22);
             this.menuItemHidden.Text = "显示(&D)";
             this.menuItemHidden.Click += new System.EventHandler(this.menuItemHidden_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(129, 6);
             // 
             // menuItemClose
             // 
             this.menuItemClose.Name = "menuItemClose";
-            this.menuItemClose.Size = new System.Drawing.Size(152, 22);
+            this.menuItemClose.Size = new System.Drawing.Size(132, 22);
             this.menuItemClose.Text = "退出(&C)";
             this.menuItemClose.Click += new System.EventHandler(this.menuItemClose_Click);
             // 
@@ -175,7 +176,7 @@
             this.AcceptButton = this.btnStart;
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 27F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.btnExit;
+            this.CancelButton = this.btnMinimize;
             this.ClientSize = new System.Drawing.Size(540, 306);
             this.Controls.Add(this.plContent);
             this.Font = new System.Drawing.Font("宋体", 20F);
@@ -183,6 +184,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(7);
             this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "WindowsShade";
@@ -209,7 +211,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuItemHidden;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem menuItemOpenMain;
-        private System.Windows.Forms.Button btnExit;
+        private System.Windows.Forms.Button btnMinimize;
     }
 }
 
