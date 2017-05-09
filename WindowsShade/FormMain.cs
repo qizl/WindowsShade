@@ -29,8 +29,8 @@ namespace WindowsShade
             this._shade.Text = this.Text;
 
             Common.Config = Config.Load(Common.ConfigPath);
-            if (Common.Config == null)
-                Common.Config = Common.DefaultConfig.Clone() as Config;
+            if (Common.Config == null) Common.Config = Common.DefaultConfig.Clone() as Config;
+            else this.showShade(); // 读取到配置文件，则直接调整屏幕亮度
             Common.Config.UpdateTime = DateTime.Now;
             Common.Config.Save();
             this.selectShadeType(Common.Config.ShadeType);
