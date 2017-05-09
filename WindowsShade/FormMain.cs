@@ -1,34 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using WindowsShade.Models;
+using WindowsShade.Views;
 
 namespace WindowsShade
 {
     public partial class FormMain : Form
     {
-        #region Members
+        #region Members & Properties
+        public ShadeTypes ShadeType { get; private set; }
 
-        [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
-        public static extern long GetWindowLong(IntPtr hwnd, int nIndex);
-
-        [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
-        public static extern long SetWindowLong(IntPtr hwnd, int nIndex, long dwNewLong);
-
-        [DllImport("user32", EntryPoint = "SetLayeredWindowAttributes")]
-        private static extern int SetLayeredWindowAttributes(IntPtr Handle, int crKey, byte bAlpha, int dwFlags);
-
-        const int GWL_EXSTYLE = -20;
-        const int WS_EX_TRANSPARENT = 0x20;
-        const int WS_EX_LAYERED = 0x80000;
-        const int LWA_ALPHA = 2;
+        private FormShade _shade = new FormShade();
         #endregion
 
         #region Structures & Initialize
@@ -40,47 +23,53 @@ namespace WindowsShade
         private void FormMain_Load(object sender, EventArgs e)
         {
             this.initialize();
-
-            //this.start();
         }
         private void initialize()
         {
             this.ShowInTaskbar = false;
             this.notifyIcon1.Visible = true;
+            this.rbtnShadeTypes_CheckedChanged(this, null);
+
+            this.Activate();
         }
         #endregion
 
-        #region Events
-        private void btnStart_Click(object sender, EventArgs e)
+        #region Methods
+        private void showShade()
         {
-            this.start();
+            this.Visible = false;
+            this._shade.WindowState = FormWindowState.Normal;
+            this._shade.Show(this.ShadeType);
+            this.menuItemHidden.Text = "隐藏(&H)";
         }
-        private void start()
+        private void hiddenShade()
         {
-            this.plContent.Hide();
-
-            this.BackColor = Color.Black;
-            this.TopMost = true;
-            this.FormBorderStyle = FormBorderStyle.None;
-            //this.WindowState = FormWindowState.Maximized;
-
-            if (this.rbtnD1.Checked)
-                this.Location = new Point(0, 0);
-            else if (this.rbtnD2.Checked)
-                this.Location = new Point(-1920, 0);
-            this.Width = 1920 * 2;
-            this.Height = 1080;
-
-            SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
-            SetLayeredWindowAttributes(Handle, 0, 128, LWA_ALPHA);
+            this._shade.WindowState = FormWindowState.Minimized;
+            this.menuItemHidden.Text = "显示(&D)";
         }
+        #endregion
 
-        private void btnHelp_Click(object sender, EventArgs e)
+        #region Events - FormMain
+        private void btnStart_Click(object sender, EventArgs e) => this.showShade();
+
+        private void btnExit_Click(object sender, EventArgs e) => this.Close();
+
+        private void btnHelp_Click(object sender, EventArgs e) => Process.Start("http://enjoycodes.com/Home/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
+
+        private void rbtnShadeTypes_CheckedChanged(object sender, EventArgs e)
         {
-            Process.Start("http://enjoycodes.com/Home/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
+            if (this.rbtnD1.Checked) this.ShadeType = ShadeTypes.D1024L;
+            else if (this.rbtnD2.Checked) this.ShadeType = ShadeTypes.D1920R;
         }
 
-        #region Methods cmxTray
+        #endregion
+
+        #region Events - cmxTray
+        private void menuItemOpenMain_Click(object sender, EventArgs e)
+        {
+            this.Visible = true;
+        }
+
         private void menuItemClose_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -90,23 +79,10 @@ namespace WindowsShade
         {
             switch (this.menuItemHidden.Text)
             {
-            case "隐藏(&H)":
-                {
-                    this.WindowState = FormWindowState.Minimized;
-                    this.menuItemHidden.Text = "显示(&D)";
-                }
-                break;
-            case "显示(&D)":
-                {
-                    this.WindowState = FormWindowState.Normal;
-                    start();
-                    this.menuItemHidden.Text = "隐藏(&H)";
-                }
-                break;
+            case "隐藏(&H)": this.hiddenShade(); break;
+            case "显示(&D)": this.showShade(); break;
             }
         }
-        #endregion
-
         #endregion
     }
 }

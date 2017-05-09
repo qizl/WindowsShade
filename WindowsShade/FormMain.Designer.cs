@@ -32,15 +32,17 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.btnStart = new System.Windows.Forms.Button();
             this.plContent = new System.Windows.Forms.Panel();
+            this.btnExit = new System.Windows.Forms.Button();
             this.btnHelp = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.rbtnD2 = new System.Windows.Forms.RadioButton();
             this.rbtnD1 = new System.Windows.Forms.RadioButton();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.cmxTray = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.menuItemClose = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItemOpenMain = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemHidden = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.menuItemClose = new System.Windows.Forms.ToolStripMenuItem();
             this.plContent.SuspendLayout();
             this.panel1.SuspendLayout();
             this.cmxTray.SuspendLayout();
@@ -59,6 +61,7 @@
             // 
             // plContent
             // 
+            this.plContent.Controls.Add(this.btnExit);
             this.plContent.Controls.Add(this.btnHelp);
             this.plContent.Controls.Add(this.panel1);
             this.plContent.Controls.Add(this.btnStart);
@@ -67,6 +70,17 @@
             this.plContent.Name = "plContent";
             this.plContent.Size = new System.Drawing.Size(540, 306);
             this.plContent.TabIndex = 1;
+            // 
+            // btnExit
+            // 
+            this.btnExit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnExit.Location = new System.Drawing.Point(208, 207);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(125, 51);
+            this.btnExit.TabIndex = 3;
+            this.btnExit.Text = "Exit";
+            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // btnHelp
             // 
@@ -98,6 +112,7 @@
             this.rbtnD2.TabStop = true;
             this.rbtnD2.Text = "D2";
             this.rbtnD2.UseVisualStyleBackColor = true;
+            this.rbtnD2.CheckedChanged += new System.EventHandler(this.rbtnShadeTypes_CheckedChanged);
             // 
             // rbtnD1
             // 
@@ -110,6 +125,7 @@
             this.rbtnD1.TabStop = true;
             this.rbtnD1.Text = "D1";
             this.rbtnD1.UseVisualStyleBackColor = true;
+            this.rbtnD1.CheckedChanged += new System.EventHandler(this.rbtnShadeTypes_CheckedChanged);
             // 
             // notifyIcon1
             // 
@@ -121,11 +137,31 @@
             // cmxTray
             // 
             this.cmxTray.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItemOpenMain,
             this.menuItemHidden,
             this.toolStripSeparator1,
             this.menuItemClose});
             this.cmxTray.Name = "cmxTray";
-            this.cmxTray.Size = new System.Drawing.Size(153, 76);
+            this.cmxTray.Size = new System.Drawing.Size(153, 98);
+            // 
+            // menuItemOpenMain
+            // 
+            this.menuItemOpenMain.Name = "menuItemOpenMain";
+            this.menuItemOpenMain.Size = new System.Drawing.Size(152, 22);
+            this.menuItemOpenMain.Text = "主界面(&M)";
+            this.menuItemOpenMain.Click += new System.EventHandler(this.menuItemOpenMain_Click);
+            // 
+            // menuItemHidden
+            // 
+            this.menuItemHidden.Name = "menuItemHidden";
+            this.menuItemHidden.Size = new System.Drawing.Size(152, 22);
+            this.menuItemHidden.Text = "显示(&D)";
+            this.menuItemHidden.Click += new System.EventHandler(this.menuItemHidden_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // menuItemClose
             // 
@@ -134,23 +170,12 @@
             this.menuItemClose.Text = "退出(&C)";
             this.menuItemClose.Click += new System.EventHandler(this.menuItemClose_Click);
             // 
-            // menuItemHidden
-            // 
-            this.menuItemHidden.Name = "menuItemHidden";
-            this.menuItemHidden.Size = new System.Drawing.Size(152, 22);
-            this.menuItemHidden.Text = "隐藏(&H)";
-            this.menuItemHidden.Click += new System.EventHandler(this.menuItemHidden_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
-            // 
             // FormMain
             // 
             this.AcceptButton = this.btnStart;
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 27F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnExit;
             this.ClientSize = new System.Drawing.Size(540, 306);
             this.Controls.Add(this.plContent);
             this.Font = new System.Drawing.Font("宋体", 20F);
@@ -183,6 +208,8 @@
         private System.Windows.Forms.Button btnHelp;
         private System.Windows.Forms.ToolStripMenuItem menuItemHidden;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem menuItemOpenMain;
+        private System.Windows.Forms.Button btnExit;
     }
 }
 
