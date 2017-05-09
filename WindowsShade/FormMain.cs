@@ -10,18 +10,16 @@ namespace WindowsShade
     {
         #region Members & Properties
         private FormShade _shade = new FormShade();
+        /// <summary>
+        /// 是否允许关闭主程序
+        /// </summary>
+        private bool _isClosed = false;
         #endregion
 
         #region Structures & Initialize
-        public FormMain()
-        {
-            InitializeComponent();
-        }
+        public FormMain() => InitializeComponent();
 
-        private void FormMain_Load(object sender, EventArgs e)
-        {
-            this.initialize();
-        }
+        private void FormMain_Load(object sender, EventArgs e) => this.initialize();
         private void initialize()
         {
             this.ShowInTaskbar = false;
@@ -46,8 +44,6 @@ namespace WindowsShade
             this._shade.WindowState = FormWindowState.Normal;
             this._shade.Show(Common.Config.ShadeType);
             this.menuItemHidden.Text = "隐藏(&H)";
-
-            Common.Config.Save();
         }
         private void hiddenShade()
         {
@@ -78,6 +74,16 @@ namespace WindowsShade
             else if (this.rbtnD2.Checked) Common.Config.ShadeType = ShadeTypes.D1920R;
         }
 
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!this._isClosed) e.Cancel = true;
+            this.Visible = false;
+        }
+
+        private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Common.Config.Save();
+        }
         #endregion
 
         #region Events - cmxTray
@@ -88,6 +94,7 @@ namespace WindowsShade
 
         private void menuItemClose_Click(object sender, EventArgs e)
         {
+            this._isClosed = true;
             this.Close();
         }
 
