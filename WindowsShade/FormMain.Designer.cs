@@ -39,6 +39,8 @@
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.cmxTray = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuItemClose = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuItemHidden = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.plContent.SuspendLayout();
             this.panel1.SuspendLayout();
             this.cmxTray.SuspendLayout();
@@ -119,16 +121,30 @@
             // cmxTray
             // 
             this.cmxTray.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItemHidden,
+            this.toolStripSeparator1,
             this.menuItemClose});
             this.cmxTray.Name = "cmxTray";
-            this.cmxTray.Size = new System.Drawing.Size(101, 26);
+            this.cmxTray.Size = new System.Drawing.Size(153, 76);
             // 
             // menuItemClose
             // 
             this.menuItemClose.Name = "menuItemClose";
-            this.menuItemClose.Size = new System.Drawing.Size(100, 22);
-            this.menuItemClose.Text = "关闭";
+            this.menuItemClose.Size = new System.Drawing.Size(152, 22);
+            this.menuItemClose.Text = "退出(&C)";
             this.menuItemClose.Click += new System.EventHandler(this.menuItemClose_Click);
+            // 
+            // menuItemHidden
+            // 
+            this.menuItemHidden.Name = "menuItemHidden";
+            this.menuItemHidden.Size = new System.Drawing.Size(152, 22);
+            this.menuItemHidden.Text = "隐藏(&H)";
+            this.menuItemHidden.Click += new System.EventHandler(this.menuItemHidden_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // FormMain
             // 
@@ -165,6 +181,8 @@
         private System.Windows.Forms.RadioButton rbtnD2;
         private System.Windows.Forms.RadioButton rbtnD1;
         private System.Windows.Forms.Button btnHelp;
+        private System.Windows.Forms.ToolStripMenuItem menuItemHidden;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
 }
 
