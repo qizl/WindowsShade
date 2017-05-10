@@ -50,8 +50,8 @@ namespace WindowsShade.Views
             case ShadeTypes.D1024L:
                 {
                     this.Location = new Point(0, 0);
-                    this.Width = 1024 * 2;
-                    this.Height = 768;
+                    this.Width = 1440 * 2;
+                    this.Height = 900;
                 }
                 break;
             }
