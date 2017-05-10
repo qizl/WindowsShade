@@ -60,5 +60,12 @@ namespace WindowsShade.Views
             SetLayeredWindowAttributes(this.Handle, 0, 128, LWA_ALPHA);
         }
         #endregion
+
+        #region Events - Form
+        private void FormShade_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = true;
+        }
+        #endregion
     }
 }

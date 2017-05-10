@@ -39,6 +39,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormShade";
             this.Text = "FormShade";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormShade_FormClosing);
             this.ResumeLayout(false);
 
         }

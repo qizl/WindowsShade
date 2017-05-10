@@ -41,13 +41,13 @@ namespace WindowsShade
         private void showShade()
         {
             this.Visible = false;
-            this._shade.WindowState = FormWindowState.Normal;
+            this._shade.Visible = true;
             this._shade.Show(Common.Config.ShadeType);
             this.menuItemHidden.Text = "隐藏(&H)";
         }
         private void hiddenShade()
         {
-            this._shade.WindowState = FormWindowState.Minimized;
+            this._shade.Visible = false;
             this.menuItemHidden.Text = "显示(&D)";
         }
 
@@ -61,7 +61,7 @@ namespace WindowsShade
         }
         #endregion
 
-        #region Events - FormMain
+        #region Events - Form
         private void btnStart_Click(object sender, EventArgs e) => this.showShade();
 
         private void btnMinimize_Click(object sender, EventArgs e) => this.Visible = false;
