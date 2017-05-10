@@ -47,7 +47,14 @@ namespace WindowsShade.Views
                     this.Height = 1080;
                 }
                 break;
-            case ShadeTypes.D1024L:
+            case ShadeTypes.S1920:
+                {
+                    this.Location = new Point(0, 0);
+                    this.Width = 1920;
+                    this.Height = 1080;
+                }
+                break;
+            case ShadeTypes.D1440L:
                 {
                     this.Location = new Point(0, 0);
                     this.Width = 1440 * 2;

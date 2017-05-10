@@ -32,11 +32,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.btnStart = new System.Windows.Forms.Button();
             this.plContent = new System.Windows.Forms.Panel();
+            this.cbxShadeTypes = new System.Windows.Forms.ComboBox();
             this.btnMinimize = new System.Windows.Forms.Button();
             this.btnHelp = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.rbtnD2 = new System.Windows.Forms.RadioButton();
-            this.rbtnD1 = new System.Windows.Forms.RadioButton();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.cmxTray = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuItemOpenMain = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,16 +42,15 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuItemClose = new System.Windows.Forms.ToolStripMenuItem();
             this.plContent.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.cmxTray.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnStart
             // 
-            this.btnStart.Location = new System.Drawing.Point(208, 128);
+            this.btnStart.Location = new System.Drawing.Point(232, 113);
             this.btnStart.Margin = new System.Windows.Forms.Padding(7);
             this.btnStart.Name = "btnStart";
-            this.btnStart.Size = new System.Drawing.Size(125, 51);
+            this.btnStart.Size = new System.Drawing.Size(105, 35);
             this.btnStart.TabIndex = 0;
             this.btnStart.Text = "Start";
             this.btnStart.UseVisualStyleBackColor = true;
@@ -61,23 +58,33 @@
             // 
             // plContent
             // 
+            this.plContent.Controls.Add(this.cbxShadeTypes);
             this.plContent.Controls.Add(this.btnMinimize);
             this.plContent.Controls.Add(this.btnHelp);
-            this.plContent.Controls.Add(this.panel1);
             this.plContent.Controls.Add(this.btnStart);
             this.plContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.plContent.Font = new System.Drawing.Font("宋体", 16F);
             this.plContent.Location = new System.Drawing.Point(0, 0);
             this.plContent.Name = "plContent";
             this.plContent.Size = new System.Drawing.Size(540, 306);
             this.plContent.TabIndex = 1;
             // 
+            // cbxShadeTypes
+            // 
+            this.cbxShadeTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbxShadeTypes.FormattingEnabled = true;
+            this.cbxShadeTypes.Location = new System.Drawing.Point(75, 116);
+            this.cbxShadeTypes.Name = "cbxShadeTypes";
+            this.cbxShadeTypes.Size = new System.Drawing.Size(121, 29);
+            this.cbxShadeTypes.TabIndex = 4;
+            // 
             // btnMinimize
             // 
             this.btnMinimize.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnMinimize.Font = new System.Drawing.Font("宋体", 19F);
-            this.btnMinimize.Location = new System.Drawing.Point(208, 207);
+            this.btnMinimize.Font = new System.Drawing.Font("宋体", 16F);
+            this.btnMinimize.Location = new System.Drawing.Point(360, 113);
             this.btnMinimize.Name = "btnMinimize";
-            this.btnMinimize.Size = new System.Drawing.Size(125, 51);
+            this.btnMinimize.Size = new System.Drawing.Size(118, 35);
             this.btnMinimize.TabIndex = 3;
             this.btnMinimize.Text = "Minimize";
             this.btnMinimize.UseVisualStyleBackColor = true;
@@ -86,47 +93,13 @@
             // btnHelp
             // 
             this.btnHelp.Font = new System.Drawing.Font("宋体", 14F);
-            this.btnHelp.Location = new System.Drawing.Point(47, 254);
+            this.btnHelp.Location = new System.Drawing.Point(75, 251);
             this.btnHelp.Name = "btnHelp";
             this.btnHelp.Size = new System.Drawing.Size(85, 31);
             this.btnHelp.TabIndex = 2;
             this.btnHelp.Text = "Help";
             this.btnHelp.UseVisualStyleBackColor = true;
             this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.rbtnD2);
-            this.panel1.Controls.Add(this.rbtnD1);
-            this.panel1.Location = new System.Drawing.Point(113, 43);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(268, 59);
-            this.panel1.TabIndex = 1;
-            // 
-            // rbtnD2
-            // 
-            this.rbtnD2.AutoSize = true;
-            this.rbtnD2.Location = new System.Drawing.Point(125, 15);
-            this.rbtnD2.Name = "rbtnD2";
-            this.rbtnD2.Size = new System.Drawing.Size(58, 31);
-            this.rbtnD2.TabIndex = 1;
-            this.rbtnD2.TabStop = true;
-            this.rbtnD2.Text = "D2";
-            this.rbtnD2.UseVisualStyleBackColor = true;
-            this.rbtnD2.CheckedChanged += new System.EventHandler(this.rbtnShadeTypes_CheckedChanged);
-            // 
-            // rbtnD1
-            // 
-            this.rbtnD1.AutoSize = true;
-            this.rbtnD1.Checked = true;
-            this.rbtnD1.Location = new System.Drawing.Point(22, 15);
-            this.rbtnD1.Name = "rbtnD1";
-            this.rbtnD1.Size = new System.Drawing.Size(58, 31);
-            this.rbtnD1.TabIndex = 0;
-            this.rbtnD1.TabStop = true;
-            this.rbtnD1.Text = "D1";
-            this.rbtnD1.UseVisualStyleBackColor = true;
-            this.rbtnD1.CheckedChanged += new System.EventHandler(this.rbtnShadeTypes_CheckedChanged);
             // 
             // notifyIcon1
             // 
@@ -192,8 +165,6 @@
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMain_FormClosed);
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.plContent.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.cmxTray.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -206,14 +177,12 @@
         private System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.ContextMenuStrip cmxTray;
         private System.Windows.Forms.ToolStripMenuItem menuItemClose;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.RadioButton rbtnD2;
-        private System.Windows.Forms.RadioButton rbtnD1;
         private System.Windows.Forms.Button btnHelp;
         private System.Windows.Forms.ToolStripMenuItem menuItemHidden;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem menuItemOpenMain;
         private System.Windows.Forms.Button btnMinimize;
+        private System.Windows.Forms.ComboBox cbxShadeTypes;
     }
 }
 

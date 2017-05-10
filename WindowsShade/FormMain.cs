@@ -22,24 +22,38 @@ namespace WindowsShade
         private void FormMain_Load(object sender, EventArgs e) => this.initialize();
         private void initialize()
         {
+            // 1.初始化控件
             this.ShowInTaskbar = false;
             this.notifyIcon1.Visible = true;
+            this.initShadeTypes();
             this._shade.Text = this.Text;
 
+            // 2.加载配置文件
             Common.Config = Config.Load(Common.ConfigPath);
             if (Common.Config == null) Common.Config = Common.DefaultConfig.Clone() as Config;
-            else this.showShade(); // 读取到配置文件，则直接调整屏幕亮度
+            else
+            {
+                // 读取到配置文件，则直接调整屏幕亮度
+                this.cbxShadeTypes.Text = Common.Config.ShadeType.ToString();
+                this.showShade();
+            }
             Common.Config.UpdateTime = DateTime.Now;
             Common.Config.Save();
-            this.selectShadeType(Common.Config.ShadeType);
 
+            // 3.激活主窗体
             this.Activate();
         }
         #endregion
 
         #region Methods
+        private void initShadeTypes()
+        {
+            this.cbxShadeTypes.Items.AddRange(Enum.GetNames(typeof(ShadeTypes)));
+            this.cbxShadeTypes.SelectedIndex = 0;
+        }
         private void showShade()
         {
+            Common.Config.ShadeType = (ShadeTypes)Enum.Parse(typeof(ShadeTypes), this.cbxShadeTypes.Text);
             this.Visible = false;
             this._shade.Visible = true;
             this._shade.Show(Common.Config.ShadeType);
@@ -50,15 +64,6 @@ namespace WindowsShade
             this._shade.Visible = false;
             this.menuItemHidden.Text = "显示(&D)";
         }
-
-        private void selectShadeType(ShadeTypes type)
-        {
-            switch (type)
-            {
-            case ShadeTypes.D1024L: this.rbtnD1.Checked = true; break;
-            case ShadeTypes.D1920R: this.rbtnD2.Checked = true; break;
-            }
-        }
         #endregion
 
         #region Events - Form
@@ -67,12 +72,6 @@ namespace WindowsShade
         private void btnMinimize_Click(object sender, EventArgs e) => this.Visible = false;
 
         private void btnHelp_Click(object sender, EventArgs e) => Process.Start("http://enjoycodes.com/Home/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
-
-        private void rbtnShadeTypes_CheckedChanged(object sender, EventArgs e)
-        {
-            if (this.rbtnD1.Checked) Common.Config.ShadeType = ShadeTypes.D1024L;
-            else if (this.rbtnD2.Checked) Common.Config.ShadeType = ShadeTypes.D1920R;
-        }
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
