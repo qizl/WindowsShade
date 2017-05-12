@@ -94,6 +94,7 @@
             // btnHelp
             // 
             this.btnHelp.Font = new System.Drawing.Font("宋体", 14F);
+            this.btnHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnHelp.Location = new System.Drawing.Point(75, 251);
             this.btnHelp.Name = "btnHelp";
             this.btnHelp.Size = new System.Drawing.Size(85, 31);
@@ -134,6 +135,7 @@
             // 
             // menuItemOpenMain
             // 
+            this.menuItemOpenMain.Image = ((System.Drawing.Image)(resources.GetObject("menuItemOpenMain.Image")));
             this.menuItemOpenMain.Name = "menuItemOpenMain";
             this.menuItemOpenMain.Size = new System.Drawing.Size(156, 22);
             this.menuItemOpenMain.Text = "打开主界面(&M)";
