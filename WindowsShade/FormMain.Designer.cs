@@ -41,6 +41,7 @@
             this.menuItemHidden = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuItemClose = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.plContent.SuspendLayout();
             this.cmxTray.SuspendLayout();
             this.SuspendLayout();
@@ -111,38 +112,44 @@
             // cmxTray
             // 
             this.cmxTray.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuItemOpenMain,
             this.menuItemHidden,
+            this.toolStripSeparator2,
+            this.menuItemOpenMain,
             this.toolStripSeparator1,
             this.menuItemClose});
             this.cmxTray.Name = "cmxTray";
-            this.cmxTray.Size = new System.Drawing.Size(133, 76);
+            this.cmxTray.Size = new System.Drawing.Size(157, 104);
             // 
             // menuItemOpenMain
             // 
             this.menuItemOpenMain.Name = "menuItemOpenMain";
-            this.menuItemOpenMain.Size = new System.Drawing.Size(132, 22);
-            this.menuItemOpenMain.Text = "主界面(&M)";
+            this.menuItemOpenMain.Size = new System.Drawing.Size(156, 22);
+            this.menuItemOpenMain.Text = "打开主界面(&M)";
             this.menuItemOpenMain.Click += new System.EventHandler(this.menuItemOpenMain_Click);
             // 
             // menuItemHidden
             // 
             this.menuItemHidden.Name = "menuItemHidden";
-            this.menuItemHidden.Size = new System.Drawing.Size(132, 22);
+            this.menuItemHidden.Size = new System.Drawing.Size(156, 22);
             this.menuItemHidden.Text = "显示(&D)";
             this.menuItemHidden.Click += new System.EventHandler(this.menuItemHidden_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(129, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(153, 6);
             // 
             // menuItemClose
             // 
             this.menuItemClose.Name = "menuItemClose";
-            this.menuItemClose.Size = new System.Drawing.Size(132, 22);
+            this.menuItemClose.Size = new System.Drawing.Size(156, 22);
             this.menuItemClose.Text = "退出(&C)";
             this.menuItemClose.Click += new System.EventHandler(this.menuItemClose_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(153, 6);
             // 
             // FormMain
             // 
@@ -183,6 +190,7 @@
         private System.Windows.Forms.ToolStripMenuItem menuItemOpenMain;
         private System.Windows.Forms.Button btnMinimize;
         private System.Windows.Forms.ComboBox cbxShadeTypes;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     }
 }
 
