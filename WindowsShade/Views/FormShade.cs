@@ -61,6 +61,13 @@ namespace WindowsShade.Views
                     this.Height = 900;
                 }
                 break;
+            case ShadeTypes.S1440:
+                {
+                    this.Location = new Point(0, 0);
+                    this.Width = 1440;
+                    this.Height = 900;
+                }
+                break;
             }
 
             SetWindowLong(this.Handle, GWL_EXSTYLE, GetWindowLong(this.Handle, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
