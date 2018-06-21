@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsShade", "WindowsShade.csproj", "{264E6AFF-F4E1-42BB-B33B-5DE3A42D2348}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsShade", "WindowsShade\WindowsShade.csproj", "{264E6AFF-F4E1-42BB-B33B-5DE3A42D2348}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSerializer", "..\SharpSerializer\SharpSerializer.csproj", "{88AB738F-7A36-4C93-B808-B6CE2D3444B2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSerializer", "SharpSerializer\SharpSerializer.csproj", "{88AB738F-7A36-4C93-B808-B6CE2D3444B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0CDD5D4F-C0A4-44E9-831A-9B2BBA13E0B4}
 	EndGlobalSection
 EndGlobal

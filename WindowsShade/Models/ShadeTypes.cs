@@ -7,6 +7,10 @@
         /// </summary>
         D1920R,
         /// <summary>
+        /// 双1920p，左主屏
+        /// </summary>
+        D1920L,
+        /// <summary>
         /// 单1920p
         /// </summary>
         S1920,
