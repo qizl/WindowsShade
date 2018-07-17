@@ -27,6 +27,7 @@ namespace WindowsShade
             this.notifyIcon1.Visible = true;
             this.initShadeTypes();
             this._shade.Text = this.Text;
+            this.btnApply.Location = new System.Drawing.Point(-100, -100);
 
             // 2.加载配置文件
             Common.Config = Config.Load(Common.ConfigPath);
@@ -45,7 +46,7 @@ namespace WindowsShade
             Common.Config.Save();
 
             // 3.激活主窗体
-            this.Activate();
+            //this.Activate();
         }
         #endregion
 
@@ -88,7 +89,7 @@ namespace WindowsShade
 
         #region Events - Form
         private void btnApply_Click(object sender, EventArgs e) => this.showShade(Common.Config.Alpha);
-        
+
         private void btnHelp_Click(object sender, EventArgs e) => Process.Start("http://enjoycodes.com/Home/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -137,6 +138,17 @@ namespace WindowsShade
             {
                 case "隐藏(&H)": this.hiddenShade(); break;
                 case "显示(&D)": this.showShade(); break;
+            }
+        }
+        #endregion
+
+        #region Events = Nofify
+        private void notifyIcon1_Click(object sender, EventArgs e)
+        {
+            if ((e as MouseEventArgs).Button == MouseButtons.Left)
+            {
+                this.Visible = !this.Visible;
+                if (this.Visible) this.Activate();
             }
         }
         #endregion
