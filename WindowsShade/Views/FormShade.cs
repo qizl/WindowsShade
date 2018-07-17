@@ -22,6 +22,8 @@ namespace WindowsShade.Views
         const int WS_EX_TRANSPARENT = 0x20;
         const int WS_EX_LAYERED = 0x80000;
         const int LWA_ALPHA = 2;
+
+        public byte Alpha { get; set; }
         #endregion
 
         #region Structures & Methods
@@ -40,45 +42,45 @@ namespace WindowsShade.Views
             base.Show();
             switch (t)
             {
-            case ShadeTypes.D1920R:
-                {
-                    this.Location = new Point(-1920, 0);
-                    this.Width = 1920 * 2;
-                    this.Height = 1080;
-                }
-                break;
-            case ShadeTypes.D1920L:
-                {
-                    this.Location = new Point(0, 0);
-                    this.Width = 1920 * 2;
-                    this.Height = 1080;
-                }
-                break;
-            case ShadeTypes.S1920:
-                {
-                    this.Location = new Point(0, 0);
-                    this.Width = 1920;
-                    this.Height = 1080;
-                }
-                break;
-            case ShadeTypes.D1440L:
-                {
-                    this.Location = new Point(0, 0);
-                    this.Width = 1440 * 2;
-                    this.Height = 900;
-                }
-                break;
-            case ShadeTypes.S1440:
-                {
-                    this.Location = new Point(0, 0);
-                    this.Width = 1440;
-                    this.Height = 900;
-                }
-                break;
+                case ShadeTypes.D1920R:
+                    {
+                        this.Location = new Point(-1920, 0);
+                        this.Width = 1920 * 2;
+                        this.Height = 1080;
+                    }
+                    break;
+                case ShadeTypes.D1920L:
+                    {
+                        this.Location = new Point(0, 0);
+                        this.Width = 1920 * 2;
+                        this.Height = 1080;
+                    }
+                    break;
+                case ShadeTypes.S1920:
+                    {
+                        this.Location = new Point(0, 0);
+                        this.Width = 1920;
+                        this.Height = 1080;
+                    }
+                    break;
+                case ShadeTypes.D1440L:
+                    {
+                        this.Location = new Point(0, 0);
+                        this.Width = 1440 * 2;
+                        this.Height = 900;
+                    }
+                    break;
+                case ShadeTypes.S1440:
+                    {
+                        this.Location = new Point(0, 0);
+                        this.Width = 1440;
+                        this.Height = 900;
+                    }
+                    break;
             }
 
             SetWindowLong(this.Handle, GWL_EXSTYLE, GetWindowLong(this.Handle, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
-            SetLayeredWindowAttributes(this.Handle, 0, 128, LWA_ALPHA);
+            SetLayeredWindowAttributes(this.Handle, 0, this.Alpha, LWA_ALPHA);
         }
         #endregion
 

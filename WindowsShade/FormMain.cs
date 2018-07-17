@@ -30,12 +30,16 @@ namespace WindowsShade
 
             // 2.加载配置文件
             Common.Config = Config.Load(Common.ConfigPath);
-            if (Common.Config == null) Common.Config = Common.DefaultConfig.Clone() as Config;
+            if (Common.Config == null) Common.Config = new Config() ;
             else
             {
-                // 读取到配置文件，则直接调整屏幕亮度
+                // 2.1 读取到配置文件，则直接调整屏幕亮度
                 this.cbxShadeTypes.Text = Common.Config.ShadeType.ToString();
-                this.showShade();
+                this.showShade(Common.Config.Alpha);
+
+                // 2.2 透明度
+                this.tbAlpha.Value = Common.Config.Alpha;
+                this.lblAlphaValue.Text = Common.Config.Alpha.ToString();
             }
             Common.Config.UpdateTime = DateTime.Now;
             Common.Config.Save();
@@ -66,10 +70,11 @@ namespace WindowsShade
                 this.cmxTray.Items.Insert(0, t);
             }
         }
-        private void showShade()
+        private void showShade(byte alpha = 128, bool autoHiddenFormMain = true)
         {
             Common.Config.ShadeType = (ShadeTypes)Enum.Parse(typeof(ShadeTypes), this.cbxShadeTypes.Text);
-            this.Visible = false;
+            this.Visible = !autoHiddenFormMain;
+            this._shade.Alpha = alpha;
             this._shade.Visible = true;
             this._shade.Show(Common.Config.ShadeType);
             this.menuItemHidden.Text = "隐藏(&H)";
@@ -98,6 +103,14 @@ namespace WindowsShade
         {
             Common.Config.Save();
         }
+
+        private void tbAlpha_Scroll(object sender, EventArgs e)
+        {
+            Common.Config.Alpha = (byte)this.tbAlpha.Value;
+            this.lblAlphaValue.Text = this.tbAlpha.Value.ToString();
+
+            this.showShade((byte)this.tbAlpha.Value, false);
+        }
         #endregion
 
         #region Events - cmxTray
@@ -124,8 +137,8 @@ namespace WindowsShade
         {
             switch (this.menuItemHidden.Text)
             {
-            case "隐藏(&H)": this.hiddenShade(); break;
-            case "显示(&D)": this.showShade(); break;
+                case "隐藏(&H)": this.hiddenShade(); break;
+                case "显示(&D)": this.showShade(); break;
             }
         }
         #endregion

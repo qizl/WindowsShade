@@ -5,10 +5,15 @@ namespace WindowsShade.Models
 {
     public class Config
     {
-        public ShadeTypes ShadeType { get; set; }
+        public ShadeTypes ShadeType { get; set; } = ShadeTypes.D1920R;
+        /// <summary>
+        /// 透明度
+        ///     0~255
+        /// </summary>
+        public byte Alpha { get; set; } = 128;
 
-        public DateTime CreateTime { get; set; }
-        public DateTime UpdateTime { get; set; }
+        public DateTime CreateTime { get; set; } = DateTime.Now;
+        public DateTime UpdateTime { get; set; } = DateTime.Now;
 
         public static Config Load(string path)
         {
