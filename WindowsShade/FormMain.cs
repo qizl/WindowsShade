@@ -30,7 +30,7 @@ namespace WindowsShade
 
             // 2.加载配置文件
             Common.Config = Config.Load(Common.ConfigPath);
-            if (Common.Config == null) Common.Config = new Config() ;
+            if (Common.Config == null) Common.Config = new Config();
             else
             {
                 // 2.1 读取到配置文件，则直接调整屏幕亮度
@@ -87,10 +87,8 @@ namespace WindowsShade
         #endregion
 
         #region Events - Form
-        private void btnStart_Click(object sender, EventArgs e) => this.showShade();
-
-        private void btnMinimize_Click(object sender, EventArgs e) => this.Visible = false;
-
+        private void btnApply_Click(object sender, EventArgs e) => this.showShade(Common.Config.Alpha);
+        
         private void btnHelp_Click(object sender, EventArgs e) => Process.Start("http://enjoycodes.com/Home/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
