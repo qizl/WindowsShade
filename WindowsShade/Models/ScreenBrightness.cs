@@ -49,9 +49,8 @@ namespace WindowsShade.Models
 
                 moc.Dispose();
                 mos.Dispose();
-
             }
-            catch (Exception) { }
+            catch { }
 
             return brightnessLevels;
         }
