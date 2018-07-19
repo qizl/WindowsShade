@@ -14,6 +14,7 @@ namespace WindowsShade
         /// 是否允许关闭主程序
         /// </summary>
         private bool _isClosed = false;
+        private ScreenBrightness _screenBrightness = new ScreenBrightness();
         #endregion
 
         #region Structures & Initialize
@@ -28,6 +29,13 @@ namespace WindowsShade
             this.initShadeTypes();
             this._shade.Text = this.Text;
             this.btnApply.Location = new System.Drawing.Point(-100, -100);
+
+            // 初始化系统亮度控件
+            this.tbSystem.Maximum = this._screenBrightness.Maximum;
+            this.tbSystem.Update();
+            this.tbSystem.Refresh();
+            this.tbSystem.Value = this._screenBrightness.GetBrightness();
+            this.lblSystem.Text = this.tbSystem.Value.ToString();
 
             // 2.加载配置文件
             Common.Config = Config.Load(Common.ConfigPath);
@@ -103,12 +111,28 @@ namespace WindowsShade
             Common.Config.Save();
         }
 
+        /// <summary>
+        /// 调整遮罩亮度
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void tbAlpha_Scroll(object sender, EventArgs e)
         {
             Common.Config.Alpha = (byte)this.tbAlpha.Value;
             this.lblAlphaValue.Text = this.tbAlpha.Value.ToString();
 
             this.showShade((byte)this.tbAlpha.Value, false);
+        }
+
+        /// <summary>
+        /// 调整系统亮度
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tbSystem_Scroll(object sender, EventArgs e)
+        {
+            this._screenBrightness.SetBrightness(this.tbSystem.Value);
+            this.lblSystem.Text = this.tbSystem.Value.ToString();
         }
         #endregion
 

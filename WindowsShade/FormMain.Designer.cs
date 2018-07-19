@@ -45,15 +45,19 @@
             this.menuItemOpenMain = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuItemClose = new System.Windows.Forms.ToolStripMenuItem();
+            this.tbSystem = new System.Windows.Forms.TrackBar();
+            this.lblSystem = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.plContent.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbAlpha)).BeginInit();
             this.cmxTray.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbSystem)).BeginInit();
             this.SuspendLayout();
             // 
             // btnApply
             // 
             this.btnApply.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnApply.Location = new System.Drawing.Point(213, 188);
+            this.btnApply.Location = new System.Drawing.Point(206, 216);
             this.btnApply.Margin = new System.Windows.Forms.Padding(7);
             this.btnApply.Name = "btnApply";
             this.btnApply.Size = new System.Drawing.Size(105, 35);
@@ -65,7 +69,10 @@
             // plContent
             // 
             this.plContent.Controls.Add(this.label2);
+            this.plContent.Controls.Add(this.label4);
+            this.plContent.Controls.Add(this.lblSystem);
             this.plContent.Controls.Add(this.label1);
+            this.plContent.Controls.Add(this.tbSystem);
             this.plContent.Controls.Add(this.lblAlphaValue);
             this.plContent.Controls.Add(this.tbAlpha);
             this.plContent.Controls.Add(this.cbxShadeTypes);
@@ -75,13 +82,13 @@
             this.plContent.Font = new System.Drawing.Font("宋体", 16F);
             this.plContent.Location = new System.Drawing.Point(0, 0);
             this.plContent.Name = "plContent";
-            this.plContent.Size = new System.Drawing.Size(487, 262);
+            this.plContent.Size = new System.Drawing.Size(487, 289);
             this.plContent.TabIndex = 1;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(85, 50);
+            this.label2.Location = new System.Drawing.Point(89, 40);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(76, 22);
             this.label2.TabIndex = 7;
@@ -90,7 +97,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(85, 123);
+            this.label1.Location = new System.Drawing.Point(89, 100);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(76, 22);
             this.label1.TabIndex = 7;
@@ -99,7 +106,7 @@
             // lblAlphaValue
             // 
             this.lblAlphaValue.AutoSize = true;
-            this.lblAlphaValue.Location = new System.Drawing.Point(406, 123);
+            this.lblAlphaValue.Location = new System.Drawing.Point(410, 100);
             this.lblAlphaValue.Name = "lblAlphaValue";
             this.lblAlphaValue.Size = new System.Drawing.Size(21, 22);
             this.lblAlphaValue.TabIndex = 6;
@@ -107,7 +114,7 @@
             // 
             // tbAlpha
             // 
-            this.tbAlpha.Location = new System.Drawing.Point(197, 112);
+            this.tbAlpha.Location = new System.Drawing.Point(201, 89);
             this.tbAlpha.Maximum = 255;
             this.tbAlpha.Name = "tbAlpha";
             this.tbAlpha.Size = new System.Drawing.Size(209, 45);
@@ -118,7 +125,7 @@
             // 
             this.cbxShadeTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxShadeTypes.FormattingEnabled = true;
-            this.cbxShadeTypes.Location = new System.Drawing.Point(197, 47);
+            this.cbxShadeTypes.Location = new System.Drawing.Point(201, 37);
             this.cbxShadeTypes.Name = "cbxShadeTypes";
             this.cbxShadeTypes.Size = new System.Drawing.Size(121, 29);
             this.cbxShadeTypes.TabIndex = 4;
@@ -127,7 +134,7 @@
             // 
             this.btnHelp.Font = new System.Drawing.Font("宋体", 14F);
             this.btnHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnHelp.Location = new System.Drawing.Point(89, 191);
+            this.btnHelp.Location = new System.Drawing.Point(82, 219);
             this.btnHelp.Name = "btnHelp";
             this.btnHelp.Size = new System.Drawing.Size(85, 31);
             this.btnHelp.TabIndex = 2;
@@ -152,39 +159,66 @@
             this.toolStripSeparator1,
             this.menuItemClose});
             this.cmxTray.Name = "cmxTray";
-            this.cmxTray.Size = new System.Drawing.Size(181, 104);
+            this.cmxTray.Size = new System.Drawing.Size(157, 82);
             // 
             // menuItemHidden
             // 
             this.menuItemHidden.Name = "menuItemHidden";
-            this.menuItemHidden.Size = new System.Drawing.Size(180, 22);
+            this.menuItemHidden.Size = new System.Drawing.Size(156, 22);
             this.menuItemHidden.Text = "显示(&D)";
             this.menuItemHidden.Click += new System.EventHandler(this.menuItemHidden_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(153, 6);
             // 
             // menuItemOpenMain
             // 
             this.menuItemOpenMain.Image = ((System.Drawing.Image)(resources.GetObject("menuItemOpenMain.Image")));
             this.menuItemOpenMain.Name = "menuItemOpenMain";
-            this.menuItemOpenMain.Size = new System.Drawing.Size(180, 22);
+            this.menuItemOpenMain.Size = new System.Drawing.Size(156, 22);
             this.menuItemOpenMain.Text = "打开主界面(&M)";
             this.menuItemOpenMain.Click += new System.EventHandler(this.menuItemOpenMain_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(153, 6);
             // 
             // menuItemClose
             // 
             this.menuItemClose.Name = "menuItemClose";
-            this.menuItemClose.Size = new System.Drawing.Size(180, 22);
+            this.menuItemClose.Size = new System.Drawing.Size(156, 22);
             this.menuItemClose.Text = "退出(&C)";
             this.menuItemClose.Click += new System.EventHandler(this.menuItemClose_Click);
+            // 
+            // tbSystem
+            // 
+            this.tbSystem.Location = new System.Drawing.Point(201, 149);
+            this.tbSystem.Maximum = 255;
+            this.tbSystem.Name = "tbSystem";
+            this.tbSystem.Size = new System.Drawing.Size(209, 45);
+            this.tbSystem.TabIndex = 5;
+            this.tbSystem.Scroll += new System.EventHandler(this.tbSystem_Scroll);
+            // 
+            // lblSystem
+            // 
+            this.lblSystem.AutoSize = true;
+            this.lblSystem.Location = new System.Drawing.Point(410, 160);
+            this.lblSystem.Name = "lblSystem";
+            this.lblSystem.Size = new System.Drawing.Size(21, 22);
+            this.lblSystem.TabIndex = 6;
+            this.lblSystem.Text = "0";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(78, 160);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(87, 22);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "System:";
             // 
             // FormMain
             // 
@@ -192,7 +226,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 27F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnApply;
-            this.ClientSize = new System.Drawing.Size(487, 262);
+            this.ClientSize = new System.Drawing.Size(487, 289);
             this.Controls.Add(this.plContent);
             this.Font = new System.Drawing.Font("宋体", 20F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -210,6 +244,7 @@
             this.plContent.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbAlpha)).EndInit();
             this.cmxTray.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.tbSystem)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -231,6 +266,9 @@
         private System.Windows.Forms.Label lblAlphaValue;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblSystem;
+        private System.Windows.Forms.TrackBar tbSystem;
     }
 }
 
