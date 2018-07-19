@@ -33,7 +33,10 @@
             this.btnApply = new System.Windows.Forms.Button();
             this.plContent = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.lblSystem = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.tbSystem = new System.Windows.Forms.TrackBar();
             this.lblAlphaValue = new System.Windows.Forms.Label();
             this.tbAlpha = new System.Windows.Forms.TrackBar();
             this.cbxShadeTypes = new System.Windows.Forms.ComboBox();
@@ -45,13 +48,10 @@
             this.menuItemOpenMain = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuItemClose = new System.Windows.Forms.ToolStripMenuItem();
-            this.tbSystem = new System.Windows.Forms.TrackBar();
-            this.lblSystem = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.plContent.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbSystem)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbAlpha)).BeginInit();
             this.cmxTray.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbSystem)).BeginInit();
             this.SuspendLayout();
             // 
             // btnApply
@@ -94,6 +94,24 @@
             this.label2.TabIndex = 7;
             this.label2.Text = "Shade:";
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(78, 160);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(87, 22);
+            this.label4.TabIndex = 7;
+            this.label4.Text = "System:";
+            // 
+            // lblSystem
+            // 
+            this.lblSystem.AutoSize = true;
+            this.lblSystem.Location = new System.Drawing.Point(410, 160);
+            this.lblSystem.Name = "lblSystem";
+            this.lblSystem.Size = new System.Drawing.Size(21, 22);
+            this.lblSystem.TabIndex = 6;
+            this.lblSystem.Text = "0";
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -102,6 +120,15 @@
             this.label1.Size = new System.Drawing.Size(76, 22);
             this.label1.TabIndex = 7;
             this.label1.Text = "Alpha:";
+            // 
+            // tbSystem
+            // 
+            this.tbSystem.Location = new System.Drawing.Point(201, 149);
+            this.tbSystem.Maximum = 255;
+            this.tbSystem.Name = "tbSystem";
+            this.tbSystem.Size = new System.Drawing.Size(209, 45);
+            this.tbSystem.TabIndex = 5;
+            this.tbSystem.Scroll += new System.EventHandler(this.tbSystem_Scroll);
             // 
             // lblAlphaValue
             // 
@@ -193,33 +220,6 @@
             this.menuItemClose.Text = "退出(&C)";
             this.menuItemClose.Click += new System.EventHandler(this.menuItemClose_Click);
             // 
-            // tbSystem
-            // 
-            this.tbSystem.Location = new System.Drawing.Point(201, 149);
-            this.tbSystem.Maximum = 255;
-            this.tbSystem.Name = "tbSystem";
-            this.tbSystem.Size = new System.Drawing.Size(209, 45);
-            this.tbSystem.TabIndex = 5;
-            this.tbSystem.Scroll += new System.EventHandler(this.tbSystem_Scroll);
-            // 
-            // lblSystem
-            // 
-            this.lblSystem.AutoSize = true;
-            this.lblSystem.Location = new System.Drawing.Point(410, 160);
-            this.lblSystem.Name = "lblSystem";
-            this.lblSystem.Size = new System.Drawing.Size(21, 22);
-            this.lblSystem.TabIndex = 6;
-            this.lblSystem.Text = "0";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(78, 160);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(87, 22);
-            this.label4.TabIndex = 7;
-            this.label4.Text = "System:";
-            // 
             // FormMain
             // 
             this.AcceptButton = this.btnApply;
@@ -242,9 +242,9 @@
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.plContent.ResumeLayout(false);
             this.plContent.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbSystem)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbAlpha)).EndInit();
             this.cmxTray.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.tbSystem)).EndInit();
             this.ResumeLayout(false);
 
         }
