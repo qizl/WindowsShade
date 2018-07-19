@@ -19,8 +19,8 @@ namespace WindowsShade.Models
 
         private void initiazlie()
         {
-            _bLevels = GetBrightnessLevels(); //get the level array for this system
-            if (_bLevels.Count() == 0) //"WmiMonitorBrightness" is not supported by the system
+            this._bLevels = this.getBrightnessLevels();
+            if (this._bLevels.Count() == 0)
                 throw new Exception($"\"WmiMonitorBrightness\" is not supported by the system");
 
             this.Maximum = this._bLevels.Count() - 1;
@@ -30,19 +30,17 @@ namespace WindowsShade.Models
         /// array of valid brightness values in percent
         /// </summary>
         /// <returns></returns>
-        private byte[] GetBrightnessLevels()
+        private byte[] getBrightnessLevels()
         {
             var s = new System.Management.ManagementScope("root\\WMI"); //define scope (namespace)     
             var q = new System.Management.SelectQuery("WmiMonitorBrightness"); // define query         
             var mos = new System.Management.ManagementObjectSearcher(s, q); // output current brightness
 
-            byte[] brightnessLevels = new byte[0];
+            var brightnessLevels = new byte[0];
 
             try
             {
                 var moc = mos.Get();
-
-                //store result
                 foreach (System.Management.ManagementObject o in moc)
                 {
                     brightnessLevels = (byte[])o.GetPropertyValue("Level");
@@ -69,7 +67,6 @@ namespace WindowsShade.Models
             var mos = new System.Management.ManagementObjectSearcher(s, q); // output current brightness
             var moc = mos.Get();
 
-            //store result
             byte curBrightness = 0;
             foreach (System.Management.ManagementObject o in moc)
             {
