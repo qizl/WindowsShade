@@ -31,11 +31,19 @@ namespace WindowsShade
             this.btnApply.Location = new System.Drawing.Point(-100, -100);
 
             // 初始化系统亮度控件
-            this.tbSystem.Maximum = this._screenBrightness.Maximum;
-            this.tbSystem.Update();
-            this.tbSystem.Refresh();
-            this.tbSystem.Value = this._screenBrightness.GetBrightness();
-            this.lblSystem.Text = this.tbSystem.Value.ToString();
+            var r = this._screenBrightness.Initiazlie();
+            if (r)
+            {
+                this.tbSystem.Maximum = this._screenBrightness.Maximum;
+                this.tbSystem.Update();
+                this.tbSystem.Refresh();
+                this.tbSystem.Value = this._screenBrightness.GetBrightness();
+                this.lblSystem.Text = this.tbSystem.Value.ToString();
+            }
+            else
+            {
+                this.tbSystem.Enabled = false;
+            }
 
             // 2.加载配置文件
             Common.Config = Config.Load(Common.ConfigPath);
@@ -160,8 +168,8 @@ namespace WindowsShade
         {
             switch (this.menuItemHidden.Text)
             {
-                case "隐藏(&H)": this.hiddenShade(); break;
-                case "显示(&D)": this.showShade(); break;
+            case "隐藏(&H)": this.hiddenShade(); break;
+            case "显示(&D)": this.showShade(); break;
             }
         }
         #endregion
