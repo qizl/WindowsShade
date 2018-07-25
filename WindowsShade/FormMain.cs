@@ -15,6 +15,11 @@ namespace WindowsShade
         /// </summary>
         private bool _isClosed = false;
         private ScreenBrightness _screenBrightness = new ScreenBrightness();
+        private int _tbSystemToScreenBrightness
+        {
+            get { return this.tbSystem.Maximum - this.tbSystem.Value; }
+            set { this.tbSystem.Value = this.tbSystem.Maximum - value; }
+        }
         #endregion
 
         #region Structures & Initialize
@@ -32,9 +37,9 @@ namespace WindowsShade
 
             // 初始化系统亮度控件
             this.tbSystem.Maximum = this._screenBrightness.Maximum;
-            this.tbSystem.Update();
-            this.tbSystem.Refresh();
-            this.tbSystem.Value = this._screenBrightness.GetBrightness();
+            //this.tbSystem.Update();
+            //this.tbSystem.Refresh();
+            this._tbSystemToScreenBrightness = this._screenBrightness.GetBrightness();
             this.lblSystem.Text = this.tbSystem.Value.ToString();
 
             // 2.加载配置文件
@@ -131,7 +136,7 @@ namespace WindowsShade
         /// <param name="e"></param>
         private void tbSystem_Scroll(object sender, EventArgs e)
         {
-            this._screenBrightness.SetBrightness(this.tbSystem.Value);
+            this._screenBrightness.SetBrightness(this._tbSystemToScreenBrightness);
             this.lblSystem.Text = this.tbSystem.Value.ToString();
         }
         #endregion
@@ -166,7 +171,7 @@ namespace WindowsShade
         }
         #endregion
 
-        #region Events = Nofify
+        #region Events - Nofify
         private void notifyIcon1_Click(object sender, EventArgs e)
         {
             if ((e as MouseEventArgs).Button == MouseButtons.Left)
