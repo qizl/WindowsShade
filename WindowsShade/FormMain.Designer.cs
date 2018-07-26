@@ -57,6 +57,7 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.plScreens = new System.Windows.Forms.Panel();
             this.listView1 = new System.Windows.Forms.ListView();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.plScreenSettings = new System.Windows.Forms.Panel();
             this.ckxIsMainScreen = new System.Windows.Forms.CheckBox();
             this.cbxResolution = new System.Windows.Forms.ComboBox();
@@ -67,7 +68,6 @@
             this.plFoot = new System.Windows.Forms.Panel();
             this.btnHidden = new System.Windows.Forms.Button();
             this.plBody = new System.Windows.Forms.Panel();
-            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.plContent.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbSystem)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbAlpha)).BeginInit();
@@ -109,7 +109,7 @@
             this.plContent.Font = new System.Drawing.Font("宋体", 16F);
             this.plContent.Location = new System.Drawing.Point(3, 3);
             this.plContent.Name = "plContent";
-            this.plContent.Size = new System.Drawing.Size(549, 305);
+            this.plContent.Size = new System.Drawing.Size(536, 242);
             this.plContent.TabIndex = 1;
             // 
             // ckxAlpha
@@ -248,7 +248,7 @@
             this.tabMain.Location = new System.Drawing.Point(0, 0);
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
-            this.tabMain.Size = new System.Drawing.Size(563, 341);
+            this.tabMain.Size = new System.Drawing.Size(550, 295);
             this.tabMain.TabIndex = 2;
             this.tabMain.SelectedIndexChanged += new System.EventHandler(this.tabMain_SelectedIndexChanged);
             // 
@@ -258,7 +258,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 26);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(555, 311);
+            this.tabPage1.Size = new System.Drawing.Size(542, 248);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "亮度调整";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -270,7 +270,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 26);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(555, 311);
+            this.tabPage2.Size = new System.Drawing.Size(542, 265);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "多屏设置";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -281,7 +281,7 @@
             this.plScreens.Dock = System.Windows.Forms.DockStyle.Fill;
             this.plScreens.Location = new System.Drawing.Point(3, 3);
             this.plScreens.Name = "plScreens";
-            this.plScreens.Size = new System.Drawing.Size(549, 193);
+            this.plScreens.Size = new System.Drawing.Size(536, 147);
             this.plScreens.TabIndex = 1;
             // 
             // listView1
@@ -295,11 +295,17 @@
             this.listView1.LargeImageList = this.imageList1;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(549, 193);
+            this.listView1.Size = new System.Drawing.Size(536, 147);
             this.listView1.TabIndex = 0;
             this.listView1.TileSize = new System.Drawing.Size(128, 128);
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Tile;
+            // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "monitor.jpg");
             // 
             // plScreenSettings
             // 
@@ -308,9 +314,9 @@
             this.plScreenSettings.Controls.Add(this.label1);
             this.plScreenSettings.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.plScreenSettings.Font = new System.Drawing.Font("宋体", 16F);
-            this.plScreenSettings.Location = new System.Drawing.Point(3, 196);
+            this.plScreenSettings.Location = new System.Drawing.Point(3, 150);
             this.plScreenSettings.Name = "plScreenSettings";
-            this.plScreenSettings.Size = new System.Drawing.Size(549, 112);
+            this.plScreenSettings.Size = new System.Drawing.Size(536, 112);
             this.plScreenSettings.TabIndex = 0;
             // 
             // ckxIsMainScreen
@@ -352,7 +358,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 26);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(687, 377);
+            this.tabPage4.Size = new System.Drawing.Size(555, 311);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "软件设置";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -383,9 +389,9 @@
             this.plFoot.Controls.Add(this.btnApply);
             this.plFoot.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.plFoot.Font = new System.Drawing.Font("宋体", 9.75F);
-            this.plFoot.Location = new System.Drawing.Point(0, 341);
+            this.plFoot.Location = new System.Drawing.Point(0, 295);
             this.plFoot.Name = "plFoot";
-            this.plFoot.Size = new System.Drawing.Size(563, 66);
+            this.plFoot.Size = new System.Drawing.Size(550, 66);
             this.plFoot.TabIndex = 3;
             // 
             // btnHidden
@@ -405,14 +411,8 @@
             this.plBody.Dock = System.Windows.Forms.DockStyle.Fill;
             this.plBody.Location = new System.Drawing.Point(0, 0);
             this.plBody.Name = "plBody";
-            this.plBody.Size = new System.Drawing.Size(563, 341);
+            this.plBody.Size = new System.Drawing.Size(550, 295);
             this.plBody.TabIndex = 4;
-            // 
-            // imageList1
-            // 
-            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageList1.Images.SetKeyName(0, "monitor.jpg");
             // 
             // FormMain
             // 
@@ -420,7 +420,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 27F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnHidden;
-            this.ClientSize = new System.Drawing.Size(563, 407);
+            this.ClientSize = new System.Drawing.Size(550, 361);
             this.Controls.Add(this.plBody);
             this.Controls.Add(this.plFoot);
             this.Font = new System.Drawing.Font("宋体", 20F);
@@ -429,7 +429,7 @@
             this.Margin = new System.Windows.Forms.Padding(7);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(566, 383);
+            this.MinimumSize = new System.Drawing.Size(566, 400);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "WindowsShade";
