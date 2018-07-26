@@ -53,11 +53,14 @@ namespace WindowsShade
             this.tabMain_SelectedIndexChanged(this, default(EventArgs));
 
             // 2.4 tabMain - 亮度调整
-            this.initShadeTypes();
+            this.cbxShadeTypes.Items.AddRange(Enum.GetNames(typeof(ShadeTypes)));
+            this.cbxShadeTypes.Text = Common.Config.ShadeType.ToString();
+            this.cbxAlpha.Checked = Common.Config.AutoShowShade;
             this.tbAlpha.Enabled = false;
-            var r = this._screenBrightness.Initiazlie();
-            this.tbSystem.Enabled = r;
-            if (r)
+            this.tbAlpha.Value = Common.Config.Alpha;
+            this.lblAlphaValue.Text = Common.Config.Alpha.ToString();
+            this.tbSystem.Enabled = this._screenBrightness.Initiazlie();
+            if (this.tbSystem.Enabled)
             {
                 this.tbSystem.Maximum = this._screenBrightness.Maximum;
                 //this.tbSystem.Update();
@@ -70,46 +73,33 @@ namespace WindowsShade
             // 2.6 tabMain - 软件设置
             this.cbxAutoHidden.Checked = Common.Config.AutoHidden;
 
-            // 3.自动调整亮度
-            if (hasConfigFile)
+            // 3.托盘菜单
+            foreach (var item in this.cbxShadeTypes.Items)
             {
-                // 2.1 读取到配置文件，则直接调整屏幕亮度
-                this.cbxShadeTypes.Text = Common.Config.ShadeType.ToString();
-                this.changeCbxAlpha(true, Common.Config.AutoHidden);
-                //this.showShade(Common.Config.Alpha);
-
-                // 2.2 透明度
-                this.tbAlpha.Value = Common.Config.Alpha;
-                this.lblAlphaValue.Text = Common.Config.Alpha.ToString();
+                var t = new ToolStripMenuItem();
+                t.Text = item.ToString();
+                t.Click += this.menuItemShadeTypes_Click;
+                this.cmxTray.Items.Insert(0, t);
             }
 
-            // 4.不自动隐藏主窗体时，激活主窗体
+            // 4.自动调整亮度
+            if (hasConfigFile)
+            {
+                // 自动调整屏幕亮度
+                if (Common.Config.AutoShowShade)
+                    this.changeCbxAlpha(true, Common.Config.AutoHidden);
+                else if (Common.Config.AutoHidden)
+                    this.Visible = false;
+                //this.showShade(Common.Config.Alpha);
+            }
+
+            // 5.不自动隐藏主窗体时，激活主窗体
             if (!Common.Config.AutoHidden)
                 this.Activate();
         }
         #endregion
 
         #region Methods
-        /// <summary>
-        /// 初始化遮罩类型相关控件
-        /// </summary>
-        private void initShadeTypes()
-        {
-            var shadeTypes = Enum.GetNames(typeof(ShadeTypes));
-
-            // 1.下拉框
-            this.cbxShadeTypes.Items.AddRange(shadeTypes);
-            this.cbxShadeTypes.SelectedIndex = 0;
-
-            // 2.托盘菜单
-            foreach (var item in shadeTypes)
-            {
-                var t = new ToolStripMenuItem();
-                t.Text = item;
-                t.Click += this.menuItemShadeTypes_Click;
-                this.cmxTray.Items.Insert(0, t);
-            }
-        }
         private void showShade(byte alpha = 128, bool autoHiddenFormMain = true)
         {
             Common.Config.ShadeType = (ShadeTypes)Enum.Parse(typeof(ShadeTypes), this.cbxShadeTypes.Text);
@@ -127,11 +117,12 @@ namespace WindowsShade
         #endregion
 
         #region Events - FormMain
-        private void btnHelp_Click(object sender, EventArgs e) => Process.Start("http://enjoycodes.com/Home/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
-
         private void btnApply_Click(object sender, EventArgs e)
         {
             // 1.获取亮度调整参数
+            Common.Config.ShadeType = (ShadeTypes)Enum.Parse(typeof(ShadeTypes), this.cbxShadeTypes.Text);
+            Common.Config.AutoShowShade = this.cbxAlpha.Checked;
+            Common.Config.Alpha = (byte)this.tbAlpha.Value;
 
             // 2.获取多屏设置参数
 
@@ -147,6 +138,8 @@ namespace WindowsShade
         {
             this.showShade(Common.Config.Alpha, true);
         }
+
+        private void FormMain_HelpButtonClicked(object sender, System.ComponentModel.CancelEventArgs e) => Process.Start("http://enjoycodes.com/Home/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {

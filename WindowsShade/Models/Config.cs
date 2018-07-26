@@ -11,10 +11,17 @@ namespace WindowsShade.Models
         ///     0~255
         /// </summary>
         public byte Alpha { get; set; } = 128;
+        /// <summary>
+        /// 软件启动自动调整亮度
+        /// </summary>
+        public bool AutoShowShade { get; set; }
+        /// <summary>
+        /// 软件启动自动隐藏主窗体
+        /// </summary>
         public bool AutoHidden { get; set; } = true;
 
         public DateTime CreateTime { get; set; } = DateTime.Now;
-        public DateTime UpdateTime { get; set; } = DateTime.Now;
+        public DateTime UpdateTime { get; set; }
 
         public static Config Load(string path)
         {
