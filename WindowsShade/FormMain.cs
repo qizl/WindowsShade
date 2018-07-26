@@ -50,12 +50,11 @@ namespace WindowsShade
             this._shade.Text = this.Text;
 
             // 2.3 tabMain
-            this.tabMain_SelectedIndexChanged(this, default(EventArgs));
+            this.tabMain_SelectedIndexChanged(this, null);
 
             // 2.4 tabMain - 亮度调整
             this.cbxShadeTypes.Items.AddRange(Enum.GetNames(typeof(ShadeTypes)));
             this.cbxShadeTypes.Text = Common.Config.ShadeType.ToString();
-            this.cbxAlpha.Checked = Common.Config.AutoShowShade;
             this.tbAlpha.Enabled = false;
             this.tbAlpha.Value = Common.Config.Alpha;
             this.lblAlphaValue.Text = Common.Config.Alpha.ToString();
@@ -71,7 +70,8 @@ namespace WindowsShade
 
             // 2.5 tabMain - 多屏设置
             // 2.6 tabMain - 软件设置
-            this.cbxAutoHidden.Checked = Common.Config.AutoHidden;
+            this.ckxAutoHidden.Checked = Common.Config.AutoHidden;
+            this.ckxAutoShowShade.Checked = Common.Config.AutoShowShade;
 
             // 3.托盘菜单
             foreach (var item in this.cbxShadeTypes.Items)
@@ -87,7 +87,7 @@ namespace WindowsShade
             {
                 // 自动调整屏幕亮度
                 if (Common.Config.AutoShowShade)
-                    this.changeCbxAlpha(true, Common.Config.AutoHidden);
+                    this.changeCkxAlpha(true, Common.Config.AutoHidden);
                 else if (Common.Config.AutoHidden)
                     this.Visible = false;
                 //this.showShade(Common.Config.Alpha);
@@ -121,13 +121,13 @@ namespace WindowsShade
         {
             // 1.获取亮度调整参数
             Common.Config.ShadeType = (ShadeTypes)Enum.Parse(typeof(ShadeTypes), this.cbxShadeTypes.Text);
-            Common.Config.AutoShowShade = this.cbxAlpha.Checked;
             Common.Config.Alpha = (byte)this.tbAlpha.Value;
 
             // 2.获取多屏设置参数
 
             // 3.获取软件设置参数
-            Common.Config.AutoHidden = this.cbxAutoHidden.Checked;
+            Common.Config.AutoHidden = this.ckxAutoHidden.Checked;
+            Common.Config.AutoShowShade = this.ckxAutoShowShade.Checked;
 
             // 4.持久化配置
             Common.Config.UpdateTime = DateTime.Now;
@@ -178,13 +178,13 @@ namespace WindowsShade
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void cbxAlpha_CheckedChanged(object sender, EventArgs e) => this.changeCbxAlpha(this.cbxAlpha.Checked, false);
-        private void changeCbxAlpha(bool isChecked, bool autoHiddenFormMain = true)
+        private void ckxAlpha_CheckedChanged(object sender, EventArgs e) => this.changeCkxAlpha(this.ckxAlpha.Checked, false);
+        private void changeCkxAlpha(bool isChecked, bool autoHiddenFormMain = true)
         {
             if (this.tbAlpha.Enabled == isChecked) return;
 
             this.tbAlpha.Enabled = isChecked; // 是否可以调整遮罩alpha
-            this.cbxAlpha.Checked = isChecked;
+            this.ckxAlpha.Checked = isChecked;
 
             if (isChecked)
                 this.showShade(Common.Config.Alpha, autoHiddenFormMain);
@@ -221,7 +221,7 @@ namespace WindowsShade
         private void menuItemHidden_Click(object sender, EventArgs e)
         {
             var isChecked = this.menuItemHidden.Text == "显示(&D)";
-            this.changeCbxAlpha(isChecked);
+            this.changeCkxAlpha(isChecked);
         }
         #endregion
 
