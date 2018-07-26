@@ -15,15 +15,19 @@ namespace WindowsShade.Models
 
         public int Maximum { get; set; }
 
-        public ScreenBrightness() => this.initiazlie();
+        public ScreenBrightness() => this.Initiazlie();
 
-        private void initiazlie()
+        public bool Initiazlie()
         {
             this._bLevels = this.getBrightnessLevels();
             if (this._bLevels.Count() == 0)
-                throw new Exception($"\"WmiMonitorBrightness\" is not supported by the system");
+            {
+                //throw new Exception($"\"WmiMonitorBrightness\" is not supported by the system");
+                return false;
+            }
 
             this.Maximum = this._bLevels.Count() - 1;
+            return true;
         }
 
         /// <summary>

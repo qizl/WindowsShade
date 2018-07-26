@@ -35,7 +35,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.lblSystem = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.tbSystem = new System.Windows.Forms.TrackBar();
             this.lblAlphaValue = new System.Windows.Forms.Label();
             this.tbAlpha = new System.Windows.Forms.TrackBar();
@@ -48,6 +47,7 @@
             this.menuItemOpenMain = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuItemClose = new System.Windows.Forms.ToolStripMenuItem();
+            this.cbxAlpha = new System.Windows.Forms.CheckBox();
             this.plContent.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbSystem)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbAlpha)).BeginInit();
@@ -68,10 +68,10 @@
             // 
             // plContent
             // 
+            this.plContent.Controls.Add(this.cbxAlpha);
             this.plContent.Controls.Add(this.label2);
             this.plContent.Controls.Add(this.label4);
             this.plContent.Controls.Add(this.lblSystem);
-            this.plContent.Controls.Add(this.label1);
             this.plContent.Controls.Add(this.tbSystem);
             this.plContent.Controls.Add(this.lblAlphaValue);
             this.plContent.Controls.Add(this.tbAlpha);
@@ -111,15 +111,6 @@
             this.lblSystem.Size = new System.Drawing.Size(21, 22);
             this.lblSystem.TabIndex = 6;
             this.lblSystem.Text = "0";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(89, 100);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(76, 22);
-            this.label1.TabIndex = 7;
-            this.label1.Text = "Alpha:";
             // 
             // tbSystem
             // 
@@ -220,6 +211,17 @@
             this.menuItemClose.Text = "退出(&C)";
             this.menuItemClose.Click += new System.EventHandler(this.menuItemClose_Click);
             // 
+            // cbxAlpha
+            // 
+            this.cbxAlpha.AutoSize = true;
+            this.cbxAlpha.Location = new System.Drawing.Point(70, 98);
+            this.cbxAlpha.Name = "cbxAlpha";
+            this.cbxAlpha.Size = new System.Drawing.Size(95, 26);
+            this.cbxAlpha.TabIndex = 8;
+            this.cbxAlpha.Text = "Alpha:";
+            this.cbxAlpha.UseVisualStyleBackColor = true;
+            this.cbxAlpha.CheckedChanged += new System.EventHandler(this.cbxAlpha_CheckedChanged);
+            // 
             // FormMain
             // 
             this.AcceptButton = this.btnApply;
@@ -264,11 +266,11 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.TrackBar tbAlpha;
         private System.Windows.Forms.Label lblAlphaValue;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lblSystem;
         private System.Windows.Forms.TrackBar tbSystem;
+        private System.Windows.Forms.CheckBox cbxAlpha;
     }
 }
 

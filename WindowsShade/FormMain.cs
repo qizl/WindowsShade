@@ -49,7 +49,8 @@ namespace WindowsShade
             {
                 // 2.1 读取到配置文件，则直接调整屏幕亮度
                 this.cbxShadeTypes.Text = Common.Config.ShadeType.ToString();
-                this.showShade(Common.Config.Alpha);
+                this.cbxAlpha.Checked = true;
+                //this.showShade(Common.Config.Alpha);
 
                 // 2.2 透明度
                 this.tbAlpha.Value = Common.Config.Alpha;
@@ -126,7 +127,7 @@ namespace WindowsShade
             Common.Config.Alpha = (byte)this.tbAlpha.Value;
             this.lblAlphaValue.Text = this.tbAlpha.Value.ToString();
 
-            this.showShade((byte)this.tbAlpha.Value, false);
+            this.showShade(Common.Config.Alpha, false);
         }
 
         /// <summary>
@@ -139,6 +140,21 @@ namespace WindowsShade
             this._screenBrightness.SetBrightness(this._tbSystemToScreenBrightness);
             this.lblSystem.Text = this.tbSystem.Value.ToString();
         }
+
+        /// <summary>
+        /// 是否显示遮罩
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void cbxAlpha_CheckedChanged(object sender, EventArgs e)
+        {
+            this.tbAlpha.Enabled = this.cbxAlpha.Checked; // 是否可以调整遮罩alpha
+
+            if (this.cbxAlpha.Checked)
+                this.showShade(Common.Config.Alpha, false);
+            else
+                this.hiddenShade();
+        }
         #endregion
 
         #region Events - cmxTray
@@ -146,7 +162,7 @@ namespace WindowsShade
         {
             var item = sender as ToolStripItem;
             this.cbxShadeTypes.Text = item.Text;
-            this.showShade();
+            this.showShade(Common.Config.Alpha);
         }
 
         private void menuItemOpenMain_Click(object sender, EventArgs e)
@@ -165,8 +181,8 @@ namespace WindowsShade
         {
             switch (this.menuItemHidden.Text)
             {
-                case "隐藏(&H)": this.hiddenShade(); break;
-                case "显示(&D)": this.showShade(); break;
+                case "隐藏(&H)": this.cbxAlpha.Checked = false; break;
+                case "显示(&D)": this.cbxAlpha.Checked = true; break;
             }
         }
         #endregion

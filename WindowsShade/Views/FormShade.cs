@@ -22,6 +22,7 @@ namespace WindowsShade.Views
         const int WS_EX_TRANSPARENT = 0x20;
         const int WS_EX_LAYERED = 0x80000;
         const int LWA_ALPHA = 2;
+        const int WS_EX_TOPMOST = 0x8;
 
         public byte Alpha { get; set; }
         #endregion
