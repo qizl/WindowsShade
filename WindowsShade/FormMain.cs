@@ -28,15 +28,33 @@ namespace WindowsShade
         private void FormMain_Load(object sender, EventArgs e) => this.initialize();
         private void initialize()
         {
-            // 1.初始化控件
+            // 1.加载配置文件
+            var hasConfigFile = false;
+            Common.Config = Config.Load(Common.ConfigPath);
+            if (Common.Config == null)
+                Common.Config = new Config();
+            else
+                hasConfigFile = true;
+            Common.Config.UpdateTime = DateTime.Now;
+            Common.Config.Save();
+
+            /*
+             * 2.初始化控件
+             */
+            // 2.1 主窗体控件
             this.ShowInTaskbar = false;
             this.notifyIcon1.Visible = true;
-            this.initShadeTypes();
-            this._shade.Text = this.Text;
-            this.btnApply.Location = new System.Drawing.Point(-100, -100);
-            this.tbAlpha.Enabled = false;
+            this.btnHidden.Location = new System.Drawing.Point(0, -100);
 
-            // 初始化系统亮度控件
+            // 2.2 遮罩窗体
+            this._shade.Text = this.Text;
+
+            // 2.3 tabMain
+            this.tabMain_SelectedIndexChanged(this, default(EventArgs));
+
+            // 2.4 tabMain - 亮度调整
+            this.initShadeTypes();
+            this.tbAlpha.Enabled = false;
             var r = this._screenBrightness.Initiazlie();
             this.tbSystem.Enabled = r;
             if (r)
@@ -48,25 +66,26 @@ namespace WindowsShade
                 this.lblSystem.Text = this.tbSystem.Value.ToString();
             }
 
-            // 2.加载配置文件
-            Common.Config = Config.Load(Common.ConfigPath);
-            if (Common.Config == null) Common.Config = new Config();
-            else
+            // 2.5 tabMain - 多屏设置
+            // 2.6 tabMain - 软件设置
+            this.cbxAutoHidden.Checked = Common.Config.AutoHidden;
+
+            // 3.自动调整亮度
+            if (hasConfigFile)
             {
                 // 2.1 读取到配置文件，则直接调整屏幕亮度
                 this.cbxShadeTypes.Text = Common.Config.ShadeType.ToString();
-                this.changeCbxAlpha(true);
+                this.changeCbxAlpha(true, Common.Config.AutoHidden);
                 //this.showShade(Common.Config.Alpha);
 
                 // 2.2 透明度
                 this.tbAlpha.Value = Common.Config.Alpha;
                 this.lblAlphaValue.Text = Common.Config.Alpha.ToString();
             }
-            Common.Config.UpdateTime = DateTime.Now;
-            Common.Config.Save();
 
-            // 3.激活主窗体
-            //this.Activate();
+            // 4.不自动隐藏主窗体时，激活主窗体
+            if (!Common.Config.AutoHidden)
+                this.Activate();
         }
         #endregion
 
@@ -107,22 +126,36 @@ namespace WindowsShade
         }
         #endregion
 
-        #region Events - Form
-        private void btnApply_Click(object sender, EventArgs e) => this.showShade(Common.Config.Alpha);
-
+        #region Events - FormMain
         private void btnHelp_Click(object sender, EventArgs e) => Process.Start("http://enjoycodes.com/Home/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
+
+        private void btnApply_Click(object sender, EventArgs e)
+        {
+            // 1.获取亮度调整参数
+
+            // 2.获取多屏设置参数
+
+            // 3.获取软件设置参数
+            Common.Config.AutoHidden = this.cbxAutoHidden.Checked;
+
+            // 4.持久化配置
+            Common.Config.UpdateTime = DateTime.Now;
+            Common.Config.Save();
+        }
+
+        private void btnHidden_Click(object sender, EventArgs e)
+        {
+            this.showShade(Common.Config.Alpha, true);
+        }
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (!this._isClosed) e.Cancel = true;
             this.Visible = false;
         }
+        #endregion
 
-        private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            Common.Config.Save();
-        }
-
+        #region Events - tabMain
         /// <summary>
         /// 调整遮罩亮度
         /// </summary>
@@ -165,9 +198,14 @@ namespace WindowsShade
             else
                 this.hiddenShade();
         }
+
+        private void tabMain_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.Text = $"WindowsShade - {this.tabMain.SelectedTab.Text}";
+        }
         #endregion
 
-        #region Events - cmxTray
+        #region Events - 托盘菜单（cmxTray）
         private void menuItemShadeTypes_Click(object sender, EventArgs e)
         {
             var item = sender as ToolStripItem;
@@ -194,7 +232,7 @@ namespace WindowsShade
         }
         #endregion
 
-        #region Events - Nofify
+        #region Events - 托盘图标（notifyIcon1）
         private void notifyIcon1_Click(object sender, EventArgs e)
         {
             if ((e as MouseEventArgs).Button == MouseButtons.Left)

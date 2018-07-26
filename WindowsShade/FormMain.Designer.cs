@@ -48,21 +48,35 @@
             this.menuItemOpenMain = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuItemClose = new System.Windows.Forms.ToolStripMenuItem();
+            this.tabMain = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.cbxAutoHidden = new System.Windows.Forms.CheckBox();
+            this.plFoot = new System.Windows.Forms.Panel();
+            this.plBody = new System.Windows.Forms.Panel();
+            this.btnHidden = new System.Windows.Forms.Button();
             this.plContent.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbSystem)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbAlpha)).BeginInit();
             this.cmxTray.SuspendLayout();
+            this.tabMain.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage4.SuspendLayout();
+            this.plFoot.SuspendLayout();
+            this.plBody.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnApply
             // 
             this.btnApply.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnApply.Location = new System.Drawing.Point(206, 216);
+            this.btnApply.Font = new System.Drawing.Font("宋体", 14F);
+            this.btnApply.Location = new System.Drawing.Point(191, 6);
             this.btnApply.Margin = new System.Windows.Forms.Padding(7);
             this.btnApply.Name = "btnApply";
-            this.btnApply.Size = new System.Drawing.Size(105, 35);
+            this.btnApply.Size = new System.Drawing.Size(85, 31);
             this.btnApply.TabIndex = 0;
-            this.btnApply.Text = "Apply";
+            this.btnApply.Text = "应用";
             this.btnApply.UseVisualStyleBackColor = true;
             this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
             // 
@@ -76,23 +90,21 @@
             this.plContent.Controls.Add(this.lblAlphaValue);
             this.plContent.Controls.Add(this.tbAlpha);
             this.plContent.Controls.Add(this.cbxShadeTypes);
-            this.plContent.Controls.Add(this.btnHelp);
-            this.plContent.Controls.Add(this.btnApply);
             this.plContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.plContent.Font = new System.Drawing.Font("宋体", 16F);
-            this.plContent.Location = new System.Drawing.Point(0, 0);
+            this.plContent.Location = new System.Drawing.Point(3, 3);
             this.plContent.Name = "plContent";
-            this.plContent.Size = new System.Drawing.Size(487, 289);
+            this.plContent.Size = new System.Drawing.Size(536, 242);
             this.plContent.TabIndex = 1;
             // 
             // cbxAlpha
             // 
             this.cbxAlpha.AutoSize = true;
-            this.cbxAlpha.Location = new System.Drawing.Point(70, 98);
+            this.cbxAlpha.Location = new System.Drawing.Point(81, 98);
             this.cbxAlpha.Name = "cbxAlpha";
-            this.cbxAlpha.Size = new System.Drawing.Size(95, 26);
+            this.cbxAlpha.Size = new System.Drawing.Size(84, 26);
             this.cbxAlpha.TabIndex = 8;
-            this.cbxAlpha.Text = "Alpha:";
+            this.cbxAlpha.Text = "亮度:";
             this.cbxAlpha.UseVisualStyleBackColor = true;
             this.cbxAlpha.CheckedChanged += new System.EventHandler(this.cbxAlpha_CheckedChanged);
             // 
@@ -108,11 +120,11 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(78, 160);
+            this.label4.Location = new System.Drawing.Point(56, 160);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(87, 22);
+            this.label4.Size = new System.Drawing.Size(109, 22);
             this.label4.TabIndex = 7;
-            this.label4.Text = "System:";
+            this.label4.Text = "系统亮度:";
             // 
             // lblSystem
             // 
@@ -161,13 +173,14 @@
             // 
             // btnHelp
             // 
+            this.btnHelp.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnHelp.Font = new System.Drawing.Font("宋体", 14F);
             this.btnHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnHelp.Location = new System.Drawing.Point(82, 219);
+            this.btnHelp.Location = new System.Drawing.Point(67, 6);
             this.btnHelp.Name = "btnHelp";
             this.btnHelp.Size = new System.Drawing.Size(85, 31);
             this.btnHelp.TabIndex = 2;
-            this.btnHelp.Text = "Help";
+            this.btnHelp.Text = "关于";
             this.btnHelp.UseVisualStyleBackColor = true;
             this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
             // 
@@ -188,48 +201,139 @@
             this.toolStripSeparator1,
             this.menuItemClose});
             this.cmxTray.Name = "cmxTray";
-            this.cmxTray.Size = new System.Drawing.Size(181, 104);
+            this.cmxTray.Size = new System.Drawing.Size(157, 82);
             // 
             // menuItemHidden
             // 
             this.menuItemHidden.Name = "menuItemHidden";
-            this.menuItemHidden.Size = new System.Drawing.Size(180, 22);
+            this.menuItemHidden.Size = new System.Drawing.Size(156, 22);
             this.menuItemHidden.Text = "隐藏(&H)";
             this.menuItemHidden.Click += new System.EventHandler(this.menuItemHidden_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(153, 6);
             // 
             // menuItemOpenMain
             // 
             this.menuItemOpenMain.Image = ((System.Drawing.Image)(resources.GetObject("menuItemOpenMain.Image")));
             this.menuItemOpenMain.Name = "menuItemOpenMain";
-            this.menuItemOpenMain.Size = new System.Drawing.Size(180, 22);
+            this.menuItemOpenMain.Size = new System.Drawing.Size(156, 22);
             this.menuItemOpenMain.Text = "打开主界面(&M)";
             this.menuItemOpenMain.Click += new System.EventHandler(this.menuItemOpenMain_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(153, 6);
             // 
             // menuItemClose
             // 
             this.menuItemClose.Name = "menuItemClose";
-            this.menuItemClose.Size = new System.Drawing.Size(180, 22);
+            this.menuItemClose.Size = new System.Drawing.Size(156, 22);
             this.menuItemClose.Text = "退出(&C)";
             this.menuItemClose.Click += new System.EventHandler(this.menuItemClose_Click);
+            // 
+            // tabMain
+            // 
+            this.tabMain.Appearance = System.Windows.Forms.TabAppearance.FlatButtons;
+            this.tabMain.Controls.Add(this.tabPage1);
+            this.tabMain.Controls.Add(this.tabPage2);
+            this.tabMain.Controls.Add(this.tabPage4);
+            this.tabMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabMain.Font = new System.Drawing.Font("宋体", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.tabMain.Location = new System.Drawing.Point(0, 0);
+            this.tabMain.Name = "tabMain";
+            this.tabMain.SelectedIndex = 0;
+            this.tabMain.Size = new System.Drawing.Size(550, 278);
+            this.tabMain.TabIndex = 2;
+            this.tabMain.SelectedIndexChanged += new System.EventHandler(this.tabMain_SelectedIndexChanged);
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.plContent);
+            this.tabPage1.Location = new System.Drawing.Point(4, 26);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(542, 248);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "亮度调整";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Location = new System.Drawing.Point(4, 26);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(542, 248);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "多屏设置";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.cbxAutoHidden);
+            this.tabPage4.Font = new System.Drawing.Font("宋体", 16F);
+            this.tabPage4.Location = new System.Drawing.Point(4, 26);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(542, 248);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "软件设置";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // cbxAutoHidden
+            // 
+            this.cbxAutoHidden.AutoSize = true;
+            this.cbxAutoHidden.Location = new System.Drawing.Point(89, 40);
+            this.cbxAutoHidden.Name = "cbxAutoHidden";
+            this.cbxAutoHidden.Size = new System.Drawing.Size(117, 26);
+            this.cbxAutoHidden.TabIndex = 0;
+            this.cbxAutoHidden.Text = "自动隐藏";
+            this.cbxAutoHidden.UseVisualStyleBackColor = true;
+            // 
+            // plFoot
+            // 
+            this.plFoot.Controls.Add(this.btnHidden);
+            this.plFoot.Controls.Add(this.btnHelp);
+            this.plFoot.Controls.Add(this.btnApply);
+            this.plFoot.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.plFoot.Font = new System.Drawing.Font("宋体", 14F);
+            this.plFoot.Location = new System.Drawing.Point(0, 278);
+            this.plFoot.Name = "plFoot";
+            this.plFoot.Size = new System.Drawing.Size(550, 66);
+            this.plFoot.TabIndex = 3;
+            // 
+            // plBody
+            // 
+            this.plBody.Controls.Add(this.tabMain);
+            this.plBody.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.plBody.Location = new System.Drawing.Point(0, 0);
+            this.plBody.Name = "plBody";
+            this.plBody.Size = new System.Drawing.Size(550, 278);
+            this.plBody.TabIndex = 4;
+            // 
+            // btnHidden
+            // 
+            this.btnHidden.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnHidden.Location = new System.Drawing.Point(318, 6);
+            this.btnHidden.Name = "btnHidden";
+            this.btnHidden.Size = new System.Drawing.Size(85, 31);
+            this.btnHidden.TabIndex = 3;
+            this.btnHidden.Text = "Hidden";
+            this.btnHidden.UseVisualStyleBackColor = true;
+            this.btnHidden.Click += new System.EventHandler(this.btnHidden_Click);
             // 
             // FormMain
             // 
             this.AcceptButton = this.btnApply;
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 27F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.btnApply;
-            this.ClientSize = new System.Drawing.Size(487, 289);
-            this.Controls.Add(this.plContent);
+            this.CancelButton = this.btnHidden;
+            this.ClientSize = new System.Drawing.Size(550, 344);
+            this.Controls.Add(this.plBody);
+            this.Controls.Add(this.plFoot);
             this.Font = new System.Drawing.Font("宋体", 20F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -240,13 +344,18 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "WindowsShade";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMain_FormClosed);
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.plContent.ResumeLayout(false);
             this.plContent.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbSystem)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbAlpha)).EndInit();
             this.cmxTray.ResumeLayout(false);
+            this.tabMain.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
+            this.plFoot.ResumeLayout(false);
+            this.plBody.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -271,6 +380,14 @@
         private System.Windows.Forms.Label lblSystem;
         private System.Windows.Forms.TrackBar tbSystem;
         private System.Windows.Forms.CheckBox cbxAlpha;
+        private System.Windows.Forms.TabControl tabMain;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.Panel plFoot;
+        private System.Windows.Forms.Panel plBody;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.CheckBox cbxAutoHidden;
+        private System.Windows.Forms.Button btnHidden;
     }
 }
 

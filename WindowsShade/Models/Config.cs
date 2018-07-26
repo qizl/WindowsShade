@@ -11,6 +11,7 @@ namespace WindowsShade.Models
         ///     0~255
         /// </summary>
         public byte Alpha { get; set; } = 128;
+        public bool AutoHidden { get; set; } = true;
 
         public DateTime CreateTime { get; set; } = DateTime.Now;
         public DateTime UpdateTime { get; set; } = DateTime.Now;
