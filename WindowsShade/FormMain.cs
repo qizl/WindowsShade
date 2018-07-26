@@ -37,11 +37,16 @@ namespace WindowsShade
             this.tbAlpha.Enabled = false;
 
             // 初始化系统亮度控件
-            this.tbSystem.Maximum = this._screenBrightness.Maximum;
-            //this.tbSystem.Update();
-            //this.tbSystem.Refresh();
-            this._tbSystemToScreenBrightness = this._screenBrightness.GetBrightness();
-            this.lblSystem.Text = this.tbSystem.Value.ToString();
+            var r = this._screenBrightness.Initiazlie();
+            this.tbSystem.Enabled = r;
+            if (r)
+            {
+                this.tbSystem.Maximum = this._screenBrightness.Maximum;
+                //this.tbSystem.Update();
+                //this.tbSystem.Refresh();
+                this._tbSystemToScreenBrightness = this._screenBrightness.GetBrightness();
+                this.lblSystem.Text = this.tbSystem.Value.ToString();
+            }
 
             // 2.加载配置文件
             Common.Config = Config.Load(Common.ConfigPath);
