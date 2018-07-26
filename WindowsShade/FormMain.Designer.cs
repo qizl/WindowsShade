@@ -32,6 +32,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             this.btnApply = new System.Windows.Forms.Button();
             this.plContent = new System.Windows.Forms.Panel();
+            this.cbxAlpha = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.lblSystem = new System.Windows.Forms.Label();
@@ -47,7 +48,6 @@
             this.menuItemOpenMain = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.menuItemClose = new System.Windows.Forms.ToolStripMenuItem();
-            this.cbxAlpha = new System.Windows.Forms.CheckBox();
             this.plContent.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbSystem)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbAlpha)).BeginInit();
@@ -84,6 +84,17 @@
             this.plContent.Name = "plContent";
             this.plContent.Size = new System.Drawing.Size(487, 289);
             this.plContent.TabIndex = 1;
+            // 
+            // cbxAlpha
+            // 
+            this.cbxAlpha.AutoSize = true;
+            this.cbxAlpha.Location = new System.Drawing.Point(70, 98);
+            this.cbxAlpha.Name = "cbxAlpha";
+            this.cbxAlpha.Size = new System.Drawing.Size(95, 26);
+            this.cbxAlpha.TabIndex = 8;
+            this.cbxAlpha.Text = "Alpha:";
+            this.cbxAlpha.UseVisualStyleBackColor = true;
+            this.cbxAlpha.CheckedChanged += new System.EventHandler(this.cbxAlpha_CheckedChanged);
             // 
             // label2
             // 
@@ -177,50 +188,39 @@
             this.toolStripSeparator1,
             this.menuItemClose});
             this.cmxTray.Name = "cmxTray";
-            this.cmxTray.Size = new System.Drawing.Size(157, 82);
+            this.cmxTray.Size = new System.Drawing.Size(181, 104);
             // 
             // menuItemHidden
             // 
             this.menuItemHidden.Name = "menuItemHidden";
-            this.menuItemHidden.Size = new System.Drawing.Size(156, 22);
-            this.menuItemHidden.Text = "显示(&D)";
+            this.menuItemHidden.Size = new System.Drawing.Size(180, 22);
+            this.menuItemHidden.Text = "隐藏(&H)";
             this.menuItemHidden.Click += new System.EventHandler(this.menuItemHidden_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(153, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(177, 6);
             // 
             // menuItemOpenMain
             // 
             this.menuItemOpenMain.Image = ((System.Drawing.Image)(resources.GetObject("menuItemOpenMain.Image")));
             this.menuItemOpenMain.Name = "menuItemOpenMain";
-            this.menuItemOpenMain.Size = new System.Drawing.Size(156, 22);
+            this.menuItemOpenMain.Size = new System.Drawing.Size(180, 22);
             this.menuItemOpenMain.Text = "打开主界面(&M)";
             this.menuItemOpenMain.Click += new System.EventHandler(this.menuItemOpenMain_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(153, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // menuItemClose
             // 
             this.menuItemClose.Name = "menuItemClose";
-            this.menuItemClose.Size = new System.Drawing.Size(156, 22);
+            this.menuItemClose.Size = new System.Drawing.Size(180, 22);
             this.menuItemClose.Text = "退出(&C)";
             this.menuItemClose.Click += new System.EventHandler(this.menuItemClose_Click);
-            // 
-            // cbxAlpha
-            // 
-            this.cbxAlpha.AutoSize = true;
-            this.cbxAlpha.Location = new System.Drawing.Point(70, 98);
-            this.cbxAlpha.Name = "cbxAlpha";
-            this.cbxAlpha.Size = new System.Drawing.Size(95, 26);
-            this.cbxAlpha.TabIndex = 8;
-            this.cbxAlpha.Text = "Alpha:";
-            this.cbxAlpha.UseVisualStyleBackColor = true;
-            this.cbxAlpha.CheckedChanged += new System.EventHandler(this.cbxAlpha_CheckedChanged);
             // 
             // FormMain
             // 

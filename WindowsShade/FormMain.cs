@@ -34,6 +34,7 @@ namespace WindowsShade
             this.initShadeTypes();
             this._shade.Text = this.Text;
             this.btnApply.Location = new System.Drawing.Point(-100, -100);
+            this.tbAlpha.Enabled = false;
 
             // 初始化系统亮度控件
             this.tbSystem.Maximum = this._screenBrightness.Maximum;
@@ -49,7 +50,7 @@ namespace WindowsShade
             {
                 // 2.1 读取到配置文件，则直接调整屏幕亮度
                 this.cbxShadeTypes.Text = Common.Config.ShadeType.ToString();
-                this.cbxAlpha.Checked = true;
+                this.changeCbxAlpha(true);
                 //this.showShade(Common.Config.Alpha);
 
                 // 2.2 透明度
@@ -146,12 +147,16 @@ namespace WindowsShade
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void cbxAlpha_CheckedChanged(object sender, EventArgs e)
+        private void cbxAlpha_CheckedChanged(object sender, EventArgs e) => this.changeCbxAlpha(this.cbxAlpha.Checked, false);
+        private void changeCbxAlpha(bool isChecked, bool autoHiddenFormMain = true)
         {
-            this.tbAlpha.Enabled = this.cbxAlpha.Checked; // 是否可以调整遮罩alpha
+            if (this.tbAlpha.Enabled == isChecked) return;
 
-            if (this.cbxAlpha.Checked)
-                this.showShade(Common.Config.Alpha, false);
+            this.tbAlpha.Enabled = isChecked; // 是否可以调整遮罩alpha
+            this.cbxAlpha.Checked = isChecked;
+
+            if (isChecked)
+                this.showShade(Common.Config.Alpha, autoHiddenFormMain);
             else
                 this.hiddenShade();
         }
@@ -179,11 +184,8 @@ namespace WindowsShade
 
         private void menuItemHidden_Click(object sender, EventArgs e)
         {
-            switch (this.menuItemHidden.Text)
-            {
-                case "隐藏(&H)": this.cbxAlpha.Checked = false; break;
-                case "显示(&D)": this.cbxAlpha.Checked = true; break;
-            }
+            var isChecked = this.menuItemHidden.Text == "显示(&D)";
+            this.changeCbxAlpha(isChecked);
         }
         #endregion
 
