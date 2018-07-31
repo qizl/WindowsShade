@@ -25,7 +25,6 @@ namespace WindowsShade.Views
         const int WS_EX_TRANSPARENT = 0x20;
         const int WS_EX_LAYERED = 0x80000;
         const int LWA_ALPHA = 2;
-        const int WS_EX_TOPMOST = 0x8;
 
         const int HWND_TOP = 0;
         const int HWND_BOTTOM = 1;
@@ -39,65 +38,71 @@ namespace WindowsShade.Views
             InitializeComponent();
 
             this.BackColor = Color.Black;
-            this.FormBorderStyle = FormBorderStyle.None;
+            this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            this.ControlBox = false;
+            this.TopMost = true;
             this.ShowInTaskbar = false;
         }
 
         public void Show(ShadeTypes t)
         {
+            int x = 0, y = 0, width = 0, height = 0;
             switch (t)
             {
             case ShadeTypes.D1920R:
                 {
-                    this.Location = new Point(-1920, 0);
-                    this.Width = 1920 * 2;
-                    this.Height = 1080;
+                    x = -1920;
+                    y = 0;
+                    width = 1920 * 2;
+                    height = 1080;
                 }
                 break;
             case ShadeTypes.D1920L:
                 {
-                    this.Location = new Point(0, 0);
-                    this.Width = 1920 * 2;
-                    this.Height = 1080;
+                    x = 0;
+                    y = 0;
+                    width = 1920 * 2;
+                    height = 1080;
                 }
                 break;
             case ShadeTypes.S1920:
                 {
-                    this.Location = new Point(0, 0);
-                    this.Width = 1920;
-                    this.Height = 1080;
+                    x = 0;
+                    y = 0;
+                    width = 1920;
+                    height = 1080;
                 }
                 break;
             case ShadeTypes.D1440L:
                 {
-                    this.Location = new Point(0, 0);
-                    this.Width = 1440 * 2;
-                    this.Height = 900;
+                    x = 0;
+                    y = 0;
+                    width = 1440 * 2;
+                    height = 900;
                 }
                 break;
             case ShadeTypes.S1440:
                 {
-                    this.Location = new Point(0, 0);
-                    this.Width = 1440;
-                    this.Height = 900;
+                    x = 0;
+                    y = 0;
+                    width = 1440;
+                    height = 900;
                 }
                 break;
             }
+            var border = 7;
+            var title = 40;
+            this.Location = new Point(x - border, y - title);
+            this.Width = width + border * 2;
+            this.Height = height + title;
 
-            SetWindowPos(this.Handle, (IntPtr)HWND_TOPMOST, this.Location.X, this.Location.Y, this.Width, this.Height, 1 | 2);
+            //SetWindowPos(this.Handle, (IntPtr)HWND_TOPMOST, 0, 0, 0, 0, 1 | 2);
         }
 
         public void Brightness(byte alpha)
         {
             SetWindowLong(this.Handle, GWL_EXSTYLE, GetWindowLong(this.Handle, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
             SetLayeredWindowAttributes(this.Handle, 0, alpha, LWA_ALPHA);
-        }
-        #endregion
-
-        #region Events - Form
-        private void FormShade_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            e.Cancel = true;
         }
         #endregion
     }

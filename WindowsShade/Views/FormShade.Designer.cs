@@ -35,11 +35,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(284, 261);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormShade";
             this.Text = "FormShade";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormShade_FormClosing);
+            this.TopMost = true;
             this.ResumeLayout(false);
 
         }

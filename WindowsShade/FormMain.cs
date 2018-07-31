@@ -9,6 +9,8 @@ namespace WindowsShade
 {
     public partial class FormMain : Form
     {
+
+
         #region Members & Properties
         private FormShade _shade = new FormShade();
         /// <summary>
@@ -26,6 +28,7 @@ namespace WindowsShade
         #region Structures & Initialize
         public FormMain() => InitializeComponent();
 
+        Shade s = new Shade();
         private void FormMain_Load(object sender, EventArgs e) => this.initialize();
         private void initialize()
         {
