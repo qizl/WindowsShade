@@ -9,6 +9,9 @@ namespace WindowsShade.Views
     public partial class FormShade : Form
     {
         #region Members
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, uint wFlags);
+
         [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
         public static extern long GetWindowLong(IntPtr hwnd, int nIndex);
 
@@ -24,7 +27,10 @@ namespace WindowsShade.Views
         const int LWA_ALPHA = 2;
         const int WS_EX_TOPMOST = 0x8;
 
-        public byte Alpha { get; set; }
+        const int HWND_TOP = 0;
+        const int HWND_BOTTOM = 1;
+        const int HWND_TOPMOST = -1;
+        const int HWND_NOTOPMOST = -2;
         #endregion
 
         #region Structures & Methods
@@ -33,55 +39,58 @@ namespace WindowsShade.Views
             InitializeComponent();
 
             this.BackColor = Color.Black;
-            this.TopMost = true;
             this.FormBorderStyle = FormBorderStyle.None;
             this.ShowInTaskbar = false;
         }
 
         public void Show(ShadeTypes t)
         {
-            base.Show();
             switch (t)
             {
-                case ShadeTypes.D1920R:
-                    {
-                        this.Location = new Point(-1920, 0);
-                        this.Width = 1920 * 2;
-                        this.Height = 1080;
-                    }
-                    break;
-                case ShadeTypes.D1920L:
-                    {
-                        this.Location = new Point(0, 0);
-                        this.Width = 1920 * 2;
-                        this.Height = 1080;
-                    }
-                    break;
-                case ShadeTypes.S1920:
-                    {
-                        this.Location = new Point(0, 0);
-                        this.Width = 1920;
-                        this.Height = 1080;
-                    }
-                    break;
-                case ShadeTypes.D1440L:
-                    {
-                        this.Location = new Point(0, 0);
-                        this.Width = 1440 * 2;
-                        this.Height = 900;
-                    }
-                    break;
-                case ShadeTypes.S1440:
-                    {
-                        this.Location = new Point(0, 0);
-                        this.Width = 1440;
-                        this.Height = 900;
-                    }
-                    break;
+            case ShadeTypes.D1920R:
+                {
+                    this.Location = new Point(-1920, 0);
+                    this.Width = 1920 * 2;
+                    this.Height = 1080;
+                }
+                break;
+            case ShadeTypes.D1920L:
+                {
+                    this.Location = new Point(0, 0);
+                    this.Width = 1920 * 2;
+                    this.Height = 1080;
+                }
+                break;
+            case ShadeTypes.S1920:
+                {
+                    this.Location = new Point(0, 0);
+                    this.Width = 1920;
+                    this.Height = 1080;
+                }
+                break;
+            case ShadeTypes.D1440L:
+                {
+                    this.Location = new Point(0, 0);
+                    this.Width = 1440 * 2;
+                    this.Height = 900;
+                }
+                break;
+            case ShadeTypes.S1440:
+                {
+                    this.Location = new Point(0, 0);
+                    this.Width = 1440;
+                    this.Height = 900;
+                }
+                break;
             }
 
+            SetWindowPos(this.Handle, (IntPtr)HWND_TOPMOST, this.Location.X, this.Location.Y, this.Width, this.Height, 1 | 2);
+        }
+
+        public void Brightness(byte alpha)
+        {
             SetWindowLong(this.Handle, GWL_EXSTYLE, GetWindowLong(this.Handle, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
-            SetLayeredWindowAttributes(this.Handle, 0, this.Alpha, LWA_ALPHA);
+            SetLayeredWindowAttributes(this.Handle, 0, alpha, LWA_ALPHA);
         }
         #endregion
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WindowsShade.Models;
 using WindowsShade.Views;
@@ -87,10 +88,12 @@ namespace WindowsShade
             {
                 // 自动调整屏幕亮度
                 if (Common.Config.AutoShowShade)
+                {
                     this.changeCkxAlpha(true, Common.Config.AutoHidden);
+                    this.tbAlpha_Scroll(this, null);
+                }
                 else if (Common.Config.AutoHidden)
                     this.Visible = false;
-                //this.showShade(Common.Config.Alpha);
             }
 
             // 5.不自动隐藏主窗体时，激活主窗体
@@ -100,23 +103,46 @@ namespace WindowsShade
         #endregion
 
         #region Methods
-        private void showShade(byte alpha = 128, bool autoHiddenFormMain = true)
+        /// <summary>
+        /// 显示遮罩
+        /// </summary>
+        /// <param name="hiddenFormMain">隐藏主窗体</param>
+        private void showShade(bool hiddenFormMain = true)
         {
+            this.Visible = !hiddenFormMain;
+
             Common.Config.ShadeType = (ShadeTypes)Enum.Parse(typeof(ShadeTypes), this.cbxShadeTypes.Text);
-            this.Visible = !autoHiddenFormMain;
-            this._shade.Alpha = alpha;
+
             this._shade.Visible = true;
             this._shade.Show(Common.Config.ShadeType);
             this.menuItemHidden.Text = "隐藏(&H)";
         }
+        /// <summary>
+        /// 隐藏遮罩
+        /// </summary>
         private void hiddenShade()
         {
             this._shade.Visible = false;
             this.menuItemHidden.Text = "显示(&D)";
         }
+
+        /// <summary>
+        /// 调整遮罩亮度
+        /// </summary>
+        /// <param name="alpha"></param>
+        private void adjustBrightness(byte alpha)
+        {
+            this._shade.Brightness(alpha);
+            this.menuItemHidden.Text = "隐藏(&H)";
+        }
         #endregion
 
         #region Events - FormMain
+        /// <summary>
+        /// 保存配置
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnApply_Click(object sender, EventArgs e)
         {
             // 1.获取亮度调整参数
@@ -134,10 +160,12 @@ namespace WindowsShade
             Common.Config.Save();
         }
 
-        private void btnHidden_Click(object sender, EventArgs e)
-        {
-            this.showShade(Common.Config.Alpha, true);
-        }
+        /// <summary>
+        /// 隐藏主界面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnHidden_Click(object sender, EventArgs e) => this.Visible = false;
 
         private void FormMain_HelpButtonClicked(object sender, System.ComponentModel.CancelEventArgs e) => Process.Start("http://enjoycodes.com/Home/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
 
@@ -149,6 +177,8 @@ namespace WindowsShade
         #endregion
 
         #region Events - tabMain
+        private void cbxShadeTypes_SelectedIndexChanged(object sender, EventArgs e) => this.showShade(hiddenFormMain: false);
+
         /// <summary>
         /// 调整遮罩亮度
         /// </summary>
@@ -156,10 +186,13 @@ namespace WindowsShade
         /// <param name="e"></param>
         private void tbAlpha_Scroll(object sender, EventArgs e)
         {
-            Common.Config.Alpha = (byte)this.tbAlpha.Value;
-            this.lblAlphaValue.Text = this.tbAlpha.Value.ToString();
+            var alpha = (byte)this.tbAlpha.Value;
 
-            this.showShade(Common.Config.Alpha, false);
+            this.lblAlphaValue.Text = alpha.ToString();
+
+            Common.Config.Alpha = alpha;
+
+            this.adjustBrightness(alpha);
         }
 
         /// <summary>
@@ -178,8 +211,8 @@ namespace WindowsShade
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ckxAlpha_CheckedChanged(object sender, EventArgs e) => this.changeCkxAlpha(this.ckxAlpha.Checked, false);
-        private void changeCkxAlpha(bool isChecked, bool autoHiddenFormMain = true)
+        private void ckxAlpha_CheckedChanged(object sender, EventArgs e) => this.changeCkxAlpha(this.ckxAlpha.Checked, hiddenFormMain: false);
+        private void changeCkxAlpha(bool isChecked, bool hiddenFormMain = true)
         {
             if (this.tbAlpha.Enabled == isChecked) return;
 
@@ -187,7 +220,7 @@ namespace WindowsShade
             this.ckxAlpha.Checked = isChecked;
 
             if (isChecked)
-                this.showShade(Common.Config.Alpha, autoHiddenFormMain);
+                this.showShade(hiddenFormMain);
             else
                 this.hiddenShade();
         }
@@ -203,7 +236,7 @@ namespace WindowsShade
         {
             var item = sender as ToolStripItem;
             this.cbxShadeTypes.Text = item.Text;
-            this.showShade(Common.Config.Alpha);
+            this.showShade();
         }
 
         private void menuItemOpenMain_Click(object sender, EventArgs e)

@@ -109,7 +109,7 @@
             this.plContent.Font = new System.Drawing.Font("宋体", 16F);
             this.plContent.Location = new System.Drawing.Point(3, 3);
             this.plContent.Name = "plContent";
-            this.plContent.Size = new System.Drawing.Size(536, 242);
+            this.plContent.Size = new System.Drawing.Size(536, 259);
             this.plContent.TabIndex = 1;
             // 
             // ckxAlpha
@@ -185,6 +185,7 @@
             this.cbxShadeTypes.Name = "cbxShadeTypes";
             this.cbxShadeTypes.Size = new System.Drawing.Size(121, 29);
             this.cbxShadeTypes.TabIndex = 4;
+            this.cbxShadeTypes.SelectedIndexChanged += new System.EventHandler(this.cbxShadeTypes_SelectedIndexChanged);
             // 
             // notifyIcon1
             // 
@@ -258,7 +259,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 26);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(542, 248);
+            this.tabPage1.Size = new System.Drawing.Size(542, 265);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "亮度调整";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -358,7 +359,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 26);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(555, 311);
+            this.tabPage4.Size = new System.Drawing.Size(542, 265);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "软件设置";
             this.tabPage4.UseVisualStyleBackColor = true;
