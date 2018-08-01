@@ -9,8 +9,6 @@ namespace WindowsShade
 {
     public partial class FormMain : Form
     {
-
-
         #region Members & Properties
         private FormShade _shade = new FormShade();
         /// <summary>
@@ -28,7 +26,6 @@ namespace WindowsShade
         #region Structures & Initialize
         public FormMain() => InitializeComponent();
 
-        Shade s = new Shade();
         private void FormMain_Load(object sender, EventArgs e) => this.initialize();
         private void initialize()
         {
@@ -114,8 +111,6 @@ namespace WindowsShade
         {
             this.Visible = !hiddenFormMain;
 
-            Common.Config.ShadeType = (ShadeTypes)Enum.Parse(typeof(ShadeTypes), this.cbxShadeTypes.Text);
-
             this._shade.Visible = true;
             this._shade.Show(Common.Config.ShadeType);
             this.menuItemHidden.Text = "隐藏(&H)";
@@ -180,7 +175,13 @@ namespace WindowsShade
         #endregion
 
         #region Events - tabMain
-        private void cbxShadeTypes_SelectedIndexChanged(object sender, EventArgs e) => this.showShade(hiddenFormMain: false);
+        private void cbxShadeTypes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Common.Config.ShadeType = (ShadeTypes)Enum.Parse(typeof(ShadeTypes), this.cbxShadeTypes.Text);
+
+            if (this.ckxAlpha.Checked)
+                this.showShade(hiddenFormMain: false);
+        }
 
         /// <summary>
         /// 调整遮罩亮度

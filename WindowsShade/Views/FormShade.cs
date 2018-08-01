@@ -49,46 +49,46 @@ namespace WindowsShade.Views
             int x = 0, y = 0, width = 0, height = 0;
             switch (t)
             {
-            case ShadeTypes.D1920R:
-                {
-                    x = -1920;
-                    y = 0;
-                    width = 1920 * 2;
-                    height = 1080;
-                }
-                break;
-            case ShadeTypes.D1920L:
-                {
-                    x = 0;
-                    y = 0;
-                    width = 1920 * 2;
-                    height = 1080;
-                }
-                break;
-            case ShadeTypes.S1920:
-                {
-                    x = 0;
-                    y = 0;
-                    width = 1920;
-                    height = 1080;
-                }
-                break;
-            case ShadeTypes.D1440L:
-                {
-                    x = 0;
-                    y = 0;
-                    width = 1440 * 2;
-                    height = 900;
-                }
-                break;
-            case ShadeTypes.S1440:
-                {
-                    x = 0;
-                    y = 0;
-                    width = 1440;
-                    height = 900;
-                }
-                break;
+                case ShadeTypes.D1920R:
+                    {
+                        x = -1920;
+                        y = 0;
+                        width = 1920 * 2;
+                        height = 1080;
+                    }
+                    break;
+                case ShadeTypes.D1920L:
+                    {
+                        x = 0;
+                        y = 0;
+                        width = 1920 * 2;
+                        height = 1080;
+                    }
+                    break;
+                case ShadeTypes.S1920:
+                    {
+                        x = 0;
+                        y = 0;
+                        width = 1920;
+                        height = 1080;
+                    }
+                    break;
+                case ShadeTypes.D1440L:
+                    {
+                        x = 0;
+                        y = 0;
+                        width = 1440 * 2;
+                        height = 900;
+                    }
+                    break;
+                case ShadeTypes.S1440:
+                    {
+                        x = 0;
+                        y = 0;
+                        width = 1440;
+                        height = 900;
+                    }
+                    break;
             }
             var border = 7;
             var title = 40;
