@@ -99,6 +99,10 @@ namespace WindowsShade.Views
             //SetWindowPos(this.Handle, (IntPtr)HWND_TOPMOST, 0, 0, 0, 0, 1 | 2);
         }
 
+        /// <summary>
+        /// 调整亮度
+        /// </summary>
+        /// <param name="alpha"></param>
         public void Brightness(byte alpha)
         {
             SetWindowLong(this.Handle, GWL_EXSTYLE, GetWindowLong(this.Handle, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);

@@ -63,13 +63,12 @@ namespace WindowsShade
             if (this.tbSystem.Enabled)
             {
                 this.tbSystem.Maximum = this._screenBrightness.Maximum;
-                //this.tbSystem.Update();
-                //this.tbSystem.Refresh();
                 this._tbSystemToScreenBrightness = this._screenBrightness.GetBrightness();
                 this.lblSystem.Text = this.tbSystem.Value.ToString();
             }
 
             // 2.5 tabMain - 多屏设置
+
             // 2.6 tabMain - 软件设置
             this.ckxAutoHidden.Checked = Common.Config.AutoHidden;
             this.ckxAutoShowShade.Checked = Common.Config.AutoShowShade;
@@ -82,17 +81,23 @@ namespace WindowsShade
                 t.Click += this.menuItemShadeTypes_Click;
                 this.cmxTray.Items.Insert(0, t);
             }
+            this.menuItemHidden.Text = "显示(&D)";
 
             // 4.自动调整亮度
             if (hasConfigFile)
             {
-                // 自动调整屏幕亮度
                 if (Common.Config.AutoShowShade)
                 {
-                    this.changeCkxAlpha(true, Common.Config.AutoHidden);
-                    this.tbAlpha_Scroll(this, null);
+                    // 显示遮罩，调整亮度
+                    this.changeCkxAlpha(true, Common.Config.AutoHidden); // 调用遮罩选中事件，显示遮罩
+                    this.tbAlpha_Scroll(this, null); // 调用调整亮度事件，调整亮度
                 }
-                else if (Common.Config.AutoHidden)
+                else
+                {
+                    // 调整亮度
+                    this._shade.Brightness(Common.Config.Alpha);
+                }
+                if (Common.Config.AutoHidden)
                     this.Visible = false;
             }
 
@@ -122,16 +127,6 @@ namespace WindowsShade
         {
             this._shade.Visible = false;
             this.menuItemHidden.Text = "显示(&D)";
-        }
-
-        /// <summary>
-        /// 调整遮罩亮度
-        /// </summary>
-        /// <param name="alpha"></param>
-        private void adjustBrightness(byte alpha)
-        {
-            this._shade.Brightness(alpha);
-            this.menuItemHidden.Text = "隐藏(&H)";
         }
         #endregion
 
@@ -196,7 +191,7 @@ namespace WindowsShade
 
             Common.Config.Alpha = alpha;
 
-            this.adjustBrightness(alpha);
+            this._shade.Brightness(alpha);
         }
 
         /// <summary>
