@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -9,8 +10,6 @@ namespace WindowsShade
 {
     public partial class FormMain : Form
     {
-
-
         #region Members & Properties
         private FormShade _shade = new FormShade();
         /// <summary>
@@ -32,12 +31,9 @@ namespace WindowsShade
         private void initialize()
         {
             // 1.加载配置文件
-            var hasConfigFile = false;
             Common.Config = Config.Load(Common.ConfigPath);
             if (Common.Config == null)
                 Common.Config = new Config();
-            else
-                hasConfigFile = true;
             Common.Config.UpdateTime = DateTime.Now;
             Common.Config.Save();
 
@@ -65,13 +61,15 @@ namespace WindowsShade
             if (this.tbSystem.Enabled)
             {
                 this.tbSystem.Maximum = this._screenBrightness.Maximum;
-                //this.tbSystem.Update();
-                //this.tbSystem.Refresh();
                 this._tbSystemToScreenBrightness = this._screenBrightness.GetBrightness();
                 this.lblSystem.Text = this.tbSystem.Value.ToString();
             }
 
             // 2.5 tabMain - 多屏设置
+            this.cbxResolution.Items.Clear();
+            foreach (var item in Common.Config.Resolutions)
+                this.cbxResolution.Items.Add($"{item.X}x{item.Y}");
+            this.listView1.MultiSelect = false;
             this.listView1.Items[0].Selected = true;
 
             // 2.6 tabMain - 软件设置
@@ -86,22 +84,25 @@ namespace WindowsShade
                 t.Click += this.menuItemShadeTypes_Click;
                 this.cmxTray.Items.Insert(0, t);
             }
+            this.menuItemHidden.Text = "显示(&D)";
 
             // 4.自动调整亮度
-            if (hasConfigFile)
+            if (Common.Config.AutoShowShade)
             {
-                // 自动调整屏幕亮度
-                if (Common.Config.AutoShowShade)
-                {
-                    this.changeCkxAlpha(true, Common.Config.AutoHidden);
-                    this.tbAlpha_Scroll(this, null);
-                }
-                else if (Common.Config.AutoHidden)
-                    this.Visible = false;
+                // 显示遮罩，调整亮度
+                this.changeCkxAlpha(true, Common.Config.AutoHidden); // 调用遮罩选中事件，显示遮罩
+                this.tbAlpha_Scroll(this, null); // 调用调整亮度事件，调整亮度
+            }
+            else
+            {
+                // 调整亮度
+                this._shade.Brightness(Common.Config.Alpha);
             }
 
-            // 5.不自动隐藏主窗体时，激活主窗体
-            if (!Common.Config.AutoHidden)
+            // 5.主窗体显示控制
+            if (Common.Config.AutoHidden) // 隐藏主窗体
+                this.Visible = false;
+            else // 不自动隐藏主窗体时，激活主窗体
                 this.Activate();
         }
         #endregion
@@ -115,8 +116,6 @@ namespace WindowsShade
         {
             this.Visible = !hiddenFormMain;
 
-            Common.Config.ShadeType = (ShadeTypes)Enum.Parse(typeof(ShadeTypes), this.cbxShadeTypes.Text);
-
             this._shade.Visible = true;
             this._shade.Show(Common.Config.ShadeType);
             this.menuItemHidden.Text = "隐藏(&H)";
@@ -128,16 +127,6 @@ namespace WindowsShade
         {
             this._shade.Visible = false;
             this.menuItemHidden.Text = "显示(&D)";
-        }
-
-        /// <summary>
-        /// 调整遮罩亮度
-        /// </summary>
-        /// <param name="alpha"></param>
-        private void adjustBrightness(byte alpha)
-        {
-            this._shade.Brightness(alpha);
-            this.menuItemHidden.Text = "隐藏(&H)";
         }
         #endregion
 
@@ -162,6 +151,9 @@ namespace WindowsShade
             // 4.持久化配置
             Common.Config.UpdateTime = DateTime.Now;
             Common.Config.Save();
+
+            // 5.调整屏幕亮度
+            this.showShade(false);
         }
 
         /// <summary>
@@ -169,7 +161,11 @@ namespace WindowsShade
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnHidden_Click(object sender, EventArgs e) => this.Visible = false;
+        private void btnHidden_Click(object sender, EventArgs e)
+        {
+            this.Visible = false;
+            this.btnApply_Click(sender, e);
+        }
 
         private void FormMain_HelpButtonClicked(object sender, System.ComponentModel.CancelEventArgs e) => Process.Start("http://enjoycodes.com/Home/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
 
@@ -182,7 +178,13 @@ namespace WindowsShade
 
         #region Events - tabMain
         #region tab1 亮度调整
-        private void cbxShadeTypes_SelectedIndexChanged(object sender, EventArgs e) => this.showShade(hiddenFormMain: false);
+        private void cbxShadeTypes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Common.Config.ShadeType = (ShadeTypes)Enum.Parse(typeof(ShadeTypes), this.cbxShadeTypes.Text);
+
+            if (this.ckxAlpha.Checked)
+                this.showShade(hiddenFormMain: false);
+        }
 
         /// <summary>
         /// 调整遮罩亮度
@@ -197,7 +199,7 @@ namespace WindowsShade
 
             Common.Config.Alpha = alpha;
 
-            this.adjustBrightness(alpha);
+            this._shade.Brightness(alpha);
         }
 
         /// <summary>
@@ -234,7 +236,54 @@ namespace WindowsShade
         #region tab2 多屏设置
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (this.listView1.SelectedIndices.Count == 0) return;
 
+            var index = this.listView1.SelectedItems[0].Index; // 当前选中屏幕索引
+            var monitor = Common.Config.Monitors.Count > index ? Common.Config.Monitors[index] : new Monitor();
+
+            this.lblMonitorInfo.Text = $"当前配置第{index + 1}屏，\r\n共启用{Common.Config.Monitors.Count(m => m.Enabled)}屏";
+            this.ckxEnabled.Checked = monitor.Enabled;
+            this.ckxIsMainScreen.Checked = monitor.IsMain;
+            this.ckxIsMainScreen.Enabled = monitor.Enabled;
+            this.cbxResolution.Text = $"{monitor.Resolution.X}x{monitor.Resolution.Y}";
+            this.cbxResolution.Enabled = monitor.Enabled;
+        }
+
+        private void ckxEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            var index = this.listView1.SelectedItems[0].Index; // 当前选中屏幕索引
+
+            // 1.屏幕参数控件状态设置
+            this.ckxIsMainScreen.Enabled = this.ckxEnabled.Checked;
+            this.cbxResolution.Enabled = this.ckxEnabled.Checked;
+
+            // 2.保存屏幕配置
+            if (Common.Config.Monitors.Count <= index)
+                for (int i = 0; i < index + 1 - Common.Config.Monitors.Count; i++)
+                    Common.Config.Monitors.Add(new Monitor(0, 1920, 1080));
+            Common.Config.Monitors[index].Enabled = this.ckxEnabled.Checked;
+
+            // 3.更新屏幕配置信息
+            this.lblMonitorInfo.Text = $"当前配置第{index + 1}屏，\r\n共启用{Common.Config.Monitors.Count(m => m.Enabled)}屏";
+        }
+
+        private void ckxIsMainScreen_CheckedChanged(object sender, EventArgs e)
+        {
+            var index = this.listView1.SelectedItems[0].Index; // 当前选中屏幕索引
+
+            if (this.ckxIsMainScreen.Checked)
+                Common.Config.Monitors.ForEach(m => m.IsMain = false);
+
+            Common.Config.Monitors[index].IsMain = this.ckxIsMainScreen.Checked;
+        }
+
+        private void cbxResolution_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var index = this.listView1.SelectedItems[0].Index; // 当前选中屏幕索引
+
+            var r = this.cbxResolution.Text.Split('x');
+            Common.Config.Monitors[index].Resolution.X = Convert.ToInt32(r[0]);
+            Common.Config.Monitors[index].Resolution.Y = Convert.ToInt32(r[1]);
         }
         #endregion
 

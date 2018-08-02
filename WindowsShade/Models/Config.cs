@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Com.EnjoyCodes.SharpSerializer;
 
 namespace WindowsShade.Models
@@ -16,7 +17,7 @@ namespace WindowsShade.Models
             new Resolution(1440,900),
             new Resolution(1366,768)
         };
-        public Monitor[] Monitors { get; set; } = new Monitor[] {
+        public List<Monitor> Monitors { get; set; } = new List<Monitor>() {
             new Monitor(0,1920,1080,true,true),
             new Monitor(0,1920,1080),
         };
@@ -32,7 +33,7 @@ namespace WindowsShade.Models
         /// <summary>
         /// 软件启动自动隐藏主窗体
         /// </summary>
-        public bool AutoHidden { get; set; } = true;
+        public bool AutoHidden { get; set; }
 
         public DateTime CreateTime { get; set; } = DateTime.Now;
         public DateTime UpdateTime { get; set; }
@@ -45,7 +46,7 @@ namespace WindowsShade.Models
                 var serializer = new SharpSerializer();
                 config = serializer.Deserialize(path) as Config;
             }
-            catch { }
+            catch (Exception e) { }
             return config;
         }
 

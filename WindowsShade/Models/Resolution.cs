@@ -8,6 +8,8 @@
         public int X { get; set; }
         public int Y { get; set; }
 
+        public Resolution() { }
+
         public Resolution(int x, int y)
         {
             this.X = x;

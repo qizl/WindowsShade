@@ -30,12 +30,12 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
-            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             ""}, "monitor.jpg", System.Drawing.Color.Empty, System.Drawing.Color.Empty, null);
-            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
             ""}, "monitor.jpg", System.Drawing.Color.Empty, System.Drawing.Color.Empty, null);
-            System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem("", "monitor.jpg");
-            System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("", "monitor.jpg");
+            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
             ""}, "monitor.jpg", System.Drawing.SystemColors.WindowText, System.Drawing.Color.Empty, null);
             this.btnApply = new System.Windows.Forms.Button();
             this.plContent = new System.Windows.Forms.Panel();
@@ -61,6 +61,8 @@
             this.listView1 = new System.Windows.Forms.ListView();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.plScreenSettings = new System.Windows.Forms.Panel();
+            this.lblMonitorInfo = new System.Windows.Forms.Label();
+            this.ckxEnabled = new System.Windows.Forms.CheckBox();
             this.ckxIsMainScreen = new System.Windows.Forms.CheckBox();
             this.cbxResolution = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -70,7 +72,6 @@
             this.plFoot = new System.Windows.Forms.Panel();
             this.btnHidden = new System.Windows.Forms.Button();
             this.plBody = new System.Windows.Forms.Panel();
-            this.ckxEnabled = new System.Windows.Forms.CheckBox();
             this.plContent.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbSystem)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbAlpha)).BeginInit();
@@ -292,14 +293,14 @@
             // 
             this.listView1.AllowColumnReorder = true;
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            listViewItem5.StateImageIndex = 0;
-            listViewItem6.StateImageIndex = 0;
-            listViewItem7.StateImageIndex = 0;
+            listViewItem1.StateImageIndex = 0;
+            listViewItem2.StateImageIndex = 0;
+            listViewItem3.StateImageIndex = 0;
             this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem5,
-            listViewItem6,
-            listViewItem7,
-            listViewItem8});
+            listViewItem1,
+            listViewItem2,
+            listViewItem3,
+            listViewItem4});
             this.listView1.LargeImageList = this.imageList1;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
@@ -318,6 +319,7 @@
             // 
             // plScreenSettings
             // 
+            this.plScreenSettings.Controls.Add(this.lblMonitorInfo);
             this.plScreenSettings.Controls.Add(this.ckxEnabled);
             this.plScreenSettings.Controls.Add(this.ckxIsMainScreen);
             this.plScreenSettings.Controls.Add(this.cbxResolution);
@@ -329,15 +331,35 @@
             this.plScreenSettings.Size = new System.Drawing.Size(536, 112);
             this.plScreenSettings.TabIndex = 0;
             // 
+            // lblMonitorInfo
+            // 
+            this.lblMonitorInfo.Location = new System.Drawing.Point(5, 14);
+            this.lblMonitorInfo.Name = "lblMonitorInfo";
+            this.lblMonitorInfo.Size = new System.Drawing.Size(133, 50);
+            this.lblMonitorInfo.TabIndex = 4;
+            this.lblMonitorInfo.Text = "当前配置第1屏，\r\n共启用2屏。";
+            // 
+            // ckxEnabled
+            // 
+            this.ckxEnabled.AutoSize = true;
+            this.ckxEnabled.Location = new System.Drawing.Point(201, 14);
+            this.ckxEnabled.Name = "ckxEnabled";
+            this.ckxEnabled.Size = new System.Drawing.Size(59, 20);
+            this.ckxEnabled.TabIndex = 3;
+            this.ckxEnabled.Text = "启用";
+            this.ckxEnabled.UseVisualStyleBackColor = true;
+            this.ckxEnabled.CheckedChanged += new System.EventHandler(this.ckxEnabled_CheckedChanged);
+            // 
             // ckxIsMainScreen
             // 
             this.ckxIsMainScreen.AutoSize = true;
-            this.ckxIsMainScreen.Location = new System.Drawing.Point(201, 78);
+            this.ckxIsMainScreen.Location = new System.Drawing.Point(201, 48);
             this.ckxIsMainScreen.Name = "ckxIsMainScreen";
             this.ckxIsMainScreen.Size = new System.Drawing.Size(75, 20);
             this.ckxIsMainScreen.TabIndex = 2;
             this.ckxIsMainScreen.Text = "主屏幕";
             this.ckxIsMainScreen.UseVisualStyleBackColor = true;
+            this.ckxIsMainScreen.CheckedChanged += new System.EventHandler(this.ckxIsMainScreen_CheckedChanged);
             // 
             // cbxResolution
             // 
@@ -346,15 +368,16 @@
             this.cbxResolution.Items.AddRange(new object[] {
             "1080p",
             "1440p"});
-            this.cbxResolution.Location = new System.Drawing.Point(201, 14);
+            this.cbxResolution.Location = new System.Drawing.Point(201, 78);
             this.cbxResolution.Name = "cbxResolution";
             this.cbxResolution.Size = new System.Drawing.Size(121, 24);
             this.cbxResolution.TabIndex = 1;
+            this.cbxResolution.SelectedIndexChanged += new System.EventHandler(this.cbxResolution_SelectedIndexChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(89, 18);
+            this.label1.Location = new System.Drawing.Point(123, 82);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(72, 16);
             this.label1.TabIndex = 0;
@@ -423,16 +446,6 @@
             this.plBody.Name = "plBody";
             this.plBody.Size = new System.Drawing.Size(550, 295);
             this.plBody.TabIndex = 4;
-            // 
-            // ckxEnabled
-            // 
-            this.ckxEnabled.AutoSize = true;
-            this.ckxEnabled.Location = new System.Drawing.Point(201, 48);
-            this.ckxEnabled.Name = "ckxEnabled";
-            this.ckxEnabled.Size = new System.Drawing.Size(59, 20);
-            this.ckxEnabled.TabIndex = 3;
-            this.ckxEnabled.Text = "启用";
-            this.ckxEnabled.UseVisualStyleBackColor = true;
             // 
             // FormMain
             // 
@@ -512,6 +525,7 @@
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.CheckBox ckxEnabled;
+        private System.Windows.Forms.Label lblMonitorInfo;
     }
 }
 

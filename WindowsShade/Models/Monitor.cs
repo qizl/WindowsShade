@@ -13,12 +13,14 @@
         /// </summary>
         public bool IsMain { get; set; }
 
+        public Monitor() { }
+
         public Monitor(byte no, int resolutionX, int resolutionY, bool enabled = true, bool isMain = false)
         {
             this.No = no;
             this.Resolution = new Resolution(resolutionX, resolutionY);
             this.Enabled = enabled;
-            this.IsMain = IsMain;
+            this.IsMain = isMain;
         }
     }
 }
