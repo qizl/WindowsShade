@@ -88,6 +88,7 @@ namespace WindowsShade
                 // 调整亮度
                 this._shade.AdjustBrightness(Common.Config.Alpha);
             }
+            this._shade.AdjustShade(Common.Config.Monitors); // 设置遮罩大小
 
             // 5.主窗体显示控制
             if (Common.Config.AutoHidden) // 隐藏主窗体
@@ -106,7 +107,6 @@ namespace WindowsShade
         {
             this.Visible = !hiddenFormMain;
 
-            this._shade.AdjustShade(Common.Config.Monitors);
             this._shade.Visible = true;
             this.menuItemHidden.Text = "隐藏(&H)";
         }
@@ -144,6 +144,10 @@ namespace WindowsShade
             // 5.调整屏幕亮度
             if (this.tabMain.SelectedIndex == 1)
             {
+                // 5.1 调整遮罩
+                this._shade.AdjustShade(Common.Config.Monitors);
+
+                // 5.2 显示遮罩
                 if (!this.ckxAlpha.Checked)
                     this.ckxAlpha.Checked = true;
                 this.showShade(false);
