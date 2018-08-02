@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
+using System.Linq;
 using System.Windows.Forms;
 using WindowsShade.Models;
 using WindowsShade.Views;
@@ -52,8 +51,6 @@ namespace WindowsShade
             this.tabMain_SelectedIndexChanged(this, null);
 
             // 2.4 tabMain - 亮度调整
-            this.cbxShadeTypes.Items.AddRange(Enum.GetNames(typeof(ShadeTypes)));
-            this.cbxShadeTypes.Text = Common.Config.ShadeType.ToString();
             this.tbAlpha.Enabled = false;
             this.tbAlpha.Value = Common.Config.Alpha;
             this.lblAlphaValue.Text = Common.Config.Alpha.ToString();
@@ -77,13 +74,6 @@ namespace WindowsShade
             this.ckxAutoShowShade.Checked = Common.Config.AutoShowShade;
 
             // 3.托盘菜单
-            foreach (var item in this.cbxShadeTypes.Items)
-            {
-                var t = new ToolStripMenuItem();
-                t.Text = item.ToString();
-                t.Click += this.menuItemShadeTypes_Click;
-                this.cmxTray.Items.Insert(0, t);
-            }
             this.menuItemHidden.Text = "显示(&D)";
 
             // 4.自动调整亮度
@@ -96,7 +86,7 @@ namespace WindowsShade
             else
             {
                 // 调整亮度
-                this._shade.Brightness(Common.Config.Alpha);
+                this._shade.AdjustBrightness(Common.Config.Alpha);
             }
 
             // 5.主窗体显示控制
@@ -116,8 +106,8 @@ namespace WindowsShade
         {
             this.Visible = !hiddenFormMain;
 
+            this._shade.AdjustShade(Common.Config.Monitors);
             this._shade.Visible = true;
-            this._shade.Show(Common.Config.ShadeType);
             this.menuItemHidden.Text = "隐藏(&H)";
         }
         /// <summary>
@@ -139,7 +129,6 @@ namespace WindowsShade
         private void btnApply_Click(object sender, EventArgs e)
         {
             // 1.获取亮度调整参数
-            Common.Config.ShadeType = (ShadeTypes)Enum.Parse(typeof(ShadeTypes), this.cbxShadeTypes.Text);
             Common.Config.Alpha = (byte)this.tbAlpha.Value;
 
             // 2.获取多屏设置参数
@@ -153,7 +142,12 @@ namespace WindowsShade
             Common.Config.Save();
 
             // 5.调整屏幕亮度
-            this.showShade(false);
+            if (this.tabMain.SelectedIndex == 1)
+            {
+                if (!this.ckxAlpha.Checked)
+                    this.ckxAlpha.Checked = true;
+                this.showShade(false);
+            }
         }
 
         /// <summary>
@@ -178,14 +172,6 @@ namespace WindowsShade
 
         #region Events - tabMain
         #region tab1 亮度调整
-        private void cbxShadeTypes_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Common.Config.ShadeType = (ShadeTypes)Enum.Parse(typeof(ShadeTypes), this.cbxShadeTypes.Text);
-
-            if (this.ckxAlpha.Checked)
-                this.showShade(hiddenFormMain: false);
-        }
-
         /// <summary>
         /// 调整遮罩亮度
         /// </summary>
@@ -199,7 +185,7 @@ namespace WindowsShade
 
             Common.Config.Alpha = alpha;
 
-            this._shade.Brightness(alpha);
+            this._shade.AdjustBrightness(alpha);
         }
 
         /// <summary>
@@ -297,13 +283,6 @@ namespace WindowsShade
         #endregion
 
         #region Events - 托盘菜单（cmxTray）
-        private void menuItemShadeTypes_Click(object sender, EventArgs e)
-        {
-            var item = sender as ToolStripItem;
-            this.cbxShadeTypes.Text = item.Text;
-            this.showShade();
-        }
-
         private void menuItemOpenMain_Click(object sender, EventArgs e)
         {
             this.Visible = true;

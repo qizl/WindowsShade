@@ -6,8 +6,6 @@ namespace WindowsShade.Models
 {
     public class Config
     {
-        [Obsolete("改用屏幕分辨率对象", false)]
-        public ShadeTypes ShadeType { get; set; } = ShadeTypes.D1920R;
         /// <summary>
         /// 屏幕分辨率
         /// </summary>

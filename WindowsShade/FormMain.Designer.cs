@@ -40,13 +40,11 @@
             this.btnApply = new System.Windows.Forms.Button();
             this.plContent = new System.Windows.Forms.Panel();
             this.ckxAlpha = new System.Windows.Forms.CheckBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.lblSystem = new System.Windows.Forms.Label();
             this.tbSystem = new System.Windows.Forms.TrackBar();
             this.lblAlphaValue = new System.Windows.Forms.Label();
             this.tbAlpha = new System.Windows.Forms.TrackBar();
-            this.cbxShadeTypes = new System.Windows.Forms.ComboBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
             this.cmxTray = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.menuItemHidden = new System.Windows.Forms.ToolStripMenuItem();
@@ -102,13 +100,11 @@
             // plContent
             // 
             this.plContent.Controls.Add(this.ckxAlpha);
-            this.plContent.Controls.Add(this.label2);
             this.plContent.Controls.Add(this.label4);
             this.plContent.Controls.Add(this.lblSystem);
             this.plContent.Controls.Add(this.tbSystem);
             this.plContent.Controls.Add(this.lblAlphaValue);
             this.plContent.Controls.Add(this.tbAlpha);
-            this.plContent.Controls.Add(this.cbxShadeTypes);
             this.plContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.plContent.Font = new System.Drawing.Font("宋体", 16F);
             this.plContent.Location = new System.Drawing.Point(3, 3);
@@ -119,7 +115,7 @@
             // ckxAlpha
             // 
             this.ckxAlpha.AutoSize = true;
-            this.ckxAlpha.Location = new System.Drawing.Point(81, 98);
+            this.ckxAlpha.Location = new System.Drawing.Point(81, 86);
             this.ckxAlpha.Name = "ckxAlpha";
             this.ckxAlpha.Size = new System.Drawing.Size(84, 26);
             this.ckxAlpha.TabIndex = 8;
@@ -127,19 +123,10 @@
             this.ckxAlpha.UseVisualStyleBackColor = true;
             this.ckxAlpha.CheckedChanged += new System.EventHandler(this.ckxAlpha_CheckedChanged);
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(89, 40);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(76, 22);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "Shade:";
-            // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(56, 160);
+            this.label4.Location = new System.Drawing.Point(56, 148);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(109, 22);
             this.label4.TabIndex = 7;
@@ -148,7 +135,7 @@
             // lblSystem
             // 
             this.lblSystem.AutoSize = true;
-            this.lblSystem.Location = new System.Drawing.Point(410, 160);
+            this.lblSystem.Location = new System.Drawing.Point(410, 148);
             this.lblSystem.Name = "lblSystem";
             this.lblSystem.Size = new System.Drawing.Size(21, 22);
             this.lblSystem.TabIndex = 6;
@@ -156,7 +143,7 @@
             // 
             // tbSystem
             // 
-            this.tbSystem.Location = new System.Drawing.Point(201, 149);
+            this.tbSystem.Location = new System.Drawing.Point(201, 137);
             this.tbSystem.Maximum = 255;
             this.tbSystem.Name = "tbSystem";
             this.tbSystem.Size = new System.Drawing.Size(209, 45);
@@ -166,7 +153,7 @@
             // lblAlphaValue
             // 
             this.lblAlphaValue.AutoSize = true;
-            this.lblAlphaValue.Location = new System.Drawing.Point(410, 100);
+            this.lblAlphaValue.Location = new System.Drawing.Point(410, 88);
             this.lblAlphaValue.Name = "lblAlphaValue";
             this.lblAlphaValue.Size = new System.Drawing.Size(21, 22);
             this.lblAlphaValue.TabIndex = 6;
@@ -174,22 +161,12 @@
             // 
             // tbAlpha
             // 
-            this.tbAlpha.Location = new System.Drawing.Point(201, 89);
+            this.tbAlpha.Location = new System.Drawing.Point(201, 77);
             this.tbAlpha.Maximum = 255;
             this.tbAlpha.Name = "tbAlpha";
             this.tbAlpha.Size = new System.Drawing.Size(209, 45);
             this.tbAlpha.TabIndex = 5;
             this.tbAlpha.Scroll += new System.EventHandler(this.tbAlpha_Scroll);
-            // 
-            // cbxShadeTypes
-            // 
-            this.cbxShadeTypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxShadeTypes.FormattingEnabled = true;
-            this.cbxShadeTypes.Location = new System.Drawing.Point(201, 37);
-            this.cbxShadeTypes.Name = "cbxShadeTypes";
-            this.cbxShadeTypes.Size = new System.Drawing.Size(121, 29);
-            this.cbxShadeTypes.TabIndex = 4;
-            this.cbxShadeTypes.SelectedIndexChanged += new System.EventHandler(this.cbxShadeTypes_SelectedIndexChanged);
             // 
             // notifyIcon1
             // 
@@ -499,11 +476,9 @@
         private System.Windows.Forms.ToolStripMenuItem menuItemHidden;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem menuItemOpenMain;
-        private System.Windows.Forms.ComboBox cbxShadeTypes;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.TrackBar tbAlpha;
         private System.Windows.Forms.Label lblAlphaValue;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lblSystem;
         private System.Windows.Forms.TrackBar tbSystem;

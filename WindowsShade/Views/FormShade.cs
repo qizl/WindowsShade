@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -43,53 +45,27 @@ namespace WindowsShade.Views
             this.TopMost = true;
             this.ShowInTaskbar = false;
         }
-
-        public void Show(ShadeTypes t)
+        
+        /// <summary>
+        /// 调整遮罩
+        /// </summary>
+        /// <param name="monitors"></param>
+        public void AdjustShade(List<Monitor> monitors)
         {
-            int x = 0, y = 0, width = 0, height = 0;
-            switch (t)
-            {
-            case ShadeTypes.D1920R:
-                {
-                    x = -1920;
-                    y = 0;
-                    width = 1920 * 2;
-                    height = 1080;
-                }
-                break;
-            case ShadeTypes.D1920L:
-                {
-                    x = 0;
-                    y = 0;
-                    width = 1920 * 2;
-                    height = 1080;
-                }
-                break;
-            case ShadeTypes.S1920:
-                {
-                    x = 0;
-                    y = 0;
-                    width = 1920;
-                    height = 1080;
-                }
-                break;
-            case ShadeTypes.D1440L:
-                {
-                    x = 0;
-                    y = 0;
-                    width = 1440 * 2;
-                    height = 900;
-                }
-                break;
-            case ShadeTypes.S1440:
-                {
-                    x = 0;
-                    y = 0;
-                    width = 1440;
-                    height = 900;
-                }
-                break;
-            }
+            monitors = monitors.Where(m => m.Enabled).ToList();
+            if (!monitors.Any()) return;
+            if (!monitors.Any(m => m.IsMain))
+                monitors[0].IsMain = true;
+
+            var mainMonitor = monitors.First(m => m.IsMain); // 主显
+            var mainMonitorIndex = monitors.IndexOf(mainMonitor); // 主显位置
+            var d = mainMonitor.Resolution.Y - monitors.Max(m => m.Resolution.Y); // 主显与最大高度显示器高度差
+
+            int x = mainMonitorIndex == 0 ? 0 : monitors.Take(mainMonitorIndex).Sum(m => m.Resolution.X) * -1;
+            int y = d >= 0 ? 0 : d; // 默认用户多显示器配置为底部对齐
+            int width = monitors.Sum(m => m.Resolution.X);
+            int height = monitors.Max(m => m.Resolution.Y);
+
             var border = 7;
             var title = 40;
             this.Location = new Point(x - border, y - title);
@@ -103,7 +79,7 @@ namespace WindowsShade.Views
         /// 调整亮度
         /// </summary>
         /// <param name="alpha"></param>
-        public void Brightness(byte alpha)
+        public void AdjustBrightness(byte alpha)
         {
             try
             {
