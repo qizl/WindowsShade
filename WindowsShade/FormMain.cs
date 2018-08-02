@@ -252,6 +252,8 @@ namespace WindowsShade
                 for (int i = 0; i < index + 1 - Common.Config.Monitors.Count; i++)
                     Common.Config.Monitors.Add(new Monitor(0, 1920, 1080));
             Common.Config.Monitors[index].Enabled = this.ckxEnabled.Checked;
+            if (!this.ckxEnabled.Checked) // 禁用当前屏幕时，设置当前屏幕不为主屏
+                Common.Config.Monitors[index].IsMain = false;
 
             // 3.更新屏幕配置信息
             this.lblMonitorInfo.Text = $"当前配置第{index + 1}屏，\r\n共启用{Common.Config.Monitors.Count(m => m.Enabled)}屏";
