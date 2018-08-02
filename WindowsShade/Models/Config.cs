@@ -5,7 +5,21 @@ namespace WindowsShade.Models
 {
     public class Config
     {
+        [Obsolete("改用屏幕分辨率对象", false)]
         public ShadeTypes ShadeType { get; set; } = ShadeTypes.D1920R;
+        /// <summary>
+        /// 屏幕分辨率
+        /// </summary>
+        public Resolution[] Resolutions { get; set; } = new Resolution[] {
+            new Resolution(1920,1080),
+            new Resolution(1600,900),
+            new Resolution(1440,900),
+            new Resolution(1366,768)
+        };
+        public Monitor[] Monitors { get; set; } = new Monitor[] {
+            new Monitor(0,1920,1080,true,true),
+            new Monitor(0,1920,1080),
+        };
         /// <summary>
         /// 透明度
         ///     0~255
@@ -28,28 +42,25 @@ namespace WindowsShade.Models
             Config config = null;
             try
             {
-                SharpSerializer serializer = new SharpSerializer();
+                var serializer = new SharpSerializer();
                 config = serializer.Deserialize(path) as Config;
             }
             catch { }
             return config;
         }
 
-        public bool Save() { return this.Save(Common.ConfigPath); }
+        public bool Save() => this.Save(Common.ConfigPath);
         public bool Save(string path)
         {
             try
             {
-                SharpSerializer serializer = new SharpSerializer();
+                var serializer = new SharpSerializer();
                 serializer.Serialize(this, path);
             }
             catch { return false; }
             return true;
         }
 
-        public object Clone()
-        {
-            return this.MemberwiseClone();
-        }
+        public object Clone() => this.MemberwiseClone();
     }
 }

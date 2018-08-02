@@ -30,11 +30,13 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem5 = new System.Windows.Forms.ListViewItem(new string[] {
             ""}, "monitor.jpg", System.Drawing.Color.Empty, System.Drawing.Color.Empty, null);
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem6 = new System.Windows.Forms.ListViewItem(new string[] {
             ""}, "monitor.jpg", System.Drawing.Color.Empty, System.Drawing.Color.Empty, null);
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("", "monitor.jpg");
+            System.Windows.Forms.ListViewItem listViewItem7 = new System.Windows.Forms.ListViewItem("", "monitor.jpg");
+            System.Windows.Forms.ListViewItem listViewItem8 = new System.Windows.Forms.ListViewItem(new string[] {
+            ""}, "monitor.jpg", System.Drawing.SystemColors.WindowText, System.Drawing.Color.Empty, null);
             this.btnApply = new System.Windows.Forms.Button();
             this.plContent = new System.Windows.Forms.Panel();
             this.ckxAlpha = new System.Windows.Forms.CheckBox();
@@ -68,6 +70,7 @@
             this.plFoot = new System.Windows.Forms.Panel();
             this.btnHidden = new System.Windows.Forms.Button();
             this.plBody = new System.Windows.Forms.Panel();
+            this.ckxEnabled = new System.Windows.Forms.CheckBox();
             this.plContent.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbSystem)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbAlpha)).BeginInit();
@@ -289,10 +292,14 @@
             // 
             this.listView1.AllowColumnReorder = true;
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            listViewItem5.StateImageIndex = 0;
+            listViewItem6.StateImageIndex = 0;
+            listViewItem7.StateImageIndex = 0;
             this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3});
+            listViewItem5,
+            listViewItem6,
+            listViewItem7,
+            listViewItem8});
             this.listView1.LargeImageList = this.imageList1;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";
@@ -301,6 +308,7 @@
             this.listView1.TileSize = new System.Drawing.Size(128, 128);
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Tile;
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
             // 
             // imageList1
             // 
@@ -310,11 +318,12 @@
             // 
             // plScreenSettings
             // 
+            this.plScreenSettings.Controls.Add(this.ckxEnabled);
             this.plScreenSettings.Controls.Add(this.ckxIsMainScreen);
             this.plScreenSettings.Controls.Add(this.cbxResolution);
             this.plScreenSettings.Controls.Add(this.label1);
             this.plScreenSettings.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.plScreenSettings.Font = new System.Drawing.Font("宋体", 16F);
+            this.plScreenSettings.Font = new System.Drawing.Font("宋体", 12F);
             this.plScreenSettings.Location = new System.Drawing.Point(3, 150);
             this.plScreenSettings.Name = "plScreenSettings";
             this.plScreenSettings.Size = new System.Drawing.Size(536, 112);
@@ -323,9 +332,9 @@
             // ckxIsMainScreen
             // 
             this.ckxIsMainScreen.AutoSize = true;
-            this.ckxIsMainScreen.Location = new System.Drawing.Point(201, 72);
+            this.ckxIsMainScreen.Location = new System.Drawing.Point(201, 78);
             this.ckxIsMainScreen.Name = "ckxIsMainScreen";
-            this.ckxIsMainScreen.Size = new System.Drawing.Size(95, 26);
+            this.ckxIsMainScreen.Size = new System.Drawing.Size(75, 20);
             this.ckxIsMainScreen.TabIndex = 2;
             this.ckxIsMainScreen.Text = "主屏幕";
             this.ckxIsMainScreen.UseVisualStyleBackColor = true;
@@ -337,17 +346,17 @@
             this.cbxResolution.Items.AddRange(new object[] {
             "1080p",
             "1440p"});
-            this.cbxResolution.Location = new System.Drawing.Point(201, 24);
+            this.cbxResolution.Location = new System.Drawing.Point(201, 14);
             this.cbxResolution.Name = "cbxResolution";
-            this.cbxResolution.Size = new System.Drawing.Size(121, 29);
+            this.cbxResolution.Size = new System.Drawing.Size(121, 24);
             this.cbxResolution.TabIndex = 1;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(89, 27);
+            this.label1.Location = new System.Drawing.Point(89, 18);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(98, 22);
+            this.label1.Size = new System.Drawing.Size(72, 16);
             this.label1.TabIndex = 0;
             this.label1.Text = "分辨率：";
             // 
@@ -415,6 +424,16 @@
             this.plBody.Size = new System.Drawing.Size(550, 295);
             this.plBody.TabIndex = 4;
             // 
+            // ckxEnabled
+            // 
+            this.ckxEnabled.AutoSize = true;
+            this.ckxEnabled.Location = new System.Drawing.Point(201, 48);
+            this.ckxEnabled.Name = "ckxEnabled";
+            this.ckxEnabled.Size = new System.Drawing.Size(59, 20);
+            this.ckxEnabled.TabIndex = 3;
+            this.ckxEnabled.Text = "启用";
+            this.ckxEnabled.UseVisualStyleBackColor = true;
+            // 
             // FormMain
             // 
             this.AcceptButton = this.btnApply;
@@ -425,6 +444,7 @@
             this.Controls.Add(this.plBody);
             this.Controls.Add(this.plFoot);
             this.Font = new System.Drawing.Font("宋体", 20F);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(7);
@@ -491,6 +511,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.CheckBox ckxEnabled;
     }
 }
 

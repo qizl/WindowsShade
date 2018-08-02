@@ -28,7 +28,6 @@ namespace WindowsShade
         #region Structures & Initialize
         public FormMain() => InitializeComponent();
 
-        Shade s = new Shade();
         private void FormMain_Load(object sender, EventArgs e) => this.initialize();
         private void initialize()
         {
@@ -73,6 +72,8 @@ namespace WindowsShade
             }
 
             // 2.5 tabMain - 多屏设置
+            this.listView1.Items[0].Selected = true;
+
             // 2.6 tabMain - 软件设置
             this.ckxAutoHidden.Checked = Common.Config.AutoHidden;
             this.ckxAutoShowShade.Checked = Common.Config.AutoShowShade;
@@ -180,6 +181,7 @@ namespace WindowsShade
         #endregion
 
         #region Events - tabMain
+        #region tab1 亮度调整
         private void cbxShadeTypes_SelectedIndexChanged(object sender, EventArgs e) => this.showShade(hiddenFormMain: false);
 
         /// <summary>
@@ -227,6 +229,17 @@ namespace WindowsShade
             else
                 this.hiddenShade();
         }
+        #endregion
+
+        #region tab2 多屏设置
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+        #endregion
+
+        #region tab3 软件设置
+        #endregion
 
         private void tabMain_SelectedIndexChanged(object sender, EventArgs e)
         {

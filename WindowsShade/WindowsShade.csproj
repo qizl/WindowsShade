@@ -57,6 +57,8 @@
     </Compile>
     <Compile Include="Models\Common.cs" />
     <Compile Include="Models\Config.cs" />
+    <Compile Include="Models\Monitor.cs" />
+    <Compile Include="Models\Resolution.cs" />
     <Compile Include="Models\ScreenBrightness.cs" />
     <Compile Include="Models\Shade.cs" />
     <Compile Include="Models\ShadeTypes.cs" />
