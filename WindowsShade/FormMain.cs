@@ -233,7 +233,7 @@ namespace WindowsShade
 
             this.lblMonitorInfo.Text = $"当前配置第{index + 1}屏，\r\n共启用{Common.Config.Monitors.Count(m => m.Enabled)}屏";
             this.ckxEnabled.Checked = monitor.Enabled;
-            this.ckxIsMainScreen.Checked = monitor.IsMain;
+            this.ckxIsMainScreen.Checked = monitor.Primary;
             this.ckxIsMainScreen.Enabled = monitor.Enabled;
             this.cbxResolution.Text = $"{monitor.Resolution.X}x{monitor.Resolution.Y}";
             this.cbxResolution.Enabled = monitor.Enabled;
@@ -253,7 +253,7 @@ namespace WindowsShade
                     Common.Config.Monitors.Add(new Monitor(0, 1920, 1080));
             Common.Config.Monitors[index].Enabled = this.ckxEnabled.Checked;
             if (!this.ckxEnabled.Checked) // 禁用当前屏幕时，设置当前屏幕不为主屏
-                Common.Config.Monitors[index].IsMain = false;
+                Common.Config.Monitors[index].Primary = false;
 
             // 3.更新屏幕配置信息
             this.lblMonitorInfo.Text = $"当前配置第{index + 1}屏，\r\n共启用{Common.Config.Monitors.Count(m => m.Enabled)}屏";
@@ -264,9 +264,9 @@ namespace WindowsShade
             var index = this.listView1.SelectedItems[0].Index; // 当前选中屏幕索引
 
             if (this.ckxIsMainScreen.Checked)
-                Common.Config.Monitors.ForEach(m => m.IsMain = false);
+                Common.Config.Monitors.ForEach(m => m.Primary = false);
 
-            Common.Config.Monitors[index].IsMain = this.ckxIsMainScreen.Checked;
+            Common.Config.Monitors[index].Primary = this.ckxIsMainScreen.Checked;
         }
 
         private void cbxResolution_SelectedIndexChanged(object sender, EventArgs e)

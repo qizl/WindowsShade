@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 using Com.EnjoyCodes.SharpSerializer;
 
 namespace WindowsShade.Models
@@ -15,10 +17,10 @@ namespace WindowsShade.Models
             new Resolution(1440,900),
             new Resolution(1366,768)
         };
-        public List<Monitor> Monitors { get; set; } = new List<Monitor>() {
-            new Monitor(0,1920,1080,true,true),
-            new Monitor(0,1920,1080),
-        };
+        /// <summary>
+        /// 显示器配置
+        /// </summary>
+        public List<Monitor> Monitors { get; set; }
         /// <summary>
         /// 透明度
         ///     0~255
@@ -35,6 +37,20 @@ namespace WindowsShade.Models
 
         public DateTime CreateTime { get; set; } = DateTime.Now;
         public DateTime UpdateTime { get; set; }
+
+        public Config()
+        {
+            // 获取显示器配置
+            this.Monitors = (
+                from screen in Screen.AllScreens
+                select new Monitor(
+                    (byte)Array.IndexOf(Screen.AllScreens, screen),
+                    screen.Bounds.Width,
+                    screen.Bounds.Height,
+                    true,
+                    screen.Primary)
+                ).ToList();
+        }
 
         public static Config Load(string path)
         {

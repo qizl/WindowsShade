@@ -11,16 +11,16 @@ namespace WindowsShade.Views
     public partial class FormShade : Form
     {
         #region Members
-        [DllImport("user32.dll")]
-        public static extern IntPtr SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, uint wFlags);
+        //[DllImport("user32.dll")]
+        //public static extern IntPtr SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, uint wFlags);
 
-        [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
+        [DllImport("user32.dll")]
         public static extern long GetWindowLong(IntPtr hwnd, int nIndex);
 
-        [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
+        [DllImport("user32.dll")]
         public static extern long SetWindowLong(IntPtr hwnd, int nIndex, long dwNewLong);
 
-        [DllImport("user32", EntryPoint = "SetLayeredWindowAttributes")]
+        [DllImport("user32")]
         private static extern int SetLayeredWindowAttributes(IntPtr Handle, int crKey, byte bAlpha, int dwFlags);
 
         const int GWL_EXSTYLE = -20;
@@ -45,7 +45,7 @@ namespace WindowsShade.Views
             this.TopMost = true;
             this.ShowInTaskbar = false;
         }
-        
+
         /// <summary>
         /// 调整遮罩
         /// </summary>
@@ -55,11 +55,11 @@ namespace WindowsShade.Views
             // 1.读取屏幕配置
             monitors = monitors.Where(m => m.Enabled).ToList();
             if (!monitors.Any()) return;
-            if (!monitors.Any(m => m.IsMain))
-                monitors[0].IsMain = true;
+            if (!monitors.Any(m => m.Primary))
+                monitors[0].Primary = true;
 
             // 2.提取主显配置
-            var mainMonitor = monitors.First(m => m.IsMain); // 主显
+            var mainMonitor = monitors.First(m => m.Primary); // 主显
             var mainMonitorIndex = monitors.IndexOf(mainMonitor); // 主显位置
             var d = mainMonitor.Resolution.Y - monitors.Max(m => m.Resolution.Y); // 主显与最大高度显示器高度差
 
@@ -85,12 +85,8 @@ namespace WindowsShade.Views
         /// <param name="alpha"></param>
         public void AdjustBrightness(byte alpha)
         {
-            try
-            {
-                SetWindowLong(this.Handle, GWL_EXSTYLE, GetWindowLong(this.Handle, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
-                SetLayeredWindowAttributes(this.Handle, 0, alpha, LWA_ALPHA);
-            }
-            catch { }
+            SetWindowLong(this.Handle, GWL_EXSTYLE, GetWindowLong(this.Handle, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
+            SetLayeredWindowAttributes(this.Handle, 0, alpha, LWA_ALPHA);
         }
         #endregion
     }

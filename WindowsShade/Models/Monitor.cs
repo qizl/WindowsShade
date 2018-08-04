@@ -11,7 +11,7 @@
         /// <summary>
         /// 是否主显
         /// </summary>
-        public bool IsMain { get; set; }
+        public bool Primary { get; set; }
 
         public Monitor() { }
 
@@ -20,7 +20,7 @@
             this.No = no;
             this.Resolution = new Resolution(resolutionX, resolutionY);
             this.Enabled = enabled;
-            this.IsMain = isMain;
+            this.Primary = isMain;
         }
     }
 }
