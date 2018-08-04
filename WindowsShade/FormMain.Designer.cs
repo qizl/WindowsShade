@@ -32,11 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
             ""}, "monitor.jpg", System.Drawing.Color.Empty, System.Drawing.Color.Empty, null);
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
-            ""}, "monitor.jpg", System.Drawing.Color.Empty, System.Drawing.Color.Empty, null);
-            System.Windows.Forms.ListViewItem listViewItem3 = new System.Windows.Forms.ListViewItem("", "monitor.jpg");
-            System.Windows.Forms.ListViewItem listViewItem4 = new System.Windows.Forms.ListViewItem(new string[] {
-            ""}, "monitor.jpg", System.Drawing.SystemColors.WindowText, System.Drawing.Color.Empty, null);
             this.btnApply = new System.Windows.Forms.Button();
             this.plContent = new System.Windows.Forms.Panel();
             this.ckxAlpha = new System.Windows.Forms.CheckBox();
@@ -271,13 +266,8 @@
             this.listView1.AllowColumnReorder = true;
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             listViewItem1.StateImageIndex = 0;
-            listViewItem2.StateImageIndex = 0;
-            listViewItem3.StateImageIndex = 0;
             this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1,
-            listViewItem2,
-            listViewItem3,
-            listViewItem4});
+            listViewItem1});
             this.listView1.LargeImageList = this.imageList1;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.Name = "listView1";

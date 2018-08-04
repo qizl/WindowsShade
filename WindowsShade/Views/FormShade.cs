@@ -85,8 +85,12 @@ namespace WindowsShade.Views
         /// <param name="alpha"></param>
         public void AdjustBrightness(byte alpha)
         {
-            SetWindowLong(this.Handle, GWL_EXSTYLE, GetWindowLong(this.Handle, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
-            SetLayeredWindowAttributes(this.Handle, 0, alpha, LWA_ALPHA);
+            try
+            {
+                SetWindowLong(this.Handle, GWL_EXSTYLE, GetWindowLong(this.Handle, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
+                SetLayeredWindowAttributes(this.Handle, 0, alpha, LWA_ALPHA);
+            }
+            catch { }
         }
         #endregion
     }

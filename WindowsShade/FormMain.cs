@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using WindowsShade.Models;
+using WindowsShade.Properties;
 using WindowsShade.Views;
 
 namespace WindowsShade
@@ -66,6 +67,12 @@ namespace WindowsShade
             this.cbxResolution.Items.Clear();
             foreach (var item in Common.Config.Resolutions)
                 this.cbxResolution.Items.Add($"{item.X}x{item.Y}");
+
+            this.listView1.Items.Clear();
+            this.listView1.Items.AddRange((
+                    from s in Screen.AllScreens
+                    select new ListViewItem() { ImageIndex = 0 }
+                ).ToArray());
             this.listView1.MultiSelect = false;
             this.listView1.Items[0].Selected = true;
 
