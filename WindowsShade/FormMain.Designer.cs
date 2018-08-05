@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
+            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem(new string[] {
             ""}, 0, System.Drawing.Color.Empty, System.Drawing.Color.Empty, null);
             this.btnApply = new System.Windows.Forms.Button();
             this.plContent = new System.Windows.Forms.Panel();
@@ -265,9 +265,9 @@
             // 
             this.listView1.AllowColumnReorder = true;
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            listViewItem1.StateImageIndex = 0;
+            listViewItem2.StateImageIndex = 0;
             this.listView1.Items.AddRange(new System.Windows.Forms.ListViewItem[] {
-            listViewItem1});
+            listViewItem2});
             this.listView1.LargeImageList = this.imageList1;
             this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.MultiSelect = false;
@@ -303,7 +303,7 @@
             // 
             // txtResolution
             // 
-            this.txtResolution.Location = new System.Drawing.Point(201, 77);
+            this.txtResolution.Location = new System.Drawing.Point(201, 81);
             this.txtResolution.Name = "txtResolution";
             this.txtResolution.ReadOnly = true;
             this.txtResolution.Size = new System.Drawing.Size(121, 26);
