@@ -131,7 +131,7 @@ namespace WindowsShade
         {
             this.Visible = !hiddenFormMain;
 
-            this._shade.Visible = true;
+            this._shade.Visible = Common.Config.Monitors.Any(m => m.Enabled);
             this.menuItemHidden.Text = "隐藏(&H)";
         }
         /// <summary>
@@ -247,7 +247,7 @@ namespace WindowsShade
         }
         #endregion
 
-        #region tab2 多屏设置
+        #region tab2 屏幕设置
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (this.listView1.SelectedIndices.Count == 0) return;

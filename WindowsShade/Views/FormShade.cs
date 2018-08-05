@@ -56,7 +56,8 @@ namespace WindowsShade.Views
             var monitors = (from m in ms
                             where m.Enabled
                             select new Monitor(m.No, m.Resolution.Width, m.Resolution.Height, m.Enabled, m.Primary)).ToList();
-            if (!monitors.Any()) return;
+            if (!monitors.Any())
+                return;
             if (!monitors.Any(m => m.Primary))
                 monitors[0].Primary = true;
 

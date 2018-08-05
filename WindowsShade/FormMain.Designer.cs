@@ -249,7 +249,7 @@
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(542, 265);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "多屏设置";
+            this.tabPage2.Text = "屏幕设置";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // plScreens

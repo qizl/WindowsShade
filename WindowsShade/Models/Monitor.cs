@@ -1,4 +1,5 @@
-﻿using Com.EnjoyCodes.SharpSerializer;
+﻿using System;
+using Com.EnjoyCodes.SharpSerializer;
 
 namespace WindowsShade.Models
 {
@@ -7,7 +8,8 @@ namespace WindowsShade.Models
     /// </summary>
     public class Monitor
     {
-        public byte No { get; set; }
+        [Obsolete]
+        public int No { get; set; }
         public bool Enabled { get; set; }
         [ExcludeFromSerialization]
         public Resolution Resolution { get; set; }
@@ -19,12 +21,12 @@ namespace WindowsShade.Models
 
         public Monitor() { }
 
-        public Monitor(byte no, int resolutionX, int resolutionY, bool enabled = true, bool primary = false)
+        public Monitor(int no, int resolutionX, int resolutionY, bool enabled = true, bool primary = false)
         {
             this.No = no;
             this.Resolution = new Resolution(resolutionX, resolutionY);
             this.Enabled = enabled;
             this.Primary = primary;
-        }        
+        }
     }
 }
