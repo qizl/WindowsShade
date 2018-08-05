@@ -4,7 +4,8 @@ using System.Linq;
 namespace WindowsShade.Models
 {
     /// <summary>
-    /// 参考：https://www.codeproject.com/Articles/236898/Screen-Brightness-Control-for-Laptops-and-Tablets
+    /// 系统屏幕亮度调节
+    ///     参考：https://www.codeproject.com/Articles/236898/Screen-Brightness-Control-for-Laptops-and-Tablets
     /// </summary>
     public class ScreenBrightness
     {

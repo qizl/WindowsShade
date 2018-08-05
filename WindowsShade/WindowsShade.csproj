@@ -71,7 +71,6 @@
     <Compile Include="Models\Resolution.cs" />
     <Compile Include="Models\ScreenBrightness.cs" />
     <Compile Include="Models\Shade.cs" />
-    <Compile Include="Models\ShadeTypes.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\FormShade.cs">
