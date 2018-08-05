@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
             System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem(new string[] {
-            ""}, "monitor.jpg", System.Drawing.Color.Empty, System.Drawing.Color.Empty, null);
+            ""}, 0, System.Drawing.Color.Empty, System.Drawing.Color.Empty, null);
             this.btnApply = new System.Windows.Forms.Button();
             this.plContent = new System.Windows.Forms.Panel();
             this.ckxAlpha = new System.Windows.Forms.CheckBox();
@@ -54,10 +54,10 @@
             this.listView1 = new System.Windows.Forms.ListView();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.plScreenSettings = new System.Windows.Forms.Panel();
+            this.txtResolution = new System.Windows.Forms.TextBox();
             this.lblMonitorInfo = new System.Windows.Forms.Label();
             this.ckxEnabled = new System.Windows.Forms.CheckBox();
             this.ckxIsMainScreen = new System.Windows.Forms.CheckBox();
-            this.cbxResolution = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.ckxAutoShowShade = new System.Windows.Forms.CheckBox();
@@ -270,6 +270,7 @@
             listViewItem1});
             this.listView1.LargeImageList = this.imageList1;
             this.listView1.Location = new System.Drawing.Point(0, 0);
+            this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(536, 147);
             this.listView1.TabIndex = 0;
@@ -277,19 +278,21 @@
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Tile;
             this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
+            this.listView1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseDoubleClick);
             // 
             // imageList1
             // 
             this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
             this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
             this.imageList1.Images.SetKeyName(0, "monitor.jpg");
+            this.imageList1.Images.SetKeyName(1, "monitor_gray.jpg");
             // 
             // plScreenSettings
             // 
+            this.plScreenSettings.Controls.Add(this.txtResolution);
             this.plScreenSettings.Controls.Add(this.lblMonitorInfo);
             this.plScreenSettings.Controls.Add(this.ckxEnabled);
             this.plScreenSettings.Controls.Add(this.ckxIsMainScreen);
-            this.plScreenSettings.Controls.Add(this.cbxResolution);
             this.plScreenSettings.Controls.Add(this.label1);
             this.plScreenSettings.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.plScreenSettings.Font = new System.Drawing.Font("宋体", 12F);
@@ -297,6 +300,14 @@
             this.plScreenSettings.Name = "plScreenSettings";
             this.plScreenSettings.Size = new System.Drawing.Size(536, 112);
             this.plScreenSettings.TabIndex = 0;
+            // 
+            // txtResolution
+            // 
+            this.txtResolution.Location = new System.Drawing.Point(201, 77);
+            this.txtResolution.Name = "txtResolution";
+            this.txtResolution.ReadOnly = true;
+            this.txtResolution.Size = new System.Drawing.Size(121, 26);
+            this.txtResolution.TabIndex = 5;
             // 
             // lblMonitorInfo
             // 
@@ -320,26 +331,13 @@
             // ckxIsMainScreen
             // 
             this.ckxIsMainScreen.AutoSize = true;
+            this.ckxIsMainScreen.Enabled = false;
             this.ckxIsMainScreen.Location = new System.Drawing.Point(201, 48);
             this.ckxIsMainScreen.Name = "ckxIsMainScreen";
             this.ckxIsMainScreen.Size = new System.Drawing.Size(75, 20);
             this.ckxIsMainScreen.TabIndex = 2;
             this.ckxIsMainScreen.Text = "主屏幕";
             this.ckxIsMainScreen.UseVisualStyleBackColor = true;
-            this.ckxIsMainScreen.CheckedChanged += new System.EventHandler(this.ckxIsMainScreen_CheckedChanged);
-            // 
-            // cbxResolution
-            // 
-            this.cbxResolution.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbxResolution.FormattingEnabled = true;
-            this.cbxResolution.Items.AddRange(new object[] {
-            "1080p",
-            "1440p"});
-            this.cbxResolution.Location = new System.Drawing.Point(201, 78);
-            this.cbxResolution.Name = "cbxResolution";
-            this.cbxResolution.Size = new System.Drawing.Size(121, 24);
-            this.cbxResolution.TabIndex = 1;
-            this.cbxResolution.SelectedIndexChanged += new System.EventHandler(this.cbxResolution_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -485,12 +483,12 @@
         private System.Windows.Forms.Panel plScreens;
         private System.Windows.Forms.Panel plScreenSettings;
         private System.Windows.Forms.CheckBox ckxIsMainScreen;
-        private System.Windows.Forms.ComboBox cbxResolution;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.CheckBox ckxEnabled;
         private System.Windows.Forms.Label lblMonitorInfo;
+        private System.Windows.Forms.TextBox txtResolution;
     }
 }
 

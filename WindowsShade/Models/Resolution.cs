@@ -5,15 +5,15 @@
     /// </summary>
     public class Resolution
     {
-        public int X { get; set; }
-        public int Y { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
 
         public Resolution() { }
 
-        public Resolution(int x, int y)
+        public Resolution(int width, int height)
         {
-            this.X = x;
-            this.Y = y;
+            this.Width = width;
+            this.Height = height;
         }
     }
 }

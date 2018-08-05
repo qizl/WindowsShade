@@ -112,6 +112,7 @@
     <Content Include="Resources\bright2.ico" />
     <Content Include="Resources\bright2.png" />
     <Content Include="Resources\monitor.jpg" />
+    <Content Include="Resources\monitor_gray.jpg" />
     <Content Include="Resources\q.ico" />
   </ItemGroup>
   <ItemGroup>

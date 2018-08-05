@@ -110,15 +110,15 @@ namespace Com.EnjoyCodes.SharpSerializer.Advanced
             }
 
             int referenceId = 0;
-            if (elementId==Elements.Reference || Elements.IsElementWithId(elementId))
+            if (elementId == Elements.Reference || Elements.IsElementWithId(elementId))
             {
                 referenceId = _reader.ReadNumber();
 
-                if (elementId==Elements.Reference)
+                if (elementId == Elements.Reference)
                 {
                     // This is reference
                     // Get property from the cache
-                    return createProperty(referenceId, propertyName, propertyType);                    
+                    return createProperty(referenceId, propertyName, propertyType);
                 }
             }
 
@@ -142,9 +142,9 @@ namespace Com.EnjoyCodes.SharpSerializer.Advanced
             }
 
             var referenceProperty = property as ReferenceTargetProperty;
-            if (referenceProperty!=null)
+            if (referenceProperty != null)
             {
-                if (referenceId>0)
+                if (referenceId > 0)
                 {
                     // object is used multiple times
                     referenceProperty.Reference = new ReferenceInfo();
@@ -358,27 +358,27 @@ namespace Com.EnjoyCodes.SharpSerializer.Advanced
         {
             switch (elementId)
             {
-                case Elements.SimpleObject:
-                    return new SimpleProperty(propertyName, propertyType);
-                case Elements.ComplexObject:
-                case Elements.ComplexObjectWithId:
-                    return new ComplexProperty(propertyName, propertyType);
-                case Elements.Collection:
-                case Elements.CollectionWithId:
-                    return new CollectionProperty(propertyName, propertyType);
-                case Elements.Dictionary:
-                case Elements.DictionaryWithId:
-                    return new DictionaryProperty(propertyName, propertyType);
-                case Elements.SingleArray:
-                case Elements.SingleArrayWithId:
-                    return new SingleDimensionalArrayProperty(propertyName, propertyType);
-                case Elements.MultiArray:
-                case Elements.MultiArrayWithId:
-                    return new MultiDimensionalArrayProperty(propertyName, propertyType);
-                case Elements.Null:
-                    return new NullProperty(propertyName);
-                default:
-                    return null;
+            case Elements.SimpleObject:
+                return new SimpleProperty(propertyName, propertyType);
+            case Elements.ComplexObject:
+            case Elements.ComplexObjectWithId:
+                return new ComplexProperty(propertyName, propertyType);
+            case Elements.Collection:
+            case Elements.CollectionWithId:
+                return new CollectionProperty(propertyName, propertyType);
+            case Elements.Dictionary:
+            case Elements.DictionaryWithId:
+                return new DictionaryProperty(propertyName, propertyType);
+            case Elements.SingleArray:
+            case Elements.SingleArrayWithId:
+                return new SingleDimensionalArrayProperty(propertyName, propertyType);
+            case Elements.MultiArray:
+            case Elements.MultiArrayWithId:
+                return new MultiDimensionalArrayProperty(propertyName, propertyType);
+            case Elements.Null:
+                return new NullProperty(propertyName);
+            default:
+                return null;
             }
         }
 

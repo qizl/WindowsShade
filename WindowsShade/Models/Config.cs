@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using Com.EnjoyCodes.SharpSerializer;
 
 namespace WindowsShade.Models
 {
     public class Config
     {
+        /// <summary>
+        /// 第一次启动，配置
+        /// </summary>
+        public readonly bool IsFirtConfig = false;
+
         /// <summary>
         /// 屏幕分辨率
         /// </summary>
@@ -20,7 +25,7 @@ namespace WindowsShade.Models
         /// <summary>
         /// 显示器配置
         /// </summary>
-        public List<Monitor> Monitors { get; set; }
+        public List<Monitor> Monitors { get; set; } = new List<Monitor>();
         /// <summary>
         /// 透明度
         ///     0~255
@@ -38,19 +43,11 @@ namespace WindowsShade.Models
         public DateTime CreateTime { get; set; } = DateTime.Now;
         public DateTime UpdateTime { get; set; }
 
-        public Config()
-        {
-            // 获取显示器配置
-            this.Monitors = (
-                from screen in Screen.AllScreens
-                select new Monitor(
-                    (byte)Array.IndexOf(Screen.AllScreens, screen),
-                    screen.Bounds.Width,
-                    screen.Bounds.Height,
-                    true,
-                    screen.Primary)
-                ).ToList();
-        }
+        public Config() { }
+
+        /// <summary/>
+        /// <param name="isFirstConfig">是否第一次加载配置</param>
+        public Config(bool isFirstConfig) { IsFirtConfig = true; }
 
         public static Config Load(string path)
         {
@@ -60,7 +57,7 @@ namespace WindowsShade.Models
                 var serializer = new SharpSerializer();
                 config = serializer.Deserialize(path) as Config;
             }
-            catch (Exception e) { }
+            catch { }
             return config;
         }
 
@@ -76,6 +73,22 @@ namespace WindowsShade.Models
             return true;
         }
 
-        public object Clone() => this.MemberwiseClone();
+        public object Clone()
+        {
+            Object obj = null;
+            using (var stream = new MemoryStream())
+            {
+                try
+                {
+                    var formatter = new BinaryFormatter();
+                    formatter.Serialize(stream, this);
+                    stream.Position = 0;
+                    obj = formatter.Deserialize(stream);
+                }
+                catch
+                { }
+            }
+            return obj;
+        }
     }
 }

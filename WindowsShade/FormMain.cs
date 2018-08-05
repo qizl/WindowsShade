@@ -33,7 +33,7 @@ namespace WindowsShade
             // 1.加载配置文件
             Common.Config = Config.Load(Common.ConfigPath);
             if (Common.Config == null)
-                Common.Config = new Config();
+                Common.Config = new Config(true);
             Common.Config.UpdateTime = DateTime.Now;
             Common.Config.Save();
 
@@ -64,17 +64,34 @@ namespace WindowsShade
             }
 
             // 2.5 tabMain - 多屏设置
-            this.cbxResolution.Items.Clear();
-            foreach (var item in Common.Config.Resolutions)
-                this.cbxResolution.Items.Add($"{item.X}x{item.Y}");
-
             this.listView1.Items.Clear();
-            this.listView1.Items.AddRange((
-                    from s in Screen.AllScreens
-                    select new ListViewItem() { ImageIndex = 0 }
-                ).ToArray());
-            this.listView1.MultiSelect = false;
+            var monitorCount = Math.Max(Common.Config.Monitors.Count, Screen.AllScreens.Length); // 读取配置文件和系统屏幕中屏幕数量多的，作为显示器控件数量添加到listview中
+            for (int i = 0; i < monitorCount; i++)
+            {
+                // 2.5.1 添加控件
+                this.listView1.Items.Add(new ListViewItem() { ImageIndex = (i < Common.Config.Monitors.Count && Common.Config.Monitors[i].Enabled) || Common.Config.IsFirtConfig ? 0 : 1 });
+
+                // 2.5.2 添加屏幕配置
+                if (monitorCount > Common.Config.Monitors.Count)
+                    Common.Config.Monitors.Add(new Monitor()); // 将缺少的屏幕添加到配置文件
+
+                // 2.5.3 读取屏幕配置
+                var m = Common.Config.Monitors[i];
+                if (i < Screen.AllScreens.Length)
+                {
+                    m.Primary = Screen.AllScreens[i].Primary; // 设置主显
+                    m.Resolution = new Resolution(Screen.AllScreens[i].Bounds.Width, Screen.AllScreens[i].Bounds.Height); // 设置屏幕分辨率
+                }
+                else
+                {
+                    if (m.Resolution == default(Resolution))
+                        m.Resolution = new Resolution(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
+                }
+                if (Common.Config.IsFirtConfig)
+                    m.Enabled = true; // 第一次配置，启用所有屏幕
+            }
             this.listView1.Items[0].Selected = true;
+            this.txtResolution.BorderStyle = BorderStyle.None;
 
             // 2.6 tabMain - 软件设置
             this.ckxAutoHidden.Checked = Common.Config.AutoHidden;
@@ -236,53 +253,30 @@ namespace WindowsShade
             if (this.listView1.SelectedIndices.Count == 0) return;
 
             var index = this.listView1.SelectedItems[0].Index; // 当前选中屏幕索引
-            var monitor = Common.Config.Monitors.Count > index ? Common.Config.Monitors[index] : new Monitor();
 
             this.lblMonitorInfo.Text = $"当前配置第{index + 1}屏，\r\n共启用{Common.Config.Monitors.Count(m => m.Enabled)}屏";
+
+            var monitor = Common.Config.Monitors[index];
             this.ckxEnabled.Checked = monitor.Enabled;
             this.ckxIsMainScreen.Checked = monitor.Primary;
-            this.ckxIsMainScreen.Enabled = monitor.Enabled;
-            this.cbxResolution.Text = $"{monitor.Resolution.X}x{monitor.Resolution.Y}";
-            this.cbxResolution.Enabled = monitor.Enabled;
+            this.txtResolution.Text = $"{monitor.Resolution.Width}x{monitor.Resolution.Height}";
+        }
+
+        private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.ckxEnabled.Checked = !this.ckxEnabled.Checked;
         }
 
         private void ckxEnabled_CheckedChanged(object sender, EventArgs e)
         {
             var index = this.listView1.SelectedItems[0].Index; // 当前选中屏幕索引
 
-            // 1.屏幕参数控件状态设置
-            this.ckxIsMainScreen.Enabled = this.ckxEnabled.Checked;
-            this.cbxResolution.Enabled = this.ckxEnabled.Checked;
-
-            // 2.保存屏幕配置
-            if (Common.Config.Monitors.Count <= index)
-                for (int i = 0; i < index + 1 - Common.Config.Monitors.Count; i++)
-                    Common.Config.Monitors.Add(new Monitor(0, 1920, 1080));
+            // 1.保存屏幕配置
             Common.Config.Monitors[index].Enabled = this.ckxEnabled.Checked;
-            if (!this.ckxEnabled.Checked) // 禁用当前屏幕时，设置当前屏幕不为主屏
-                Common.Config.Monitors[index].Primary = false;
+            this.listView1.SelectedItems[0].ImageIndex = this.ckxEnabled.Checked ? 0 : 1; // 启用显示器时，图标彩色，否则灰色
 
-            // 3.更新屏幕配置信息
+            // 2.更新屏幕配置信息
             this.lblMonitorInfo.Text = $"当前配置第{index + 1}屏，\r\n共启用{Common.Config.Monitors.Count(m => m.Enabled)}屏";
-        }
-
-        private void ckxIsMainScreen_CheckedChanged(object sender, EventArgs e)
-        {
-            var index = this.listView1.SelectedItems[0].Index; // 当前选中屏幕索引
-
-            if (this.ckxIsMainScreen.Checked)
-                Common.Config.Monitors.ForEach(m => m.Primary = false);
-
-            Common.Config.Monitors[index].Primary = this.ckxIsMainScreen.Checked;
-        }
-
-        private void cbxResolution_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var index = this.listView1.SelectedItems[0].Index; // 当前选中屏幕索引
-
-            var r = this.cbxResolution.Text.Split('x');
-            Common.Config.Monitors[index].Resolution.X = Convert.ToInt32(r[0]);
-            Common.Config.Monitors[index].Resolution.Y = Convert.ToInt32(r[1]);
         }
         #endregion
 
