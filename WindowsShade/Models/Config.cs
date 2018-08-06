@@ -39,7 +39,10 @@ namespace WindowsShade.Models
         /// 软件启动自动隐藏主窗体
         /// </summary>
         public bool AutoHidden { get; set; }
-
+        /// <summary>
+        /// 自动调整亮度
+        /// </summary>
+        public bool AutoAdjust { get; set; } = true;
         public DateTime CreateTime { get; set; } = DateTime.Now;
         public DateTime UpdateTime { get; set; }
 
@@ -85,8 +88,7 @@ namespace WindowsShade.Models
                     stream.Position = 0;
                     obj = formatter.Deserialize(stream);
                 }
-                catch
-                { }
+                catch { }
             }
             return obj;
         }

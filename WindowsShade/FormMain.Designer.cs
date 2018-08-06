@@ -60,6 +60,7 @@
             this.ckxIsMainScreen = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.ckxAutoAdjust = new System.Windows.Forms.CheckBox();
             this.ckxAutoShowShade = new System.Windows.Forms.CheckBox();
             this.ckxAutoHidden = new System.Windows.Forms.CheckBox();
             this.plFoot = new System.Windows.Forms.Panel();
@@ -350,6 +351,7 @@
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.ckxAutoAdjust);
             this.tabPage4.Controls.Add(this.ckxAutoShowShade);
             this.tabPage4.Controls.Add(this.ckxAutoHidden);
             this.tabPage4.Font = new System.Drawing.Font("宋体", 16F);
@@ -360,6 +362,16 @@
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "软件设置";
             this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // ckxAutoAdjust
+            // 
+            this.ckxAutoAdjust.AutoSize = true;
+            this.ckxAutoAdjust.Location = new System.Drawing.Point(89, 146);
+            this.ckxAutoAdjust.Name = "ckxAutoAdjust";
+            this.ckxAutoAdjust.Size = new System.Drawing.Size(161, 26);
+            this.ckxAutoAdjust.TabIndex = 2;
+            this.ckxAutoAdjust.Text = "自动调整亮度";
+            this.ckxAutoAdjust.UseVisualStyleBackColor = true;
             // 
             // ckxAutoShowShade
             // 
@@ -434,6 +446,7 @@
             this.Text = "WindowsShade";
             this.HelpButtonClicked += new System.ComponentModel.CancelEventHandler(this.FormMain_HelpButtonClicked);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMain_FormClosed);
             this.Load += new System.EventHandler(this.FormMain_Load);
             this.plContent.ResumeLayout(false);
             this.plContent.PerformLayout();
@@ -489,6 +502,7 @@
         private System.Windows.Forms.CheckBox ckxEnabled;
         private System.Windows.Forms.Label lblMonitorInfo;
         private System.Windows.Forms.TextBox txtResolution;
+        private System.Windows.Forms.CheckBox ckxAutoAdjust;
     }
 }
 

@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using WindowsShade.Models;
-using WindowsShade.Properties;
 using WindowsShade.Views;
 
 namespace WindowsShade
@@ -52,7 +51,6 @@ namespace WindowsShade
             this.tabMain_SelectedIndexChanged(this, null);
 
             // 2.4 tabMain - 亮度调整
-            this.tbAlpha.Enabled = false;
             this.tbAlpha.Value = Common.Config.Alpha;
             this.lblAlphaValue.Text = Common.Config.Alpha.ToString();
             this.tbSystem.Enabled = this._screenBrightness.Initiazlie();
@@ -96,23 +94,15 @@ namespace WindowsShade
             // 2.6 tabMain - 软件设置
             this.ckxAutoHidden.Checked = Common.Config.AutoHidden;
             this.ckxAutoShowShade.Checked = Common.Config.AutoShowShade;
+            this.ckxAutoAdjust.Checked = Common.Config.AutoAdjust;
 
             // 3.托盘菜单
             this.menuItemHidden.Text = "显示(&D)";
 
-            // 4.自动调整亮度
-            if (Common.Config.AutoShowShade)
-            {
-                // 显示遮罩，调整亮度
-                this.changeCkxAlpha(true, Common.Config.AutoHidden); // 调用遮罩选中事件，显示遮罩
-                this.tbAlpha_Scroll(this, null); // 调用调整亮度事件，调整亮度
-            }
-            else
-            {
-                // 调整亮度
-                this._shade.AdjustBrightness(Common.Config.Alpha);
-            }
+            // 4.调整亮度
+            this.setBrightness(); // 调整亮度
             this._shade.AdjustShade(Common.Config.Monitors); // 设置遮罩大小
+            this.ckxAlpha.Checked = Common.Config.AutoShowShade; // 显示遮罩
 
             // 5.主窗体显示控制
             if (Common.Config.AutoHidden) // 隐藏主窗体
@@ -124,23 +114,27 @@ namespace WindowsShade
 
         #region Methods
         /// <summary>
+        /// 设置遮罩亮度
+        /// </summary>
+        private void setBrightness()
+        {
+            this._shade.AdjustBrightness(Common.Config.Alpha);
+
+            if (this.ckxAlpha.Checked) // 收集屏幕亮度
+                Brightness.Save(Common.Config.Alpha);
+        }
+
+        /// <summary>
         /// 显示遮罩
         /// </summary>
-        /// <param name="hiddenFormMain">隐藏主窗体</param>
-        private void showShade(bool hiddenFormMain = true)
+        /// <param name="isShow">是否显示遮罩</param>
+        private void showShade(bool isShow = true)
         {
-            this.Visible = !hiddenFormMain;
+            this._shade.Visible = isShow ? Common.Config.Monitors.Any(m => m.Enabled) : false;
+            this.menuItemHidden.Text = isShow ? "隐藏(&H)" : "显示(&D)";
 
-            this._shade.Visible = Common.Config.Monitors.Any(m => m.Enabled);
-            this.menuItemHidden.Text = "隐藏(&H)";
-        }
-        /// <summary>
-        /// 隐藏遮罩
-        /// </summary>
-        private void hiddenShade()
-        {
-            this._shade.Visible = false;
-            this.menuItemHidden.Text = "显示(&D)";
+            if (isShow) // 收集屏幕亮度
+                Brightness.Save(Common.Config.Alpha);
         }
         #endregion
 
@@ -155,11 +149,12 @@ namespace WindowsShade
             // 1.获取亮度调整参数
             Common.Config.Alpha = (byte)this.tbAlpha.Value;
 
-            // 2.获取多屏设置参数
+            // 2.获取多屏设置参数：自动更新
 
             // 3.获取软件设置参数
             Common.Config.AutoHidden = this.ckxAutoHidden.Checked;
             Common.Config.AutoShowShade = this.ckxAutoShowShade.Checked;
+            Common.Config.AutoAdjust = this.ckxAutoAdjust.Checked;
 
             // 4.持久化配置
             Common.Config.UpdateTime = DateTime.Now;
@@ -170,11 +165,12 @@ namespace WindowsShade
              */
             // 5.1 调整遮罩
             this._shade.AdjustShade(Common.Config.Monitors);
-
             // 5.2 显示遮罩
-            if (!this.ckxAlpha.Checked)
+            if (this.tabMain.SelectedIndex == 1)
                 this.ckxAlpha.Checked = true;
-            this.showShade(false);
+
+            // 6.收集屏幕亮度
+            Brightness.Save(Common.Config.Alpha, true);
         }
 
         /// <summary>
@@ -191,6 +187,11 @@ namespace WindowsShade
             if (!this._isClosed) e.Cancel = true;
             this.Visible = false;
         }
+
+        private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Brightness.Save(Common.Config.Alpha, true); // 收集屏幕亮度
+        }
         #endregion
 
         #region Events - tabMain
@@ -202,13 +203,11 @@ namespace WindowsShade
         /// <param name="e"></param>
         private void tbAlpha_Scroll(object sender, EventArgs e)
         {
-            var alpha = (byte)this.tbAlpha.Value;
+            this.lblAlphaValue.Text = this.tbAlpha.Value.ToString();
 
-            this.lblAlphaValue.Text = alpha.ToString();
+            Common.Config.Alpha = (byte)this.tbAlpha.Value;
 
-            Common.Config.Alpha = alpha;
-
-            this._shade.AdjustBrightness(alpha);
+            this.setBrightness();
         }
 
         /// <summary>
@@ -218,8 +217,9 @@ namespace WindowsShade
         /// <param name="e"></param>
         private void tbSystem_Scroll(object sender, EventArgs e)
         {
-            this._screenBrightness.SetBrightness(this._tbSystemToScreenBrightness);
             this.lblSystem.Text = this.tbSystem.Value.ToString();
+
+            this._screenBrightness.SetBrightness(this._tbSystemToScreenBrightness);
         }
 
         /// <summary>
@@ -227,19 +227,7 @@ namespace WindowsShade
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ckxAlpha_CheckedChanged(object sender, EventArgs e) => this.changeCkxAlpha(this.ckxAlpha.Checked, hiddenFormMain: false);
-        private void changeCkxAlpha(bool isChecked, bool hiddenFormMain = true)
-        {
-            if (this.tbAlpha.Enabled == isChecked) return;
-
-            this.tbAlpha.Enabled = isChecked; // 是否可以调整遮罩alpha
-            this.ckxAlpha.Checked = isChecked;
-
-            if (isChecked)
-                this.showShade(hiddenFormMain);
-            else
-                this.hiddenShade();
-        }
+        private void ckxAlpha_CheckedChanged(object sender, EventArgs e) => this.showShade(this.ckxAlpha.Checked);
         #endregion
 
         #region tab2 屏幕设置
@@ -294,7 +282,7 @@ namespace WindowsShade
         private void menuItemHidden_Click(object sender, EventArgs e)
         {
             var isChecked = this.menuItemHidden.Text == "显示(&D)";
-            this.changeCkxAlpha(isChecked);
+            this.showShade(isChecked);
         }
         #endregion
 

@@ -65,6 +65,7 @@
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\Brightness.cs" />
     <Compile Include="Models\Common.cs" />
     <Compile Include="Models\Config.cs" />
     <Compile Include="Models\Monitor.cs" />
