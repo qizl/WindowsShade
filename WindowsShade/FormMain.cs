@@ -165,17 +165,16 @@ namespace WindowsShade
             Common.Config.UpdateTime = DateTime.Now;
             Common.Config.Save();
 
-            // 5.调整屏幕亮度
-            if (this.tabMain.SelectedIndex == 1)
-            {
-                // 5.1 调整遮罩
-                this._shade.AdjustShade(Common.Config.Monitors);
+            /*
+             * 5.调整屏幕亮度
+             */
+            // 5.1 调整遮罩
+            this._shade.AdjustShade(Common.Config.Monitors);
 
-                // 5.2 显示遮罩
-                if (!this.ckxAlpha.Checked)
-                    this.ckxAlpha.Checked = true;
-                this.showShade(false);
-            }
+            // 5.2 显示遮罩
+            if (!this.ckxAlpha.Checked)
+                this.ckxAlpha.Checked = true;
+            this.showShade(false);
         }
 
         /// <summary>
@@ -183,11 +182,7 @@ namespace WindowsShade
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnHidden_Click(object sender, EventArgs e)
-        {
-            this.Visible = false;
-            this.btnApply_Click(sender, e);
-        }
+        private void btnHidden_Click(object sender, EventArgs e) => this.Visible = false;
 
         private void FormMain_HelpButtonClicked(object sender, System.ComponentModel.CancelEventArgs e) => Process.Start("http://enjoycodes.com/Home/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
 
@@ -262,10 +257,7 @@ namespace WindowsShade
             this.txtResolution.Text = $"{monitor.Resolution.Width}x{monitor.Resolution.Height}";
         }
 
-        private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            this.ckxEnabled.Checked = !this.ckxEnabled.Checked;
-        }
+        private void listView1_MouseDoubleClick(object sender, MouseEventArgs e) => this.ckxEnabled.Checked = !this.ckxEnabled.Checked;
 
         private void ckxEnabled_CheckedChanged(object sender, EventArgs e)
         {
@@ -283,10 +275,7 @@ namespace WindowsShade
         #region tab3 软件设置
         #endregion
 
-        private void tabMain_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            this.Text = $"WindowsShade - {this.tabMain.SelectedTab.Text}";
-        }
+        private void tabMain_SelectedIndexChanged(object sender, EventArgs e) => this.Text = $"WindowsShade - {this.tabMain.SelectedTab.Text}";
         #endregion
 
         #region Events - 托盘菜单（cmxTray）
