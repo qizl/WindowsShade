@@ -133,8 +133,7 @@ namespace WindowsShade
             this._shade.Visible = isShow ? Common.Config.Monitors.Any(m => m.Enabled) : false;
             this.menuItemHidden.Text = isShow ? "隐藏(&H)" : "显示(&D)";
 
-            if (isShow) // 收集屏幕亮度
-                Brightness.Save(Common.Config.Alpha);
+            Brightness.Save(isShow ? Common.Config.Alpha : (byte)0); // 收集屏幕亮度
         }
         #endregion
 
@@ -170,7 +169,7 @@ namespace WindowsShade
                 this.ckxAlpha.Checked = true;
 
             // 6.收集屏幕亮度
-            Brightness.Save(Common.Config.Alpha, true);
+            Brightness.Save(this.ckxAlpha.Checked ? Common.Config.Alpha : (byte)0, true);
         }
 
         /// <summary>
