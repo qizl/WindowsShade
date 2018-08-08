@@ -143,7 +143,8 @@ namespace WindowsShade
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnApply_Click(object sender, EventArgs e)
+        private void btnApply_Click(object sender, EventArgs e) => this.apply();
+        private void apply()
         {
             // 1.获取亮度调整参数
             Common.Config.Alpha = (byte)this.tbAlpha.Value;
@@ -166,7 +167,12 @@ namespace WindowsShade
             this._shade.AdjustShade(Common.Config.Monitors);
             // 5.2 显示遮罩
             if (this.tabMain.SelectedIndex == 1)
-                this.ckxAlpha.Checked = true;
+            {
+                if (!this.ckxAlpha.Checked)
+                    this.ckxAlpha.Checked = true;
+                else
+                    this.showShade(this.ckxAlpha.Checked);
+            }
 
             // 6.收集屏幕亮度
             Brightness.Save(this.ckxAlpha.Checked ? Common.Config.Alpha : (byte)0, true);
@@ -183,7 +189,13 @@ namespace WindowsShade
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
+            // 1.取消屏幕关闭
             if (!this._isClosed) e.Cancel = true;
+
+            // 2.应用
+            this.apply();
+
+            // 3.隐藏主窗体
             this.Visible = false;
         }
 
@@ -256,6 +268,9 @@ namespace WindowsShade
 
             // 2.更新屏幕配置信息
             this.lblMonitorInfo.Text = $"当前配置第{index + 1}屏，\r\n共启用{Common.Config.Monitors.Count(m => m.Enabled)}屏";
+
+            // 3.应用
+            this.apply();
         }
         #endregion
 
@@ -281,7 +296,7 @@ namespace WindowsShade
         private void menuItemHidden_Click(object sender, EventArgs e)
         {
             var isChecked = this.menuItemHidden.Text == "显示(&D)";
-            this.showShade(isChecked);
+            this.ckxAlpha.Checked = isChecked;
         }
         #endregion
 
