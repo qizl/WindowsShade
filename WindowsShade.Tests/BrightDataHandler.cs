@@ -1,5 +1,6 @@
 ﻿using Com.EnjoyCodes.SharpSerializer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -38,10 +39,14 @@ namespace WindowsShade.Tests
             {
                 var r1 = serializer.Deserialize(item) as List<Brightness>;
                 if (r1 != null)
+                {
+                    // 2.日志数据优化
+                    //r1 = this.analyze(r1);
+
                     brightnesses.AddRange(r1);
+                }
             }
 
-            // 2.日志数据优化
 
             // 3.转化为ML数据
             var d = brightnesses
@@ -55,6 +60,16 @@ namespace WindowsShade.Tests
                 sb.AppendLine($"{m.Time},{m.Alpha}");
             });
             Debug.Write(sb.ToString());
+        }
+
+        /// <summary>
+        /// 原始数据分析
+        /// </summary>
+        /// <param name="brightnesses"></param>
+        /// <returns></returns>
+        private List<Brightness> analyze(List<Brightness> brightnesses)
+        {
+            throw new NotImplementedException();
         }
     }
 }
