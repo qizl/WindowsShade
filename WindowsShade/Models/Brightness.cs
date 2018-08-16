@@ -59,4 +59,11 @@ namespace WindowsShade.Models
             }
         }
     }
+
+    public class BrightnessCompare : IEqualityComparer<Brightness>
+    {
+        public bool Equals(Brightness x, Brightness y) => x.Time == y.Time && x.Value == y.Value;
+
+        public int GetHashCode(Brightness obj) => obj == null ? 0 : obj.ToString().GetHashCode();
+    }
 }
