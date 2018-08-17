@@ -45,8 +45,8 @@ namespace WindowsShade.Tests
         [TestMethod]
         public void LoadDatas()
         {
-            //var folders = @"C:\Program Files\qizl\WindowsShade\Brightness";
-            var folders = @"D:\PL\MyProjects\GitHub\WindowsShade\WindowsShade\bin\Debug\Brightness";
+            var folders = @"C:\Program Files\qizl\WindowsShade\Brightness";
+            //var folders = @"D:\PL\MyProjects\GitHub\WindowsShade\WindowsShade\bin\Debug\Brightness"; 
             var files = Directory.GetFiles(folders);
 
             // 1.加载日志数据

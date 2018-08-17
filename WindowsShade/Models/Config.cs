@@ -14,15 +14,6 @@ namespace WindowsShade.Models
         public readonly bool IsFirtConfig = false;
 
         /// <summary>
-        /// 屏幕分辨率
-        /// </summary>
-        public Resolution[] Resolutions { get; set; } = new Resolution[] {
-            new Resolution(1920,1080),
-            new Resolution(1600,900),
-            new Resolution(1440,900),
-            new Resolution(1366,768)
-        };
-        /// <summary>
         /// 显示器配置
         /// </summary>
         public List<Monitor> Monitors { get; set; } = new List<Monitor>();
