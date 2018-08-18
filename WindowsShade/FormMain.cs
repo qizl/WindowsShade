@@ -224,6 +224,7 @@ namespace WindowsShade
             if (e.Alpha == 0)
                 return;
 
+            // TODO:渐变修改
             this.Invoke(new changeTbAlphaHandler(this.changeTbAlpha), e.Alpha);
         }
         private delegate void changeTbAlphaHandler(int value);
