@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using WindowsShade.Models;
+using WindowsShade.Task;
 using WindowsShade.Views;
 
 namespace WindowsShade
@@ -21,6 +22,7 @@ namespace WindowsShade
             get { return this.tbSystem.Maximum - this.tbSystem.Value; }
             set { this.tbSystem.Value = this.tbSystem.Maximum - value; }
         }
+        private DataDriver _dataDriver;
         #endregion
 
         #region Structures & Initialize
@@ -109,6 +111,14 @@ namespace WindowsShade
                 this.Visible = false;
             else // 不自动隐藏主窗体时，激活主窗体
                 this.Activate();
+
+            // 6.启动数据驱动
+            if (this._dataDriver == null)
+            {
+                this._dataDriver = new DataDriver();
+                this._dataDriver.AdjustBrightness += _dataDriver_AdjustBrightness;
+                this._dataDriver.Start();
+            }
         }
         #endregion
 
@@ -187,6 +197,20 @@ namespace WindowsShade
 
         private void FormMain_HelpButtonClicked(object sender, System.ComponentModel.CancelEventArgs e) => Process.Start("http://enjoycodes.com/Home/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
 
+        /// <summary>
+        /// 调整屏幕亮度事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _dataDriver_AdjustBrightness(object sender, AdjustBrightnessEventArgs e)
+        {
+            if (!Common.Config.AutoAdjust)
+                return;
+
+            Common.Config.Alpha = e.Alpha;
+            this.setBrightness();
+        }
+
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             // 1.取消屏幕关闭
@@ -202,6 +226,7 @@ namespace WindowsShade
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
         {
             Brightness.Save(Common.Config.Alpha, true); // 收集屏幕亮度
+            this._dataDriver.Stop(); // 关闭数据驱
         }
         #endregion
 

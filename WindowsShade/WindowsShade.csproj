@@ -74,6 +74,9 @@
     <Compile Include="Models\Shade.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Task\AdjustBrightnessEventArgs.cs" />
+    <Compile Include="Task\AdjustBrightnessHandler.cs" />
+    <Compile Include="Task\DataDriver.cs" />
     <Compile Include="Views\FormShade.cs">
       <SubType>Form</SubType>
     </Compile>

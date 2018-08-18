@@ -15,6 +15,11 @@ namespace WindowsShade.Models
         /// 0~255
         /// </summary>
         public byte Value { get; private set; }
+        /// <summary>
+        /// 天气
+        ///     光照因素
+        /// </summary>
+        //public int Weather { get; set; }
         public DateTime Time { get; set; } = DateTime.Now;
 
         private static List<Brightness> tmp = new List<Brightness>();

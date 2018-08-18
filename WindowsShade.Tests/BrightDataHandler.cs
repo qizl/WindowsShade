@@ -69,7 +69,7 @@ namespace WindowsShade.Tests
 
             // 3.转化为ML数据
             var d = r2
-                .Select(m => new b() { Time = m.Time.ToString("HHmm"), Alpha = m.Value })
+                .Select(m => new b() { Time = m.Time.ToString("HHmmss"), Alpha = m.Value })
                 .OrderBy(m => m.Time)
                 .ToList();
             var sb = new StringBuilder();
