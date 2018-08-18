@@ -12,7 +12,6 @@ namespace WindowsShade.Task
     public class DataDriver
     {
         public event AdjustBrightnessHandler AdjustBrightness;
-        public
 
         private Thread _tdMain;
 
@@ -49,8 +48,10 @@ namespace WindowsShade.Task
                 Thread.Sleep(this._interval);
 
                 // 1.更新亮度
-                if ((DateTime.Now - lastGetNewBrightnessTime).TotalSeconds >= Common.Config.AutoAdjustInterval)
+                if ((DateTime.Now - lastGetNewBrightnessTime).TotalMinutes >= Common.Config.AutoAdjustInterval)
                 {
+                    lastGetNewBrightnessTime = DateTime.Now;
+
                     this.AdjustBrightness?.Invoke(this, new AdjustBrightnessEventArgs()
                     {
                         Alpha = this.getNewBrightness(),
@@ -61,9 +62,12 @@ namespace WindowsShade.Task
                 // 2.生成数据
                 if ((DateTime.Now - lastGenerateDataTime).TotalDays >= Common.Config.GenerateDataInterval)
                 {
-                    var path = this.generateData();
-                    Common.Config.BrightnessDataPath = path;
-                    Common.Config.Save();
+                    lastGenerateDataTime = DateTime.Now;
+
+                    //var path = this.generateData();
+                    //Common.Config.BrightnessDataPath = path;
+                    //Common.Config.LastGenerateDataTime = DateTime.Now;
+                    //Common.Config.Save();
                 }
             }
         }
@@ -74,7 +78,8 @@ namespace WindowsShade.Task
         /// <returns></returns>
         private byte getNewBrightness()
         {
-            throw new NotImplementedException();
+            return 10;
+            //throw new NotImplementedException();
         }
 
         /// <summary>
@@ -83,7 +88,8 @@ namespace WindowsShade.Task
         /// <returns></returns>
         private string generateData()
         {
-            throw new NotImplementedException();
+            return string.Empty;
+            //throw new NotImplementedException();
         }
     }
 }

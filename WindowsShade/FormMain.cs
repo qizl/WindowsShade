@@ -207,9 +207,9 @@ namespace WindowsShade
             if (!Common.Config.AutoAdjust)
                 return;
 
-            Common.Config.Alpha = e.Alpha;
-            this.setBrightness();
+            this.Invoke(new changeTbAlphaHandler(this.changeTbAlpha), e.Alpha);
         }
+        private delegate void changeTbAlphaHandler(int value);
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -239,10 +239,14 @@ namespace WindowsShade
         /// <param name="e"></param>
         private void tbAlpha_Scroll(object sender, EventArgs e)
         {
-            this.lblAlphaValue.Text = this.tbAlpha.Value.ToString();
+            this.changeTbAlpha(this.tbAlpha.Value);
+        }
+        private void changeTbAlpha(int value)
+        {
+            this.tbAlpha.Value = value;
+            this.lblAlphaValue.Text = value.ToString();
 
-            Common.Config.Alpha = (byte)this.tbAlpha.Value;
-
+            Common.Config.Alpha = (byte)value;
             this.setBrightness();
         }
 
