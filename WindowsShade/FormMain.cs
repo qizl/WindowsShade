@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Com.EnjoyCodes.SharpSerializer;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using WindowsShade.Models;
@@ -115,8 +118,19 @@ namespace WindowsShade
             // 6.启动数据驱动
             if (this._dataDriver == null)
             {
+                if (Common.Config.AutoAdjust && File.Exists(Common.Config.BrightnessDataPath))
+                {
+                    // 加载亮度数据
+                    try
+                    {
+                        Common.BrightnessDatas = new SharpSerializer().Deserialize(Common.Config.BrightnessDataPath) as List<BrightnessData>;
+                    }
+                    catch { }
+                }
+
                 this._dataDriver = new DataDriver();
                 this._dataDriver.AdjustBrightness += _dataDriver_AdjustBrightness;
+                this._dataDriver.BrightnessGenerated += _dataDriver_BrightnessGenerated;
                 this._dataDriver.Start();
             }
         }
@@ -207,9 +221,28 @@ namespace WindowsShade
             if (!Common.Config.AutoAdjust)
                 return;
 
+            if (e.Alpha == 0)
+                return;
+
             this.Invoke(new changeTbAlphaHandler(this.changeTbAlpha), e.Alpha);
         }
         private delegate void changeTbAlphaHandler(int value);
+
+        private void _dataDriver_BrightnessGenerated(object sender, GenerateBrightnessEventArgs e)
+        {
+            if (e.Datas.Any())
+            {
+                var trainedFilePath = Common.GetBrightnessTrainedFileName();
+
+                var serializer = new SharpSerializer();
+                serializer.Serialize(e.Datas, trainedFilePath);
+
+                Common.BrightnessDatas = e.Datas;
+                Common.Config.BrightnessDataPath = trainedFilePath;
+                Common.Config.LastGenerateDataTime = e.Time;
+                Common.Config.Save();
+            }
+        }
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -237,13 +270,11 @@ namespace WindowsShade
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void tbAlpha_Scroll(object sender, EventArgs e)
-        {
-            this.changeTbAlpha(this.tbAlpha.Value);
-        }
+        private void tbAlpha_Scroll(object sender, EventArgs e) => this.changeTbAlpha(this.tbAlpha.Value);
         private void changeTbAlpha(int value)
         {
-            this.tbAlpha.Value = value;
+            if (this.tbAlpha.Value != value)
+                this.tbAlpha.Value = value;
             this.lblAlphaValue.Text = value.ToString();
 
             Common.Config.Alpha = (byte)value;
@@ -304,6 +335,18 @@ namespace WindowsShade
         #endregion
 
         #region tab3 软件设置
+        private void ckxAutoAdjust_CheckedChanged(object sender, EventArgs e)
+        {
+            if (this.ckxAutoAdjust.Checked && File.Exists(Common.Config.BrightnessDataPath))
+            {
+                try
+                {
+                    // 加载亮度数据
+                    Common.BrightnessDatas = new SharpSerializer().Deserialize(Common.Config.BrightnessDataPath) as List<BrightnessData>;
+                }
+                catch { }
+            }
+        }
         #endregion
 
         private void tabMain_SelectedIndexChanged(object sender, EventArgs e) => this.Text = $"WindowsShade - {this.tabMain.SelectedTab.Text}";

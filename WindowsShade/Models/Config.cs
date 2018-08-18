@@ -52,6 +52,12 @@ namespace WindowsShade.Models
         /// </summary>
         public string BrightnessDataPath { get; set; }
 
+        public string ServerUrl { get; set; } = @"http://localhost:10108/";
+        /// <summary>
+        /// 重连服务端间隔（min）
+        /// </summary>
+        public int ReconnectInterval { get; set; } = 30;
+
         public DateTime CreateTime { get; set; } = DateTime.Now;
         public DateTime UpdateTime { get; set; }
 

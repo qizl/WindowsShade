@@ -372,6 +372,7 @@
             this.ckxAutoAdjust.TabIndex = 2;
             this.ckxAutoAdjust.Text = "自动调整亮度";
             this.ckxAutoAdjust.UseVisualStyleBackColor = true;
+            this.ckxAutoAdjust.CheckedChanged += new System.EventHandler(this.ckxAutoAdjust_CheckedChanged);
             // 
             // ckxAutoShowShade
             // 
