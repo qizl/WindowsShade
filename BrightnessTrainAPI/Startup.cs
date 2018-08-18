@@ -1,25 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BrightnessTrainAPI.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using System.IO;
 
 namespace BrightnessTrainAPI
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public IConfiguration Configuration { get; }
+        public IHostingEnvironment HostingEnvironment { get; }
+
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
+            this.HostingEnvironment = env;
+
+            this.init();
         }
 
-        public IConfiguration Configuration { get; }
+        private void init()
+        {
+            Common.BrightnessTrainedFolder = Path.Combine(this.HostingEnvironment.WebRootPath, this.Configuration["BrightnessTrainedFolder"]);
+            if (!Directory.Exists(Common.BrightnessTrainedFolder))
+                Directory.CreateDirectory(Common.BrightnessTrainedFolder);
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
