@@ -337,7 +337,8 @@ namespace WindowsShade
         #region tab3 软件设置
         private void ckxAutoAdjust_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.ckxAutoAdjust.Checked && File.Exists(Common.Config.BrightnessDataPath))
+            Common.Config.AutoAdjust = this.ckxAlpha.Checked;
+            if (Common.Config.AutoAdjust && File.Exists(Common.Config.BrightnessDataPath))
             {
                 try
                 {

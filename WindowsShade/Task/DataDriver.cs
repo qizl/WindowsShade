@@ -44,7 +44,7 @@ namespace WindowsShade.Task
             }
         }
 
-        private void mainThread()
+        private async void mainThread()
         {
             var lastGetNewBrightnessTime = new DateTime(); // 上次获取屏幕亮度时间
             var lastGenerateDataTime = Common.Config.LastGenerateDataTime; // 上次自动生成屏幕亮度数据时间
@@ -61,7 +61,7 @@ namespace WindowsShade.Task
                 {
                     lastConnectServerTime = now;
 
-                    Common.IsServerOnline = this._brightnessTrain.HealthCheck().Result;
+                    Common.IsServerOnline = await this._brightnessTrain.HealthCheck();
                 }
 
                 // 1.更新亮度

@@ -13,9 +13,12 @@ namespace WindowsShade.Models
         public async Task<bool> HealthCheck()
         {
             var uri = new Uri($"{Common.Config.ServerUrl}/api/Brightness/HealthCheck");
-            var r = await this._httpClient.GetStringAsync(uri);
-
-            return r == "Ok";
+            try
+            {
+                return await this._httpClient.GetStringAsync(uri) == "Ok";
+            }
+            catch { }
+            return false;
         }
 
         public async Task<List<BrightnessData>> GetBrightnessData(IEnumerable<BrightnessData> src)
