@@ -52,7 +52,7 @@ namespace WindowsShade.Models
         /// </summary>
         public string BrightnessDataPath { get; set; }
 
-        public string ServerUrl { get; set; } = @"http://localhost:10108/";
+        public string ServerUrl { get; set; } = @"http://btapi.luciddreaming.cn/";
         /// <summary>
         /// 重连服务端间隔（min）
         /// </summary>

@@ -29,7 +29,7 @@ namespace WindowsShade.Models
 
             var r1 = r.Content.ReadAsStringAsync().Result;
 
-            return string.IsNullOrEmpty(r1) ? null : JsonConvert.DeserializeObject<List<BrightnessData>>(r1);
+            return string.IsNullOrEmpty(r1) ? new List<BrightnessData>() : JsonConvert.DeserializeObject<List<BrightnessData>>(r1);
         }
     }
 }

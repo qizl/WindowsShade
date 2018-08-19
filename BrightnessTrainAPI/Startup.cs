@@ -23,7 +23,11 @@ namespace BrightnessTrainAPI
 
         private void init()
         {
-            Common.BrightnessTrainedFolder = Path.Combine(this.HostingEnvironment.WebRootPath, this.Configuration["BrightnessTrainedFolder"]);
+            var webRootPath = Path.Combine(this.HostingEnvironment.ContentRootPath, "wwwroot");
+            if (!Directory.Exists(webRootPath))
+                Directory.CreateDirectory(webRootPath);
+
+            Common.BrightnessTrainedFolder = Path.Combine(webRootPath, this.Configuration["BrightnessTrainedFolder"]);
             if (!Directory.Exists(Common.BrightnessTrainedFolder))
                 Directory.CreateDirectory(Common.BrightnessTrainedFolder);
         }
@@ -42,6 +46,11 @@ namespace BrightnessTrainAPI
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials());
             app.UseMvc();
         }
     }

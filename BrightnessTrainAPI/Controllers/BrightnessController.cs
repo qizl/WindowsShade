@@ -24,7 +24,7 @@ namespace BrightnessTrainAPI.Controllers
             }
 
             // 1.保存训练数据到文件
-            var dataPath = Common.GetBrightnessTrainedFileName();
+            var dataPath = Common.GetBrightnessTrainedFileName(HttpContext.Connection.RemoteIpAddress.ToString().Replace(':', '.'));
             using (StreamWriter stream = new StreamWriter(dataPath, true))
             {
                 foreach (var item in src)

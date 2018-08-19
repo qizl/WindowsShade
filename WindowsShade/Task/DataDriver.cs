@@ -57,12 +57,13 @@ namespace WindowsShade.Task
                 var now = DateTime.Now;
 
                 // 0.判断服务端是否上线
-                if (!Common.IsServerOnline && (now - lastConnectServerTime).TotalMinutes >= Common.Config.ReconnectInterval)
-                {
-                    lastConnectServerTime = now;
+                if (!Common.IsServerOnline)
+                    if ((now - lastConnectServerTime).TotalMinutes >= Common.Config.ReconnectInterval)
+                    {
+                        lastConnectServerTime = now;
 
-                    Common.IsServerOnline = await this._brightnessTrain.HealthCheck();
-                }
+                        Common.IsServerOnline = await this._brightnessTrain.HealthCheck();
+                    }
 
                 // 1.更新亮度
                 if (Common.Config.AutoAdjust)
@@ -99,13 +100,8 @@ namespace WindowsShade.Task
         /// <returns></returns>
         private byte getNewBrightness(string time)
         {
-            if (Common.BrightnessDatas != null)
-            {
-                var b = Common.BrightnessDatas.FirstOrDefault(m => m.Time == time);
-                if (b != null)
-                    return b.Value;
-            }
-            return 0;
+            var b = Common.BrightnessDatas?.FirstOrDefault(m => m.Time == time);
+            return b == null ? (byte)0 : b.Value;
         }
 
         /// <summary>

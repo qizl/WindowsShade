@@ -224,8 +224,25 @@ namespace WindowsShade
             if (e.Alpha == 0)
                 return;
 
-            // TODO:渐变修改
-            this.Invoke(new changeTbAlphaHandler(this.changeTbAlpha), e.Alpha);
+            if (e.Alpha == Common.Config.Alpha)
+                return;
+
+            // 渐变修改
+            var lastAlpha = Common.Config.Alpha;
+            var abs = Math.Abs(lastAlpha - e.Alpha);
+            var direct = lastAlpha > e.Alpha; // 渐变方向
+            var d = abs <= 50 ? 1 : abs / 50; // 渐变值
+            var i = (int)lastAlpha; // 起始值
+            while (i != e.Alpha)
+            {
+                i = direct ? i - d : i + d;
+
+                if (i >= e.Alpha != direct) // 终止条件，渐变方向改变
+                    i = e.Alpha;
+
+                this.Invoke(new changeTbAlphaHandler(this.changeTbAlpha), i);
+                System.Threading.Thread.Sleep(50);
+            }
         }
         private delegate void changeTbAlphaHandler(int value);
 
