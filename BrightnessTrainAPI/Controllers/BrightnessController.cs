@@ -57,6 +57,12 @@ namespace BrightnessTrainAPI.Controllers
             return result;
         }
 
+        /// <summary>
+        /// 参考：https://blog.csdn.net/daonidedie/article/details/41643157
+        /// </summary>
+        /// <param name="number"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
         private int getNumber(int number, int position)
         {
             int power = (int)Math.Pow(10, position);
