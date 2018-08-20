@@ -38,7 +38,11 @@ namespace BrightnessTrainAPI.Controllers
 
             var times = new List<float>();
             for (float s = 0; s < 2400; s += 10)
+            {
                 times.Add(s * 100);
+
+                //if (s)
+            }
             var r = brightnessTrain.Train(times).ToList();
 
             // 3.处理新生成的数据
@@ -51,6 +55,12 @@ namespace BrightnessTrainAPI.Controllers
                 });
 
             return result;
+        }
+
+        private int getNumber(int number, int position)
+        {
+            int power = (int)Math.Pow(10, position);
+            return (number - number / power * power) * 10 / power;
         }
 
         [HttpGet]
