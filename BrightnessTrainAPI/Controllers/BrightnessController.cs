@@ -37,11 +37,11 @@ namespace BrightnessTrainAPI.Controllers
             var brightnessTrain = new BrightnessTrain(dataPath);
 
             var times = new List<float>();
-            for (float s = 0; s < 2400; s += 10)
+            for (float s = 0; s < 2400;)
             {
                 times.Add(s * 100);
 
-                //if (s)
+                s += this.getNumber((int)s, 2) == 5 ? 50 : 10; // 60分钟制处理，遇50则变为100
             }
             var r = brightnessTrain.Train(times).ToList();
 
