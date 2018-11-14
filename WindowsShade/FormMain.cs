@@ -34,6 +34,12 @@ namespace WindowsShade
         private void FormMain_Load(object sender, EventArgs e) => this.initialize();
         private void initialize()
         {
+            // 0.初始化路径
+            if (!Directory.Exists(Common.BrightnessFolder))
+                Directory.CreateDirectory(Common.BrightnessFolder);
+            if (!Directory.Exists(Common.BrightnessTrainedFolder))
+                Directory.CreateDirectory(Common.BrightnessTrainedFolder);
+
             // 1.加载配置文件
             Common.Config = Config.Load(Common.ConfigPath);
             if (Common.Config == null)
