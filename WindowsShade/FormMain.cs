@@ -14,7 +14,7 @@ namespace WindowsShade
     public partial class FormMain : Form
     {
         #region Members & Properties
-        private FormShade _shade = new FormShade();
+        private List<FormShade> _shades = new List<FormShade>();
         /// <summary>
         /// 是否允许关闭主程序
         /// </summary>
@@ -56,7 +56,7 @@ namespace WindowsShade
             this.btnHidden.Location = new System.Drawing.Point(0, -100);
 
             // 2.2 遮罩窗体
-            this._shade.Text = this.Text;
+            //this._shade.Text = this.Text;
 
             // 2.3 tabMain
             this.tabMain_SelectedIndexChanged(this, null);
@@ -75,6 +75,7 @@ namespace WindowsShade
             // 2.5 tabMain - 多屏设置
             this.listView1.Items.Clear();
             var monitorCount = Math.Max(Common.Config.Monitors.Count, Screen.AllScreens.Length); // 读取配置文件和系统屏幕中屏幕数量多的，作为显示器控件数量添加到listview中
+            var screens = Screen.AllScreens.OrderBy(m => m.Bounds.X).ToArray(); // 按屏幕X轴位置排序
             for (int i = 0; i < monitorCount; i++)
             {
                 // 2.5.1 添加控件
@@ -86,18 +87,29 @@ namespace WindowsShade
 
                 // 2.5.3 读取屏幕配置
                 var m = Common.Config.Monitors[i];
-                if (i < Screen.AllScreens.Length)
+                if (i < screens.Length)
                 {
-                    m.Primary = Screen.AllScreens[i].Primary; // 设置主显
-                    m.Resolution = new Resolution(Screen.AllScreens[i].Bounds.Width, Screen.AllScreens[i].Bounds.Height); // 设置屏幕分辨率
+                    m.Primary = screens[i].Primary; // 设置主显
+                    m.Width = screens[i].Bounds.Width;
+                    m.Height = screens[i].Bounds.Height;
+                    m.X = screens[i].Bounds.X;
+                    m.Y = screens[i].Bounds.Y;
                 }
                 else
                 {
-                    if (m.Resolution == default(Resolution))
-                        m.Resolution = new Resolution(Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height);
+                    if (m.Width == 0)
+                    {
+                        m.Width = Screen.PrimaryScreen.Bounds.Width;
+                        m.Height = Screen.PrimaryScreen.Bounds.Height;
+                    }
                 }
                 if (Common.Config.IsFirtConfig)
                     m.Enabled = true; // 第一次配置，启用所有屏幕
+
+                // 2.5.4 遮罩窗体
+                var shade = new FormShade() { Text = this.Text };
+                this._shades.Add(shade);
+                shade.AdjustShade(m);
             }
             this.listView1.Items[0].Selected = true;
             this.txtResolution.BorderStyle = BorderStyle.None;
@@ -112,7 +124,6 @@ namespace WindowsShade
 
             // 4.调整亮度
             this.setBrightness(); // 调整亮度
-            this._shade.AdjustShade(Common.Config.Monitors); // 设置遮罩大小
             this.ckxAlpha.Checked = Common.Config.AutoShowShade; // 显示遮罩
 
             // 5.主窗体显示控制
@@ -148,7 +159,7 @@ namespace WindowsShade
         /// </summary>
         private void setBrightness()
         {
-            this._shade.AdjustBrightness(Common.Config.Alpha);
+            this._shades.ForEach(m => m.AdjustBrightness(Common.Config.Alpha));
 
             if (this.ckxAlpha.Checked) // 收集屏幕亮度
                 Brightness.Save(Common.Config.Alpha);
@@ -160,7 +171,8 @@ namespace WindowsShade
         /// <param name="isShow">是否显示遮罩</param>
         private void showShade(bool isShow = true)
         {
-            this._shade.Visible = isShow ? Common.Config.Monitors.Any(m => m.Enabled) : false;
+            var visible = isShow ? Common.Config.Monitors.Any(m => m.Enabled) : false;
+            this._shades.ForEach(m => m.Visible = visible);
             this.menuItemHidden.Text = isShow ? "隐藏(&H)" : "显示(&D)";
 
             Brightness.Save(isShow ? Common.Config.Alpha : (byte)0); // 收集屏幕亮度
@@ -194,7 +206,7 @@ namespace WindowsShade
              * 5.调整屏幕亮度
              */
             // 5.1 调整遮罩
-            this._shade.AdjustShade(Common.Config.Monitors);
+            this._shades.ForEach(m => m.AdjustShade(Common.Config.Monitors[this._shades.IndexOf(m)]));
             // 5.2 显示遮罩
             if (this.tabMain.SelectedIndex == 1)
             {
@@ -337,7 +349,7 @@ namespace WindowsShade
             var monitor = Common.Config.Monitors[index];
             this.ckxEnabled.Checked = monitor.Enabled;
             this.ckxIsMainScreen.Checked = monitor.Primary;
-            this.txtResolution.Text = $"{monitor.Resolution.Width}x{monitor.Resolution.Height}";
+            this.txtResolution.Text = $"{monitor.Width}x{monitor.Height}";
         }
 
         private void listView1_MouseDoubleClick(object sender, MouseEventArgs e) => this.ckxEnabled.Checked = !this.ckxEnabled.Checked;

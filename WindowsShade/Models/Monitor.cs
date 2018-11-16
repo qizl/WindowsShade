@@ -11,20 +11,29 @@ namespace WindowsShade.Models
         [Obsolete]
         public int No { get; set; }
         public bool Enabled { get; set; }
-        [ExcludeFromSerialization]
-        public Resolution Resolution { get; set; }
         /// <summary>
         /// 是否主显
         /// </summary>
         [ExcludeFromSerialization]
         public bool Primary { get; set; }
+        [ExcludeFromSerialization]
+        public int Height { get; set; }
+        [ExcludeFromSerialization]
+        public int Width { get; set; }
+        [ExcludeFromSerialization]
+        public int Y { get; set; }
+        [ExcludeFromSerialization]
+        public int X { get; set; }
 
         public Monitor() { }
 
-        public Monitor(int no, int resolutionX, int resolutionY, bool enabled = true, bool primary = false)
+        public Monitor(int no, int width, int height, int x, int y, bool enabled = true, bool primary = false)
         {
             this.No = no;
-            this.Resolution = new Resolution(resolutionX, resolutionY);
+            this.Width = width;
+            this.Height = height;
+            this.X = x;
+            this.Y = y;
             this.Enabled = enabled;
             this.Primary = primary;
         }

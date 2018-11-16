@@ -50,34 +50,15 @@ namespace WindowsShade.Views
         /// 调整遮罩
         /// </summary>
         /// <param name="monitors"></param>
-        public void AdjustShade(List<Monitor> ms)
+        public void AdjustShade(Monitor m)
         {
-            // 1.读取屏幕配置
-            var monitors = (from m in ms
-                            where m.Enabled
-                            select new Monitor(m.No, m.Resolution.Width, m.Resolution.Height, m.Enabled, m.Primary)).ToList();
-            if (!monitors.Any())
-                return;
-            if (!monitors.Any(m => m.Primary))
-                monitors[0].Primary = true;
-
-            // 2.提取主显配置
-            var mainMonitor = monitors.First(m => m.Primary); // 主显
-            var mainMonitorIndex = monitors.IndexOf(mainMonitor); // 主显位置
-            var d = mainMonitor.Resolution.Height - monitors.Max(m => m.Resolution.Height); // 主显与最大高度显示器高度差
-
-            // 3.计算屏幕大小
-            int x = mainMonitorIndex == 0 ? 0 : monitors.Take(mainMonitorIndex).Sum(m => m.Resolution.Width) * -1;
-            int y = d >= 0 ? 0 : d; // 默认用户多显示器配置为底部对齐
-            int width = monitors.Sum(m => m.Resolution.Width);
-            int height = monitors.Max(m => m.Resolution.Height);
-
-            // 4.设置屏幕大小
             var border = 7;
             var title = 40;
-            this.Location = new Point(x - border, y - title);
-            this.Width = width + border * 2;
-            this.Height = height + title;
+            this.Location = new Point(m.X - border, m.Y - title);
+            this.Width = m.Width + border * 2;
+            this.Height = m.Height + title;
+
+            this.Visible = m.Enabled;
 
             //SetWindowPos(this.Handle, (IntPtr)HWND_TOPMOST, 0, 0, 0, 0, 1 | 2);
         }
