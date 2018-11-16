@@ -107,9 +107,7 @@ namespace WindowsShade
                     m.Enabled = true; // 第一次配置，启用所有屏幕
 
                 // 2.5.4 遮罩窗体
-                var shade = new FormShade() { Text = this.Text };
-                this._shades.Add(shade);
-                shade.AdjustShade(m);
+                this._shades.Add(new FormShade() { Text = this.Text });
             }
             this.listView1.Items[0].Selected = true;
             this.txtResolution.BorderStyle = BorderStyle.None;
@@ -124,6 +122,7 @@ namespace WindowsShade
 
             // 4.调整亮度
             this.setBrightness(); // 调整亮度
+            this._shades.ForEach(m => m.AdjustShade(Common.Config.Monitors[this._shades.IndexOf(m)]));
             this.ckxAlpha.Checked = Common.Config.AutoShowShade; // 显示遮罩
 
             // 5.主窗体显示控制
@@ -171,8 +170,11 @@ namespace WindowsShade
         /// <param name="isShow">是否显示遮罩</param>
         private void showShade(bool isShow = true)
         {
-            var visible = isShow ? Common.Config.Monitors.Any(m => m.Enabled) : false;
-            this._shades.ForEach(m => m.Visible = visible);
+            if (isShow)
+                this._shades.ForEach(m => m.AdjustShade(Common.Config.Monitors[this._shades.IndexOf(m)]));
+            else
+                this._shades.ForEach(m=>m.Visible=false);
+
             this.menuItemHidden.Text = isShow ? "隐藏(&H)" : "显示(&D)";
 
             Brightness.Save(isShow ? Common.Config.Alpha : (byte)0); // 收集屏幕亮度
@@ -205,9 +207,6 @@ namespace WindowsShade
             /*
              * 5.调整屏幕亮度
              */
-            // 5.1 调整遮罩
-            this._shades.ForEach(m => m.AdjustShade(Common.Config.Monitors[this._shades.IndexOf(m)]));
-            // 5.2 显示遮罩
             if (this.tabMain.SelectedIndex == 1)
             {
                 if (!this.ckxAlpha.Checked)

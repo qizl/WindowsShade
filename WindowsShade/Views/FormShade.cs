@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -59,8 +57,6 @@ namespace WindowsShade.Views
             this.Height = m.Height + title;
 
             this.Visible = m.Enabled;
-
-            //SetWindowPos(this.Handle, (IntPtr)HWND_TOPMOST, 0, 0, 0, 0, 1 | 2);
         }
 
         /// <summary>
