@@ -13,7 +13,7 @@ namespace BrightnessTrainAPI.Controllers
     {
         [HttpPost]
         [Route("Items")]
-        public ActionResult<List<BrightnessData>> Get(List<BrightnessData> src)
+        public ActionResult<List<BrightnessData>> GetBrightnessData([FromBody]List<BrightnessData> src)
         {
             // 0.最少2个样本数据
             if (src.Count == 0) return new List<BrightnessData>();
