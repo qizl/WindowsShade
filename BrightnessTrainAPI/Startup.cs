@@ -23,11 +23,11 @@ namespace BrightnessTrainAPI
 
         private void init()
         {
-            var webRootPath = Path.Combine(this.HostingEnvironment.ContentRootPath, "wwwroot");
+            var webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
             if (!Directory.Exists(webRootPath))
                 Directory.CreateDirectory(webRootPath);
 
-            Common.BrightnessTrainedFolder = Path.Combine(webRootPath, this.Configuration["BrightnessTrainedFolder"]);
+            Common.BrightnessTrainedFolder = Path.Combine(webRootPath, this.Configuration["BrightnessTrainedFolder"] ?? "BrightnessTrained");
             if (!Directory.Exists(Common.BrightnessTrainedFolder))
                 Directory.CreateDirectory(Common.BrightnessTrainedFolder);
         }
