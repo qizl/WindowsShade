@@ -12,6 +12,9 @@ namespace BrightnessTrainAPI
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+#if Release
+                .UseUrls("http://*:7001")
+#endif
                 .UseStartup<Startup>();
     }
 }
