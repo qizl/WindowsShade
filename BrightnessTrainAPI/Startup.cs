@@ -27,7 +27,7 @@ namespace BrightnessTrainAPI
             if (!Directory.Exists(webRootPath))
                 Directory.CreateDirectory(webRootPath);
 
-            Common.BrightnessTrainedFolder = Path.Combine(webRootPath, this.Configuration["BrightnessTrainedFolder"]);
+            Common.BrightnessTrainedFolder = Path.Combine(webRootPath, this.Configuration["BrightnessTrainedFolder"] ?? "BrightnessTrained");
             if (!Directory.Exists(Common.BrightnessTrainedFolder))
                 Directory.CreateDirectory(Common.BrightnessTrainedFolder);
         }

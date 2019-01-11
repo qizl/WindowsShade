@@ -6,6 +6,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>D:\PL\MyProjects\GitHub\WindowsShade\BrightnessTrainAPI\bin\Debug\netcoreapp2.1\publish\</_PublishTargetUrl>
+    <_PublishTargetUrl>E:\Github\WindowsShade\BrightnessTrainAPI\bin\Debug\netcoreapp2.1\publish\</_PublishTargetUrl>
   </PropertyGroup>
 </Project>
