@@ -10,6 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\BrightnessTrained\**" />
+    <Content Remove="wwwroot\BrightnessTrained\**" />
+    <EmbeddedResource Remove="wwwroot\BrightnessTrained\**" />
+    <None Remove="wwwroot\BrightnessTrained\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

@@ -28,9 +28,18 @@ namespace WindowsShade.Models
             var brightnessContent = new StringContent(JsonConvert.SerializeObject(src), System.Text.Encoding.UTF8, "application/json");
             var r = await this._httpClient.PostAsync(uri, brightnessContent);
 
-            var r1 = r.Content.ReadAsStringAsync().Result;
+            var d = null as List<BrightnessData>;
+            if (r.IsSuccessStatusCode)
+            {
+                var r1 = r.Content.ReadAsStringAsync().Result;
+                try
+                {
+                    d = JsonConvert.DeserializeObject<List<BrightnessData>>(r1);
+                }
+                catch { }
+            }
 
-            return string.IsNullOrEmpty(r1) ? new List<BrightnessData>() : JsonConvert.DeserializeObject<List<BrightnessData>>(r1);
+            return d;
         }
     }
 }

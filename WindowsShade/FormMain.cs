@@ -173,7 +173,7 @@ namespace WindowsShade
             if (isShow)
                 this._shades.ForEach(m => m.AdjustShade(Common.Config.Monitors[this._shades.IndexOf(m)]));
             else
-                this._shades.ForEach(m=>m.Visible=false);
+                this._shades.ForEach(m => m.Visible = false);
 
             this.menuItemHidden.Text = isShow ? "隐藏(&H)" : "显示(&D)";
 
@@ -265,7 +265,7 @@ namespace WindowsShade
 
         private void _dataDriver_BrightnessGenerated(object sender, GenerateBrightnessEventArgs e)
         {
-            if (e.Datas.Any())
+            if (e.Datas?.Count > 0)
             {
                 var trainedFilePath = Common.GetBrightnessTrainedFileName();
 
