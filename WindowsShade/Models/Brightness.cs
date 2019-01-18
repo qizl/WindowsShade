@@ -38,7 +38,7 @@ namespace WindowsShade.Models
              *  2.时间间隔大于30s
              */
             if (tmp.Count == 0 || (DateTime.Now - tmp.Last().Time).TotalSeconds > 30)
-                Brightness.tmp.Add(this);
+                tmp.Add(this);
             else
                 tmp.Last().Value = this.Value;
 
@@ -52,10 +52,17 @@ namespace WindowsShade.Models
             {
                 var serializer = new SharpSerializer();
 
-                var brightness = File.Exists(path) ? (serializer.Deserialize(path) as List<Brightness>) : new List<Brightness>();
-                if (brightness == null)
+                var brightness = null as List<Brightness>;
+                try
+                {
+                    if (File.Exists(path))
+                        brightness = serializer.Deserialize(path) as List<Brightness>;
+                }
+                catch
+                {
                     brightness = new List<Brightness>();
-                brightness.AddRange(Brightness.tmp);
+                }
+                brightness.AddRange(tmp);
 
                 serializer.Serialize(brightness, path);
 
