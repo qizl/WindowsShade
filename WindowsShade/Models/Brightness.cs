@@ -52,16 +52,14 @@ namespace WindowsShade.Models
             {
                 var serializer = new SharpSerializer();
 
-                var brightness = null as List<Brightness>;
+                var brightness = new List<Brightness>();
                 try
                 {
                     if (File.Exists(path))
-                        brightness = serializer.Deserialize(path) as List<Brightness>;
+                        brightness.AddRange(serializer.Deserialize(path) as List<Brightness>);
                 }
                 catch
-                {
-                    brightness = new List<Brightness>();
-                }
+                { }
                 brightness.AddRange(tmp);
 
                 serializer.Serialize(brightness, path);
