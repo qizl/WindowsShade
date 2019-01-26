@@ -226,7 +226,7 @@ namespace WindowsShade
         /// <param name="e"></param>
         private void btnHidden_Click(object sender, EventArgs e) => this.Visible = false;
 
-        private void FormMain_HelpButtonClicked(object sender, System.ComponentModel.CancelEventArgs e) => Process.Start("http://enjoycodes.com/Home/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
+        private void FormMain_HelpButtonClicked(object sender, System.ComponentModel.CancelEventArgs e) => Process.Start("http://enjoycodes.com/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
 
         /// <summary>
         /// 调整屏幕亮度事件
