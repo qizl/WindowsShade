@@ -55,9 +55,12 @@
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.plScreenSettings = new System.Windows.Forms.Panel();
             this.txtResolution = new System.Windows.Forms.TextBox();
+            this.tbAlphaChild = new System.Windows.Forms.TrackBar();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.lblMonitorInfo = new System.Windows.Forms.Label();
             this.ckxEnabled = new System.Windows.Forms.CheckBox();
             this.ckxIsMainScreen = new System.Windows.Forms.CheckBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.ckxAutoAdjust = new System.Windows.Forms.CheckBox();
@@ -66,6 +69,7 @@
             this.plFoot = new System.Windows.Forms.Panel();
             this.btnHidden = new System.Windows.Forms.Button();
             this.plBody = new System.Windows.Forms.Panel();
+            this.lblAlphaChildValue = new System.Windows.Forms.Label();
             this.plContent.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbSystem)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbAlpha)).BeginInit();
@@ -75,6 +79,8 @@
             this.tabPage2.SuspendLayout();
             this.plScreens.SuspendLayout();
             this.plScreenSettings.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbAlphaChild)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.tabPage4.SuspendLayout();
             this.plFoot.SuspendLayout();
             this.plBody.SuspendLayout();
@@ -105,7 +111,7 @@
             this.plContent.Font = new System.Drawing.Font("宋体", 16F);
             this.plContent.Location = new System.Drawing.Point(3, 3);
             this.plContent.Name = "plContent";
-            this.plContent.Size = new System.Drawing.Size(536, 259);
+            this.plContent.Size = new System.Drawing.Size(536, 289);
             this.plContent.TabIndex = 1;
             // 
             // ckxAlpha
@@ -226,7 +232,7 @@
             this.tabMain.Location = new System.Drawing.Point(0, 0);
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
-            this.tabMain.Size = new System.Drawing.Size(550, 295);
+            this.tabMain.Size = new System.Drawing.Size(550, 325);
             this.tabMain.TabIndex = 2;
             this.tabMain.SelectedIndexChanged += new System.EventHandler(this.tabMain_SelectedIndexChanged);
             // 
@@ -236,7 +242,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 26);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(542, 265);
+            this.tabPage1.Size = new System.Drawing.Size(542, 295);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "亮度调整";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -248,7 +254,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 26);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(542, 265);
+            this.tabPage2.Size = new System.Drawing.Size(542, 295);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "屏幕设置";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -290,25 +296,45 @@
             // 
             // plScreenSettings
             // 
+            this.plScreenSettings.Controls.Add(this.lblAlphaChildValue);
             this.plScreenSettings.Controls.Add(this.txtResolution);
+            this.plScreenSettings.Controls.Add(this.tbAlphaChild);
+            this.plScreenSettings.Controls.Add(this.trackBar1);
             this.plScreenSettings.Controls.Add(this.lblMonitorInfo);
             this.plScreenSettings.Controls.Add(this.ckxEnabled);
             this.plScreenSettings.Controls.Add(this.ckxIsMainScreen);
+            this.plScreenSettings.Controls.Add(this.label2);
             this.plScreenSettings.Controls.Add(this.label1);
             this.plScreenSettings.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.plScreenSettings.Font = new System.Drawing.Font("宋体", 12F);
             this.plScreenSettings.Location = new System.Drawing.Point(3, 150);
             this.plScreenSettings.Name = "plScreenSettings";
-            this.plScreenSettings.Size = new System.Drawing.Size(536, 112);
+            this.plScreenSettings.Size = new System.Drawing.Size(536, 142);
             this.plScreenSettings.TabIndex = 0;
             // 
             // txtResolution
             // 
-            this.txtResolution.Location = new System.Drawing.Point(201, 81);
+            this.txtResolution.Location = new System.Drawing.Point(201, 108);
             this.txtResolution.Name = "txtResolution";
             this.txtResolution.ReadOnly = true;
             this.txtResolution.Size = new System.Drawing.Size(121, 26);
-            this.txtResolution.TabIndex = 5;
+            this.txtResolution.TabIndex = 4;
+            // 
+            // tbAlphaChild
+            // 
+            this.tbAlphaChild.Location = new System.Drawing.Point(194, 68);
+            this.tbAlphaChild.Maximum = 255;
+            this.tbAlphaChild.Name = "tbAlphaChild";
+            this.tbAlphaChild.Size = new System.Drawing.Size(121, 45);
+            this.tbAlphaChild.TabIndex = 3;
+            this.tbAlphaChild.Scroll += new System.EventHandler(this.tbAlphaChild_Scroll);
+            // 
+            // trackBar1
+            // 
+            this.trackBar1.Location = new System.Drawing.Point(198, 74);
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(0, 45);
+            this.trackBar1.TabIndex = 6;
             // 
             // lblMonitorInfo
             // 
@@ -324,7 +350,7 @@
             this.ckxEnabled.Location = new System.Drawing.Point(201, 14);
             this.ckxEnabled.Name = "ckxEnabled";
             this.ckxEnabled.Size = new System.Drawing.Size(59, 20);
-            this.ckxEnabled.TabIndex = 3;
+            this.ckxEnabled.TabIndex = 1;
             this.ckxEnabled.Text = "启用";
             this.ckxEnabled.UseVisualStyleBackColor = true;
             this.ckxEnabled.CheckedChanged += new System.EventHandler(this.ckxEnabled_CheckedChanged);
@@ -333,17 +359,26 @@
             // 
             this.ckxIsMainScreen.AutoSize = true;
             this.ckxIsMainScreen.Enabled = false;
-            this.ckxIsMainScreen.Location = new System.Drawing.Point(201, 48);
+            this.ckxIsMainScreen.Location = new System.Drawing.Point(201, 39);
             this.ckxIsMainScreen.Name = "ckxIsMainScreen";
             this.ckxIsMainScreen.Size = new System.Drawing.Size(75, 20);
             this.ckxIsMainScreen.TabIndex = 2;
             this.ckxIsMainScreen.Text = "主屏幕";
             this.ckxIsMainScreen.UseVisualStyleBackColor = true;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(107, 74);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(88, 16);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "亮度微调：";
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(123, 82);
+            this.label1.Location = new System.Drawing.Point(123, 108);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(72, 16);
             this.label1.TabIndex = 0;
@@ -358,7 +393,7 @@
             this.tabPage4.Location = new System.Drawing.Point(4, 26);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(542, 265);
+            this.tabPage4.Size = new System.Drawing.Size(542, 295);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "软件设置";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -400,7 +435,7 @@
             this.plFoot.Controls.Add(this.btnApply);
             this.plFoot.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.plFoot.Font = new System.Drawing.Font("宋体", 9.75F);
-            this.plFoot.Location = new System.Drawing.Point(0, 295);
+            this.plFoot.Location = new System.Drawing.Point(0, 325);
             this.plFoot.Name = "plFoot";
             this.plFoot.Size = new System.Drawing.Size(550, 66);
             this.plFoot.TabIndex = 3;
@@ -422,8 +457,18 @@
             this.plBody.Dock = System.Windows.Forms.DockStyle.Fill;
             this.plBody.Location = new System.Drawing.Point(0, 0);
             this.plBody.Name = "plBody";
-            this.plBody.Size = new System.Drawing.Size(550, 295);
+            this.plBody.Size = new System.Drawing.Size(550, 325);
             this.plBody.TabIndex = 4;
+            // 
+            // lblAlphaChildValue
+            // 
+            this.lblAlphaChildValue.AutoSize = true;
+            this.lblAlphaChildValue.Font = new System.Drawing.Font("宋体", 16F);
+            this.lblAlphaChildValue.Location = new System.Drawing.Point(316, 79);
+            this.lblAlphaChildValue.Name = "lblAlphaChildValue";
+            this.lblAlphaChildValue.Size = new System.Drawing.Size(21, 22);
+            this.lblAlphaChildValue.TabIndex = 7;
+            this.lblAlphaChildValue.Text = "0";
             // 
             // FormMain
             // 
@@ -431,7 +476,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(14F, 27F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnHidden;
-            this.ClientSize = new System.Drawing.Size(550, 361);
+            this.ClientSize = new System.Drawing.Size(550, 391);
             this.Controls.Add(this.plBody);
             this.Controls.Add(this.plFoot);
             this.Font = new System.Drawing.Font("宋体", 20F);
@@ -441,7 +486,7 @@
             this.Margin = new System.Windows.Forms.Padding(7);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(566, 400);
+            this.MinimumSize = new System.Drawing.Size(566, 420);
             this.Name = "FormMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "WindowsShade";
@@ -460,6 +505,8 @@
             this.plScreens.ResumeLayout(false);
             this.plScreenSettings.ResumeLayout(false);
             this.plScreenSettings.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbAlphaChild)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
             this.plFoot.ResumeLayout(false);
@@ -504,6 +551,10 @@
         private System.Windows.Forms.Label lblMonitorInfo;
         private System.Windows.Forms.TextBox txtResolution;
         private System.Windows.Forms.CheckBox ckxAutoAdjust;
+        private System.Windows.Forms.TrackBar tbAlphaChild;
+        private System.Windows.Forms.TrackBar trackBar1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblAlphaChildValue;
     }
 }
 

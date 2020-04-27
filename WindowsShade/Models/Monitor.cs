@@ -12,6 +12,11 @@ namespace WindowsShade.Models
         public int No { get; set; }
         public bool Enabled { get; set; }
         /// <summary>
+        /// 透明度
+        ///     0~255
+        /// </summary>
+        public byte Alpha { get; set; } = 128;
+        /// <summary>
         /// 是否主显
         /// </summary>
         [ExcludeFromSerialization]

@@ -158,9 +158,10 @@ namespace WindowsShade
         /// </summary>
         private void setBrightness()
         {
-            this._shades.ForEach(m => m.AdjustBrightness(Common.Config.Alpha));
+            for (var i = 0; i < this._shades.Count; i++)
+                this._shades[i].AdjustBrightness(Common.Config.Monitors[i].Alpha);
 
-            if (this.ckxAlpha.Checked) // 收集屏幕亮度
+            if (this.ckxAlpha.Checked) // TODO：收集屏幕亮度，未实现单屏亮度收集
                 Brightness.Save(Common.Config.Alpha);
         }
 
@@ -312,6 +313,13 @@ namespace WindowsShade
                 this.tbAlpha.Value = value;
             this.lblAlphaValue.Text = value.ToString();
 
+            var delta = value - Common.Config.Alpha;
+            Common.Config.Monitors.ForEach(m =>
+            {
+                var v = m.Alpha + delta;
+                if (v >= 0 && v <= 255) m.Alpha = (byte)v;
+            });
+
             Common.Config.Alpha = (byte)value;
             this.setBrightness();
         }
@@ -348,6 +356,8 @@ namespace WindowsShade
             var monitor = Common.Config.Monitors[index];
             this.ckxEnabled.Checked = monitor.Enabled;
             this.ckxIsMainScreen.Checked = monitor.Primary;
+            this.tbAlphaChild.Value = monitor.Alpha;
+            this.lblAlphaChildValue.Text = monitor.Alpha.ToString();
             this.txtResolution.Text = $"{monitor.Width}x{monitor.Height}";
         }
 
@@ -365,6 +375,27 @@ namespace WindowsShade
             this.lblMonitorInfo.Text = $"当前配置第{index + 1}屏，\r\n共启用{Common.Config.Monitors.Count(m => m.Enabled)}屏";
 
             // 3.应用
+            this.apply();
+        }
+
+        private void tbAlphaChild_Scroll(object sender, EventArgs e)
+        {
+            var index = this.listView1.SelectedItems[0].Index; // 当前选中屏幕索引
+
+            // 1.保存屏幕配置
+            Common.Config.Monitors[index].Alpha = (byte)this.tbAlphaChild.Value;
+            Common.Config.Monitors[index].Enabled = true;
+            this.ckxEnabled.Checked = true;
+            this.listView1.SelectedItems[0].ImageIndex = 0; // 启用显示器时，图标彩色，否则灰色
+            this.lblAlphaChildValue.Text = this.tbAlphaChild.Value.ToString();
+
+            // 2.调整屏幕亮度
+            this._shades[index].AdjustBrightness(Common.Config.Monitors[index].Alpha);
+
+            // 3.更新屏幕配置信息
+            this.lblMonitorInfo.Text = $"当前配置第{index + 1}屏，\r\n共启用{Common.Config.Monitors.Count(m => m.Enabled)}屏";
+
+            // 4.应用
             this.apply();
         }
         #endregion
