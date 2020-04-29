@@ -300,6 +300,22 @@ namespace WindowsShade
         #endregion
 
         #region Events - tabMain
+        /// <summary>
+        /// tab 切换事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tabMain_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            this.Text = $"WindowsShade - {this.tabMain.SelectedTab.Text}";
+
+            if (this.listView1.SelectedIndices.Count == 0)
+            {
+                this.lblMonitorInfo.Text = "未选中显示器。";
+                this.plScreenSettings.Enabled = false;
+            }
+        }
+
         #region tab1 亮度调整
         /// <summary>
         /// 调整遮罩亮度
@@ -347,7 +363,13 @@ namespace WindowsShade
         #region tab2 屏幕设置
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.listView1.SelectedIndices.Count == 0) return;
+            if (this.listView1.SelectedIndices.Count == 0)
+            {
+                this.lblMonitorInfo.Text = "未选中显示器。";
+                this.plScreenSettings.Enabled = false;
+                return;
+            }
+            this.plScreenSettings.Enabled = true;
 
             var index = this.listView1.SelectedItems[0].Index; // 当前选中屏幕索引
 
@@ -365,6 +387,8 @@ namespace WindowsShade
 
         private void ckxEnabled_CheckedChanged(object sender, EventArgs e)
         {
+            if (this.listView1.SelectedIndices.Count == 0) return;
+
             var index = this.listView1.SelectedItems[0].Index; // 当前选中屏幕索引
 
             // 1.保存屏幕配置
@@ -380,6 +404,8 @@ namespace WindowsShade
 
         private void tbAlphaChild_Scroll(object sender, EventArgs e)
         {
+            if (this.listView1.SelectedIndices.Count == 0) return;
+
             var index = this.listView1.SelectedItems[0].Index; // 当前选中屏幕索引
 
             // 1.保存屏幕配置
@@ -415,8 +441,6 @@ namespace WindowsShade
             }
         }
         #endregion
-
-        private void tabMain_SelectedIndexChanged(object sender, EventArgs e) => this.Text = $"WindowsShade - {this.tabMain.SelectedTab.Text}";
         #endregion
 
         #region Events - 托盘菜单（cmxTray）
