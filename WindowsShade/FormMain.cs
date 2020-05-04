@@ -309,10 +309,29 @@ namespace WindowsShade
         {
             this.Text = $"WindowsShade - {this.tabMain.SelectedTab.Text}";
 
-            if (this.listView1.SelectedIndices.Count == 0)
+            switch (this.tabMain.SelectedIndex)
             {
-                this.lblMonitorInfo.Text = "未选中显示器。";
-                this.plScreenSettings.Enabled = false;
+                case 0: break;
+                case 1:
+                    {
+                        if (this.listView1.SelectedIndices.Count == 0)
+                        {
+                            // 未选中屏幕，禁用控件
+                            this.lblMonitorInfo.Text = "未选中显示器。";
+                            this.plScreenSettings.Enabled = false;
+                        }
+                        else
+                        {
+                            // 选中屏幕，加载屏幕亮度
+                            var index = this.listView1.SelectedItems[0].Index; // 当前选中屏幕索引
+
+                            var monitor = Common.Config.Monitors[index];
+                            this.tbAlphaChild.Value = monitor.Alpha;
+                            this.lblAlphaChildValue.Text = monitor.Alpha.ToString();
+                        }
+                    }
+                    break;
+                case 2: break;
             }
         }
 
