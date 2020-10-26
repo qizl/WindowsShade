@@ -90,6 +90,7 @@
     <Compile Include="Models\Common.cs" />
     <Compile Include="Models\Compares.cs" />
     <Compile Include="Models\Config.cs" />
+    <Compile Include="Models\HardwareClass.cs" />
     <Compile Include="Models\Monitor.cs" />
     <Compile Include="Models\Resolution.cs" />
     <Compile Include="Models\ScreenBrightness.cs" />

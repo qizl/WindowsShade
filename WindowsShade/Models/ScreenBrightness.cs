@@ -96,7 +96,7 @@ namespace WindowsShade.Models
 
             foreach (System.Management.ManagementObject o in moc)
             {
-                o.InvokeMethod("WmiSetBrightness", new Object[] { UInt32.MaxValue, targetBrightness }); //note the reversed order - won't work otherwise!
+                o.InvokeMethod("WmiSetBrightness", new Object[] { UInt32.MaxValue, targetBrightness }); // note the reversed order - won't work otherwise!
                 break; //only work on the first object
             }
 

@@ -392,7 +392,9 @@ namespace WindowsShade
 
             var index = this.listView1.SelectedItems[0].Index; // 当前选中屏幕索引
 
-            this.lblMonitorInfo.Text = $"当前配置第{index + 1}屏，\r\n共启用{Common.Config.Monitors.Count(m => m.Enabled)}屏";
+            this.plScreenSettings.Enabled = index < Screen.AllScreens.Length; // 当从配置文件中读取到的屏幕数在系统屏幕数范围内，允许操作
+
+            this.lblMonitorInfo.Text = $"当前配置第{index + 1}屏，\r\n共启用{Math.Min(Common.Config.Monitors.Count(m => m.Enabled), Screen.AllScreens.Length)}屏";
 
             var monitor = Common.Config.Monitors[index];
             this.ckxEnabled.Checked = monitor.Enabled;
@@ -402,7 +404,11 @@ namespace WindowsShade
             this.txtResolution.Text = $"{monitor.Width}x{monitor.Height}";
         }
 
-        private void listView1_MouseDoubleClick(object sender, MouseEventArgs e) => this.ckxEnabled.Checked = !this.ckxEnabled.Checked;
+        private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (this.plScreenSettings.Enabled)
+                this.ckxEnabled.Checked = !this.ckxEnabled.Checked;
+        }
 
         private void ckxEnabled_CheckedChanged(object sender, EventArgs e)
         {
