@@ -106,8 +106,9 @@ namespace WindowsShade
                 if (Common.Config.IsFirtConfig)
                     m.Enabled = true; // 第一次配置，启用所有屏幕
 
-                // 2.5.4 遮罩窗体
-                this._shades.Add(new FormShade() { Text = this.Text });
+                // 2.5.4 添加遮罩窗体
+                if (i < Screen.AllScreens.Length)
+                    this._shades.Add(new FormShade() { Text = this.Text });
             }
             this.listView1.Items[0].Selected = true;
             this.txtResolution.BorderStyle = BorderStyle.None;
@@ -159,7 +160,9 @@ namespace WindowsShade
         private void setBrightness()
         {
             for (var i = 0; i < this._shades.Count; i++)
+            {
                 this._shades[i].AdjustBrightness(Common.Config.Monitors[i].Alpha);
+            }
 
             if (this.ckxAlpha.Checked) // TODO：收集屏幕亮度，未实现单屏亮度收集
                 Brightness.Save(Common.Config.Alpha);
