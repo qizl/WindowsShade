@@ -30,7 +30,7 @@ namespace WindowsShade.Models
         /// 软件启动自动隐藏主窗体
         /// </summary>
         public bool AutoHidden { get; set; }
-        
+
         /// <summary>
         /// 自动调整亮度
         /// </summary>
@@ -52,7 +52,7 @@ namespace WindowsShade.Models
         /// </summary>
         public string BrightnessDataPath { get; set; }
 
-        public string ServerUrl { get; set; } = @"http://btapi.luciddreaming.cn"; // http://bt.apisvr.cn
+        public string ServerUrl { get; set; } = @"http://btapi.qizl.cn";
         /// <summary>
         /// 重连服务端间隔（min）
         /// </summary>
