@@ -68,7 +68,7 @@ namespace WindowsShade
             if (this.tbSystem.Enabled)
             {
                 this.tbSystem.Maximum = this._screenBrightness.Maximum;
-                this._tbSystemToScreenBrightness = this._screenBrightness.GetBrightness();
+                this._tbSystemToScreenBrightness = this._screenBrightness.GetBrightness();  // 读取系统亮度
                 this.lblSystem.Text = this.tbSystem.Value.ToString();
             }
 
@@ -122,7 +122,7 @@ namespace WindowsShade
             this.menuItemHidden.Text = "显示(&D)";
 
             // 4.调整亮度
-            this.setBrightness(); // 调整亮度
+            this.setBrightness(); // 调整遮罩亮度
             this._shades.ForEach(m => m.AdjustShade(Common.Config.Monitors[this._shades.IndexOf(m)]));
             this.ckxAlpha.Checked = Common.Config.AutoShowShade; // 显示遮罩
 
