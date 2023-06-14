@@ -26,6 +26,11 @@ namespace WindowsShade
             set { this.tbSystem.Value = this.tbSystem.Maximum - value; }
         }
         private DataDriver _dataDriver;
+
+        /// <summary>
+        /// 遮罩置顶检测计时器
+        /// </summary>
+        //private Timer _timerSetTopMost = new Timer();
         #endregion
 
         #region Structures & Initialize
@@ -125,6 +130,10 @@ namespace WindowsShade
             this.setBrightness(); // 调整遮罩亮度
             this._shades.ForEach(m => m.AdjustShade(Common.Config.Monitors[this._shades.IndexOf(m)]));
             this.ckxAlpha.Checked = Common.Config.AutoShowShade; // 显示遮罩
+
+            //this._timerSetTopMost.Interval = 1000;
+            //this._timerSetTopMost.Tick += _timerSetTopMost_Tick;
+            //this._timerSetTopMost.Start();
 
             // 5.主窗体显示控制
             if (Common.Config.AutoHidden) // 隐藏主窗体
@@ -283,6 +292,14 @@ namespace WindowsShade
             }
         }
 
+        private void _timerSetTopMost_Tick(object sender, EventArgs e)
+        {
+            this._shades.ForEach(shade =>
+            {
+                shade.SetTopMost();
+            });
+        }
+
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
             // 1.取消屏幕关闭
@@ -298,7 +315,8 @@ namespace WindowsShade
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
         {
             Brightness.Save(Common.Config.Alpha, true); // 收集屏幕亮度
-            this._dataDriver.Stop(); // 关闭数据驱
+            this._dataDriver.Stop(); // 关闭数据驱动
+            //this._timerSetTopMost.Stop(); // 停止遮罩置顶
         }
         #endregion
 

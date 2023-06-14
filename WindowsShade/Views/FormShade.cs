@@ -9,8 +9,14 @@ namespace WindowsShade.Views
     public partial class FormShade : Form
     {
         #region Members
-        //[DllImport("user32.dll")]
-        //public static extern IntPtr SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, uint wFlags);
+        [DllImport("user32.dll")]
+        //[return: MarshalAs(UnmanagedType.Bool)]
+        public static extern IntPtr SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, uint uFlags);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [DllImport("user32.dll")]
         public static extern long GetWindowLong(IntPtr hwnd, int nIndex);
@@ -30,6 +36,9 @@ namespace WindowsShade.Views
         const int HWND_BOTTOM = 1;
         const int HWND_TOPMOST = -1;
         const int HWND_NOTOPMOST = -2;
+
+        const int SWP_NOMOVE = 0x0002;
+        const int SWP_NOSIZE = 0x0001;
         #endregion
 
         #region Structures & Methods
@@ -40,8 +49,9 @@ namespace WindowsShade.Views
             this.BackColor = Color.Black;
             this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
             this.ControlBox = false;
-            this.TopMost = true;
             this.ShowInTaskbar = false;
+
+            this.SetTopMost();
         }
 
         /// <summary>
@@ -71,6 +81,18 @@ namespace WindowsShade.Views
                 SetLayeredWindowAttributes(this.Handle, 0, alpha, LWA_ALPHA);
             }
             catch { }
+        }
+
+        public void SetTopMost()
+        {
+            this.TopMost = true;
+            //IntPtr hwnd = GetForegroundWindow();
+            //// 如果前台窗口不是当前窗口，则将当前窗口置顶
+            //if (hwnd != this.Handle)
+            //{
+            //    SetWindowPos(this.Handle, (IntPtr)HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+            //    SetForegroundWindow(this.Handle);
+            //}
         }
         #endregion
     }
