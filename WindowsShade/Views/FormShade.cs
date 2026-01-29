@@ -51,6 +51,8 @@ namespace WindowsShade.Views
             this.ControlBox = false;
             this.ShowInTaskbar = false;
 
+            this.Visible = false;
+
             this.SetTopMost();
         }
 

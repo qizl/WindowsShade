@@ -1,9 +1,11 @@
 ﻿using Com.EnjoyCodes.SharpSerializer;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using WindowsShade.Models;
 using WindowsShade.Task;
@@ -77,8 +79,67 @@ namespace WindowsShade
                 this.lblSystem.Text = this.tbSystem.Value.ToString();
             }
 
-            // 2.5 tabMain - 多屏设置
+            // 2.5 tabMain - 遮罩设置
+            this.updateShades();
+            this.txtResolution.BorderStyle = BorderStyle.None;
+
+            // 2.6 tabMain - 软件设置
+            this.ckxAutoHidden.Checked = Common.Config.AutoHidden;
+            this.ckxAutoShowShade.Checked = Common.Config.AutoShowShade;
+            this.ckxAutoAdjust.Checked = Common.Config.AutoAdjust;
+
+            // 3.托盘菜单
+            this.menuItemHidden.Text = "显示(&D)";
+
+            //this._timerSetTopMost.Interval = 1000;
+            //this._timerSetTopMost.Tick += _timerSetTopMost_Tick;
+            //this._timerSetTopMost.Start();
+
+            // 4.主窗体显示控制
+            if (Common.Config.AutoHidden) // 隐藏主窗体
+                this.Visible = false;
+            else // 不自动隐藏主窗体时，激活主窗体
+                this.Activate();
+
+            // 5.启动数据驱动
+            if (this._dataDriver == null)
+            {
+                if (Common.Config.AutoAdjust && File.Exists(Common.Config.BrightnessDataPath))
+                {
+                    // 加载亮度数据
+                    try
+                    {
+                        Common.BrightnessDatas = new SharpSerializer().Deserialize(Common.Config.BrightnessDataPath) as List<BrightnessData>;
+                    }
+                    catch { }
+                }
+
+                this._dataDriver = new DataDriver();
+                this._dataDriver.AdjustBrightness += _dataDriver_AdjustBrightness;
+                this._dataDriver.BrightnessGenerated += _dataDriver_BrightnessGenerated;
+                this._dataDriver.Start();
+            }
+
+            // 6.注册显示器变更事件
+            SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
+        }
+        #endregion
+
+        #region Methods
+        /// <summary>
+        /// 设置遮罩
+        /// </summary>
+        private void updateShades()
+        {
             this.listView1.Items.Clear();
+
+            if (this._shades.Any())
+            {
+                foreach (var shade in this._shades)
+                    shade.Close();
+            }
+            this._shades.Clear();
+
             var monitorCount = Math.Max(Common.Config.Monitors.Count, Screen.AllScreens.Length); // 读取配置文件和系统屏幕中屏幕数量多的，作为显示器控件数量添加到listview中
             var screens = Screen.AllScreens.OrderBy(m => m.Bounds.X).ToArray(); // 按屏幕X轴位置排序
             for (int i = 0; i < monitorCount; i++)
@@ -116,62 +177,18 @@ namespace WindowsShade
                     this._shades.Add(new FormShade() { Text = this.Text });
             }
             this.listView1.Items[0].Selected = true;
-            this.txtResolution.BorderStyle = BorderStyle.None;
 
-            // 2.6 tabMain - 软件设置
-            this.ckxAutoHidden.Checked = Common.Config.AutoHidden;
-            this.ckxAutoShowShade.Checked = Common.Config.AutoShowShade;
-            this.ckxAutoAdjust.Checked = Common.Config.AutoAdjust;
-
-            // 3.托盘菜单
-            this.menuItemHidden.Text = "显示(&D)";
-
-            // 4.调整亮度
             this.setBrightness(); // 调整遮罩亮度
-            this._shades.ForEach(m => m.AdjustShade(Common.Config.Monitors[this._shades.IndexOf(m)]));
-            this.ckxAlpha.Checked = Common.Config.AutoShowShade; // 显示遮罩
 
-            //this._timerSetTopMost.Interval = 1000;
-            //this._timerSetTopMost.Tick += _timerSetTopMost_Tick;
-            //this._timerSetTopMost.Start();
-
-            // 5.主窗体显示控制
-            if (Common.Config.AutoHidden) // 隐藏主窗体
-                this.Visible = false;
-            else // 不自动隐藏主窗体时，激活主窗体
-                this.Activate();
-
-            // 6.启动数据驱动
-            if (this._dataDriver == null)
-            {
-                if (Common.Config.AutoAdjust && File.Exists(Common.Config.BrightnessDataPath))
-                {
-                    // 加载亮度数据
-                    try
-                    {
-                        Common.BrightnessDatas = new SharpSerializer().Deserialize(Common.Config.BrightnessDataPath) as List<BrightnessData>;
-                    }
-                    catch { }
-                }
-
-                this._dataDriver = new DataDriver();
-                this._dataDriver.AdjustBrightness += _dataDriver_AdjustBrightness;
-                this._dataDriver.BrightnessGenerated += _dataDriver_BrightnessGenerated;
-                this._dataDriver.Start();
-            }
+            this.showOrHiddenShade(Common.Config.Monitors.Any(m => m.Enabled) || Common.Config.AutoShowShade); // 显示遮罩
         }
-        #endregion
 
-        #region Methods
         /// <summary>
         /// 设置遮罩亮度
         /// </summary>
         private void setBrightness()
         {
-            for (var i = 0; i < this._shades.Count; i++)
-            {
-                this._shades[i].AdjustBrightness(Common.Config.Monitors[i].Alpha);
-            }
+            this._shades.ForEach(m => m.AdjustBrightness(Common.Config.Monitors[this._shades.IndexOf(m)].Alpha));
 
             if (this.ckxAlpha.Checked) // TODO：收集屏幕亮度，未实现单屏亮度收集
                 Brightness.Save(Common.Config.Alpha);
@@ -180,21 +197,62 @@ namespace WindowsShade
         /// <summary>
         /// 显示遮罩
         /// </summary>
-        /// <param name="isShow">是否显示遮罩</param>
-        private void showShade(bool isShow = true)
+        /// <param name="showOrHidden">是否显示遮罩</param>
+        private void showOrHiddenShade(bool showOrHidden = true)
         {
-            if (isShow)
-                this._shades.ForEach(m => m.AdjustShade(Common.Config.Monitors[this._shades.IndexOf(m)]));
+            // 同步复选框状态
+            if (showOrHidden)
+            {
+                if (!this.ckxAlpha.Checked)
+                {
+                    this.ckxAlpha.Checked = true;
+                    return;
+                }
+            }
             else
+            {
+                if (this.ckxAlpha.Checked)
+                {
+                    this.ckxAlpha.Checked = false;
+                    return;
+                }
+            }
+
+            if (showOrHidden == true)
+            {
+                /*
+                 * 显示遮罩
+                 */
+
+                // 如果没有启用任何屏幕，则启用所有屏幕；否则按配置启用屏幕
+                if (!Common.Config.Monitors.Any(m => m.Enabled))
+                    Common.Config.Monitors.ForEach(m => m.Enabled = true);
+
+                this._shades.ForEach(m => m.AdjustShade(Common.Config.Monitors[this._shades.IndexOf(m)]));
+            }
+            else
+            {
+                /*
+                 * 隐藏遮罩
+                 */
+
+                // 禁用所有屏幕
+                Common.Config.Monitors.ForEach(m => m.Enabled = false);
                 this._shades.ForEach(m => m.Visible = false);
+            }
 
-            this.menuItemHidden.Text = isShow ? "隐藏(&H)" : "显示(&D)";
+            this.menuItemHidden.Text = showOrHidden ? "隐藏(&H)" : "显示(&D)";
 
-            Brightness.Save(isShow ? Common.Config.Alpha : (byte)0); // 收集屏幕亮度
+            Brightness.Save(showOrHidden ? Common.Config.Alpha : (byte)0); // 收集屏幕亮度
         }
         #endregion
 
         #region Events - FormMain
+        private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
+        {
+            this.updateShades();
+        }
+
         /// <summary>
         /// 保存配置
         /// </summary>
@@ -221,12 +279,7 @@ namespace WindowsShade
              * 5.调整屏幕亮度
              */
             if (this.tabMain.SelectedIndex == 1)
-            {
-                if (!this.ckxAlpha.Checked)
-                    this.ckxAlpha.Checked = true;
-                else
-                    this.showShade(this.ckxAlpha.Checked);
-            }
+                this.showOrHiddenShade(Common.Config.Monitors.Any(m => m.Enabled));
 
             // 6.收集屏幕亮度
             Brightness.Save(this.ckxAlpha.Checked ? Common.Config.Alpha : (byte)0, true);
@@ -397,7 +450,7 @@ namespace WindowsShade
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ckxAlpha_CheckedChanged(object sender, EventArgs e) => this.showShade(this.ckxAlpha.Checked);
+        private void ckxAlpha_CheckedChanged(object sender, EventArgs e) => this.showOrHiddenShade(this.ckxAlpha.Checked);
         #endregion
 
         #region tab2 屏幕设置
