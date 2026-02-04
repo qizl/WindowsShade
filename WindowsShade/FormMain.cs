@@ -88,20 +88,13 @@ namespace WindowsShade
             this.ckxAutoShowShade.Checked = Common.Config.AutoShowShade;
             this.ckxAutoAdjust.Checked = Common.Config.AutoAdjust;
 
-            // 3.托盘菜单
-            this.menuItemHidden.Text = "显示(&D)";
-
-            //this._timerSetTopMost.Interval = 1000;
-            //this._timerSetTopMost.Tick += _timerSetTopMost_Tick;
-            //this._timerSetTopMost.Start();
-
-            // 4.主窗体显示控制
+            // 3.主窗体显示控制
             if (Common.Config.AutoHidden) // 隐藏主窗体
                 this.Visible = false;
             else // 不自动隐藏主窗体时，激活主窗体
                 this.Activate();
 
-            // 5.启动数据驱动
+            // 4.启动数据驱动
             if (this._dataDriver == null)
             {
                 if (Common.Config.AutoAdjust && File.Exists(Common.Config.BrightnessDataPath))
@@ -120,7 +113,7 @@ namespace WindowsShade
                 this._dataDriver.Start();
             }
 
-            // 6.注册显示器变更事件
+            // 5.注册显示器变更事件
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
         }
         #endregion
@@ -241,7 +234,7 @@ namespace WindowsShade
                 this._shades.ForEach(m => m.Visible = false);
             }
 
-            this.menuItemHidden.Text = showOrHidden ? "隐藏(&H)" : "显示(&D)";
+            this.menuItemHidden.Text = showOrHidden ? "隐藏(&H)" : "显示(&D)"; // 托盘菜单
 
             Brightness.Save(showOrHidden ? Common.Config.Alpha : (byte)0); // 收集屏幕亮度
         }
@@ -543,6 +536,12 @@ namespace WindowsShade
         #endregion
 
         #region Events - 托盘菜单（cmxTray）
+        private void menuItemHidden_Click(object sender, EventArgs e)
+        {
+            var isChecked = this.menuItemHidden.Text == "显示(&D)";
+            this.ckxAlpha.Checked = isChecked;
+        }
+
         private void menuItemOpenMain_Click(object sender, EventArgs e)
         {
             this.Visible = true;
@@ -553,12 +552,6 @@ namespace WindowsShade
         {
             this._isClosed = true;
             this.Close();
-        }
-
-        private void menuItemHidden_Click(object sender, EventArgs e)
-        {
-            var isChecked = this.menuItemHidden.Text == "显示(&D)";
-            this.ckxAlpha.Checked = isChecked;
         }
         #endregion
 
