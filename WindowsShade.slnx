@@ -1,0 +1,9 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="SharpSerializer/SharpSerializer.csproj" Id="88ab738f-7a36-4c93-b808-b6ce2d3444b2" />
+  <Project Path="WindowsShade.Tests/WindowsShade.Tests.csproj" Id="39351a18-69cb-48be-9792-2f0af5424132" />
+  <Project Path="WindowsShade/WindowsShade.csproj" Id="264e6aff-f4e1-42bb-b33b-5de3a42d2348" />
+</Solution>

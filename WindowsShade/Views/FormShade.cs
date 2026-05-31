@@ -15,11 +15,16 @@ namespace WindowsShade.Views
         [DllImport("user32")]
         private static extern bool SetLayeredWindowAttributes(IntPtr handle, int crKey, byte bAlpha, int dwFlags);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool SetWindowDisplayAffinity(IntPtr hWnd, uint dwAffinity);
+
         private const int WS_EX_TRANSPARENT = 0x20;
         private const int WS_EX_LAYERED = 0x80000;
         private const int WS_EX_TOOLWINDOW = 0x80;
         private const int WS_EX_NOACTIVATE = 0x08000000;
         private const int LWA_ALPHA = 2;
+        private const uint WDA_MONITOR = 0x00000001;
+        private const uint WDA_EXCLUDEFROMCAPTURE = 0x00000011;
 
         private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
 
@@ -62,6 +67,7 @@ namespace WindowsShade.Views
         {
             base.OnHandleCreated(e);
             this.applyLayeredAlpha();
+            this.applyCaptureExclusion();
         }
 
         /// <summary>
@@ -105,6 +111,15 @@ namespace WindowsShade.Views
                 return;
 
             SetLayeredWindowAttributes(this.Handle, 0, this._alpha, LWA_ALPHA);
+        }
+
+        private void applyCaptureExclusion()
+        {
+            if (!this.IsHandleCreated)
+                return;
+
+            if (!SetWindowDisplayAffinity(this.Handle, WDA_EXCLUDEFROMCAPTURE))
+                SetWindowDisplayAffinity(this.Handle, WDA_MONITOR);
         }
         #endregion
     }
