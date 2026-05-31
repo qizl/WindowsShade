@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -10,35 +10,25 @@ namespace WindowsShade.Views
     {
         #region Members
         [DllImport("user32.dll")]
-        //[return: MarshalAs(UnmanagedType.Bool)]
-        public static extern IntPtr SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, uint uFlags);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr GetForegroundWindow();
-        [DllImport("user32.dll")]
-        public static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        public static extern long GetWindowLong(IntPtr hwnd, int nIndex);
-
-        [DllImport("user32.dll")]
-        public static extern long SetWindowLong(IntPtr hwnd, int nIndex, long dwNewLong);
+        private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, uint uFlags);
 
         [DllImport("user32")]
-        private static extern int SetLayeredWindowAttributes(IntPtr Handle, int crKey, byte bAlpha, int dwFlags);
+        private static extern bool SetLayeredWindowAttributes(IntPtr handle, int crKey, byte bAlpha, int dwFlags);
 
-        const int GWL_EXSTYLE = -20;
-        const int WS_EX_TRANSPARENT = 0x20;
-        const int WS_EX_LAYERED = 0x80000;
-        const int LWA_ALPHA = 2;
+        private const int WS_EX_TRANSPARENT = 0x20;
+        private const int WS_EX_LAYERED = 0x80000;
+        private const int WS_EX_TOOLWINDOW = 0x80;
+        private const int WS_EX_NOACTIVATE = 0x08000000;
+        private const int LWA_ALPHA = 2;
 
-        const int HWND_TOP = 0;
-        const int HWND_BOTTOM = 1;
-        const int HWND_TOPMOST = -1;
-        const int HWND_NOTOPMOST = -2;
+        private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
 
-        const int SWP_NOMOVE = 0x0002;
-        const int SWP_NOSIZE = 0x0001;
+        private const uint SWP_NOSIZE = 0x0001;
+        private const uint SWP_NOMOVE = 0x0002;
+        private const uint SWP_NOACTIVATE = 0x0010;
+        private const uint SWP_SHOWWINDOW = 0x0040;
+
+        private byte _alpha = 128;
         #endregion
 
         #region Structures & Methods
@@ -47,54 +37,74 @@ namespace WindowsShade.Views
             InitializeComponent();
 
             this.BackColor = Color.Black;
-            this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = FormBorderStyle.None;
             this.ControlBox = false;
             this.ShowInTaskbar = false;
+            this.StartPosition = FormStartPosition.Manual;
+            this.TopMost = true;
 
             this.Visible = false;
+        }
 
-            this.SetTopMost();
+        protected override bool ShowWithoutActivation => true;
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                var cp = base.CreateParams;
+                cp.ExStyle |= WS_EX_LAYERED | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE;
+                return cp;
+            }
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            this.applyLayeredAlpha();
         }
 
         /// <summary>
-        /// 调整遮罩
+        /// Adjust shade bounds and visibility.
         /// </summary>
-        /// <param name="monitors"></param>
+        /// <param name="m"></param>
         public void AdjustShade(Monitor m)
         {
-            var border = 7;
-            var title = 40;
-            this.Location = new Point(m.X - border, m.Y - title);
-            this.Width = m.Width + border * 2;
-            this.Height = m.Height + title;
+            var bounds = new Rectangle(m.X, m.Y, m.Width, m.Height);
+            if (this.Bounds != bounds)
+                this.Bounds = bounds;
 
-            this.Visible = m.Enabled;
+            if (this.Visible != m.Enabled)
+                this.Visible = m.Enabled;
         }
 
         /// <summary>
-        /// 调整亮度
+        /// Adjust shade opacity.
         /// </summary>
         /// <param name="alpha"></param>
         public void AdjustBrightness(byte alpha)
         {
-            try
-            {
-                SetWindowLong(this.Handle, GWL_EXSTYLE, GetWindowLong(this.Handle, GWL_EXSTYLE) | WS_EX_TRANSPARENT | WS_EX_LAYERED);
-                SetLayeredWindowAttributes(this.Handle, 0, alpha, LWA_ALPHA);
-            }
-            catch { }
+            if (this._alpha == alpha && this.IsHandleCreated)
+                return;
+
+            this._alpha = alpha;
+            this.applyLayeredAlpha();
         }
 
         public void SetTopMost()
         {
-            this.TopMost = true;
-            //IntPtr hwnd = GetForegroundWindow();
-            //// 如果前台窗口不是当前窗口，则将当前窗口置顶
-            //if (hwnd != this.Handle)
-            //{
-            //    SetWindowPos(this.Handle, (IntPtr)HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
-            //    SetForegroundWindow(this.Handle);
-            //}
+            if (!this.IsHandleCreated)
+                return;
+
+            SetWindowPos(this.Handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW);
+        }
+
+        private void applyLayeredAlpha()
+        {
+            if (!this.IsHandleCreated)
+                return;
+
+            SetLayeredWindowAttributes(this.Handle, 0, this._alpha, LWA_ALPHA);
         }
         #endregion
     }

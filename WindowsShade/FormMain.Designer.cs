@@ -63,7 +63,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.ckxAutoAdjust = new System.Windows.Forms.CheckBox();
             this.ckxAutoShowShade = new System.Windows.Forms.CheckBox();
             this.ckxAutoHidden = new System.Windows.Forms.CheckBox();
             this.plFoot = new System.Windows.Forms.Panel();
@@ -386,7 +385,6 @@
             // 
             // tabPage4
             // 
-            this.tabPage4.Controls.Add(this.ckxAutoAdjust);
             this.tabPage4.Controls.Add(this.ckxAutoShowShade);
             this.tabPage4.Controls.Add(this.ckxAutoHidden);
             this.tabPage4.Font = new System.Drawing.Font("宋体", 16F);
@@ -398,16 +396,6 @@
             this.tabPage4.Text = "软件设置";
             this.tabPage4.UseVisualStyleBackColor = true;
             // 
-            // ckxAutoAdjust
-            // 
-            this.ckxAutoAdjust.AutoSize = true;
-            this.ckxAutoAdjust.Location = new System.Drawing.Point(89, 146);
-            this.ckxAutoAdjust.Name = "ckxAutoAdjust";
-            this.ckxAutoAdjust.Size = new System.Drawing.Size(161, 26);
-            this.ckxAutoAdjust.TabIndex = 2;
-            this.ckxAutoAdjust.Text = "自动调整亮度";
-            this.ckxAutoAdjust.UseVisualStyleBackColor = true;
-            this.ckxAutoAdjust.CheckedChanged += new System.EventHandler(this.ckxAutoAdjust_CheckedChanged);
             // 
             // ckxAutoShowShade
             // 
@@ -550,7 +538,6 @@
         private System.Windows.Forms.CheckBox ckxEnabled;
         private System.Windows.Forms.Label lblMonitorInfo;
         private System.Windows.Forms.TextBox txtResolution;
-        private System.Windows.Forms.CheckBox ckxAutoAdjust;
         private System.Windows.Forms.TrackBar tbAlphaChild;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Label label2;

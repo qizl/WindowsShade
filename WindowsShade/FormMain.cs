@@ -1,14 +1,10 @@
-﻿using Com.EnjoyCodes.SharpSerializer;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 using WindowsShade.Models;
-using WindowsShade.Task;
 using WindowsShade.Views;
 
 namespace WindowsShade
@@ -27,12 +23,11 @@ namespace WindowsShade
             get { return this.tbSystem.Maximum - this.tbSystem.Value; }
             set { this.tbSystem.Value = this.tbSystem.Maximum - value; }
         }
-        private DataDriver _dataDriver;
 
         /// <summary>
         /// 遮罩置顶检测计时器
         /// </summary>
-        //private Timer _timerSetTopMost = new Timer();
+        private Timer _timerSetTopMost = new Timer();
         #endregion
 
         #region Structures & Initialize
@@ -41,12 +36,6 @@ namespace WindowsShade
         private void FormMain_Load(object sender, EventArgs e) => this.initialize();
         private void initialize()
         {
-            // 0.初始化路径
-            if (!Directory.Exists(Common.BrightnessFolder))
-                Directory.CreateDirectory(Common.BrightnessFolder);
-            if (!Directory.Exists(Common.BrightnessTrainedFolder))
-                Directory.CreateDirectory(Common.BrightnessTrainedFolder);
-
             // 1.加载配置文件
             Common.Config = Config.Load(Common.ConfigPath);
             if (Common.Config == null)
@@ -61,6 +50,8 @@ namespace WindowsShade
             this.ShowInTaskbar = false;
             this.notifyIcon1.Visible = true;
             this.btnHidden.Location = new System.Drawing.Point(0, -100);
+            this._timerSetTopMost.Interval = 1000;
+            this._timerSetTopMost.Tick += _timerSetTopMost_Tick;
 
             // 2.2 遮罩窗体
             //this._shade.Text = this.Text;
@@ -86,7 +77,6 @@ namespace WindowsShade
             // 2.6 tabMain - 软件设置
             this.ckxAutoHidden.Checked = Common.Config.AutoHidden;
             this.ckxAutoShowShade.Checked = Common.Config.AutoShowShade;
-            this.ckxAutoAdjust.Checked = Common.Config.AutoAdjust;
 
             // 3.主窗体显示控制
             if (Common.Config.AutoHidden) // 隐藏主窗体
@@ -94,26 +84,7 @@ namespace WindowsShade
             else // 不自动隐藏主窗体时，激活主窗体
                 this.Activate();
 
-            // 4.启动数据驱动
-            if (this._dataDriver == null)
-            {
-                if (Common.Config.AutoAdjust && File.Exists(Common.Config.BrightnessDataPath))
-                {
-                    // 加载亮度数据
-                    try
-                    {
-                        Common.BrightnessDatas = new SharpSerializer().Deserialize(Common.Config.BrightnessDataPath) as List<BrightnessData>;
-                    }
-                    catch { }
-                }
-
-                this._dataDriver = new DataDriver();
-                this._dataDriver.AdjustBrightness += _dataDriver_AdjustBrightness;
-                this._dataDriver.BrightnessGenerated += _dataDriver_BrightnessGenerated;
-                this._dataDriver.Start();
-            }
-
-            // 5.注册显示器变更事件
+            // 4.注册显示器变更事件
             SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
         }
         #endregion
@@ -181,10 +152,27 @@ namespace WindowsShade
         /// </summary>
         private void setBrightness()
         {
-            this._shades.ForEach(m => m.AdjustBrightness(Common.Config.Monitors[this._shades.IndexOf(m)].Alpha));
+            for (int i = 0; i < this._shades.Count; i++)
+                this._shades[i].AdjustBrightness(Common.Config.Monitors[i].Alpha);
+            this.ensureShadesTopMost();
+        }
 
-            if (this.ckxAlpha.Checked) // TODO：收集屏幕亮度，未实现单屏亮度收集
-                Brightness.Save(Common.Config.Alpha);
+        /// <summary>
+        /// 保持可见遮罩位于顶层，但不抢占当前前台窗口焦点
+        /// </summary>
+        private void ensureShadesTopMost()
+        {
+            var hasVisibleShade = false;
+            for (int i = 0; i < this._shades.Count; i++)
+            {
+                if (!this._shades[i].Visible)
+                    continue;
+
+                hasVisibleShade = true;
+                this._shades[i].SetTopMost();
+            }
+
+            this._timerSetTopMost.Enabled = hasVisibleShade;
         }
 
         /// <summary>
@@ -221,7 +209,9 @@ namespace WindowsShade
                 if (!Common.Config.Monitors.Any(m => m.Enabled))
                     Common.Config.Monitors.ForEach(m => m.Enabled = true);
 
-                this._shades.ForEach(m => m.AdjustShade(Common.Config.Monitors[this._shades.IndexOf(m)]));
+                for (int i = 0; i < this._shades.Count; i++)
+                    this._shades[i].AdjustShade(Common.Config.Monitors[i]);
+                this.ensureShadesTopMost();
             }
             else
             {
@@ -231,12 +221,13 @@ namespace WindowsShade
 
                 // 禁用所有屏幕
                 Common.Config.Monitors.ForEach(m => m.Enabled = false);
-                this._shades.ForEach(m => m.Visible = false);
+                for (int i = 0; i < this._shades.Count; i++)
+                    this._shades[i].Visible = false;
+                this._timerSetTopMost.Stop();
             }
 
             this.menuItemHidden.Text = showOrHidden ? "隐藏(&H)" : "显示(&D)"; // 托盘菜单
 
-            Brightness.Save(showOrHidden ? Common.Config.Alpha : (byte)0); // 收集屏幕亮度
         }
         #endregion
 
@@ -262,7 +253,6 @@ namespace WindowsShade
             // 3.获取软件设置参数
             Common.Config.AutoHidden = this.ckxAutoHidden.Checked;
             Common.Config.AutoShowShade = this.ckxAutoShowShade.Checked;
-            Common.Config.AutoAdjust = this.ckxAutoAdjust.Checked;
 
             // 4.持久化配置
             Common.Config.UpdateTime = DateTime.Now;
@@ -274,8 +264,6 @@ namespace WindowsShade
             if (this.tabMain.SelectedIndex == 1)
                 this.showOrHiddenShade(Common.Config.Monitors.Any(m => m.Enabled));
 
-            // 6.收集屏幕亮度
-            Brightness.Save(this.ckxAlpha.Checked ? Common.Config.Alpha : (byte)0, true);
         }
 
         /// <summary>
@@ -287,63 +275,9 @@ namespace WindowsShade
 
         private void FormMain_HelpButtonClicked(object sender, System.ComponentModel.CancelEventArgs e) => Process.Start("http://enjoycodes.com/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
 
-        /// <summary>
-        /// 调整屏幕亮度事件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void _dataDriver_AdjustBrightness(object sender, AdjustBrightnessEventArgs e)
-        {
-            if (!Common.Config.AutoAdjust)
-                return;
-
-            if (e.Alpha == 0)
-                return;
-
-            if (e.Alpha == Common.Config.Alpha)
-                return;
-
-            // 渐变修改
-            var lastAlpha = Common.Config.Alpha;
-            var abs = Math.Abs(lastAlpha - e.Alpha);
-            var direct = lastAlpha > e.Alpha; // 渐变方向
-            var d = abs <= 50 ? 1 : abs / 50; // 渐变值
-            var i = (int)lastAlpha; // 起始值
-            while (i != e.Alpha)
-            {
-                i = direct ? i - d : i + d;
-
-                if (i >= e.Alpha != direct) // 终止条件，渐变方向改变
-                    i = e.Alpha;
-
-                this.Invoke(new changeTbAlphaHandler(this.changeTbAlpha), i);
-                System.Threading.Thread.Sleep(50);
-            }
-        }
-        private delegate void changeTbAlphaHandler(int value);
-
-        private void _dataDriver_BrightnessGenerated(object sender, GenerateBrightnessEventArgs e)
-        {
-            if (e.Datas?.Count > 0)
-            {
-                var trainedFilePath = Common.GetBrightnessTrainedFileName();
-
-                var serializer = new SharpSerializer();
-                serializer.Serialize(e.Datas, trainedFilePath);
-
-                Common.BrightnessDatas = e.Datas;
-                Common.Config.BrightnessDataPath = trainedFilePath;
-                Common.Config.LastGenerateDataTime = e.Time;
-                Common.Config.Save();
-            }
-        }
-
         private void _timerSetTopMost_Tick(object sender, EventArgs e)
         {
-            this._shades.ForEach(shade =>
-            {
-                shade.SetTopMost();
-            });
+            this.ensureShadesTopMost();
         }
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -360,9 +294,7 @@ namespace WindowsShade
 
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Brightness.Save(Common.Config.Alpha, true); // 收集屏幕亮度
-            this._dataDriver.Stop(); // 关闭数据驱动
-            //this._timerSetTopMost.Stop(); // 停止遮罩置顶
+            this._timerSetTopMost.Stop(); // 停止遮罩置顶
         }
         #endregion
 
@@ -509,6 +441,7 @@ namespace WindowsShade
 
             // 2.调整屏幕亮度
             this._shades[index].AdjustBrightness(Common.Config.Monitors[index].Alpha);
+            this.ensureShadesTopMost();
 
             // 3.更新屏幕配置信息
             this.lblMonitorInfo.Text = $"当前配置第{index + 1}屏，\r\n共启用{Common.Config.Monitors.Count(m => m.Enabled)}屏";
@@ -518,21 +451,6 @@ namespace WindowsShade
         }
         #endregion
 
-        #region tab3 软件设置
-        private void ckxAutoAdjust_CheckedChanged(object sender, EventArgs e)
-        {
-            Common.Config.AutoAdjust = this.ckxAutoAdjust.Checked;
-            if (Common.Config.AutoAdjust && File.Exists(Common.Config.BrightnessDataPath))
-            {
-                try
-                {
-                    // 加载亮度数据
-                    Common.BrightnessDatas = new SharpSerializer().Deserialize(Common.Config.BrightnessDataPath) as List<BrightnessData>;
-                }
-                catch { }
-            }
-        }
-        #endregion
         #endregion
 
         #region Events - 托盘菜单（cmxTray）

@@ -31,33 +31,6 @@ namespace WindowsShade.Models
         /// </summary>
         public bool AutoHidden { get; set; }
 
-        /// <summary>
-        /// 自动调整亮度
-        /// </summary>
-        public bool AutoAdjust { get; set; } = true;
-        /// <summary>
-        /// 自动调整屏幕亮度间隔（min）
-        /// </summary>
-        public int AutoAdjustInterval { get; set; } = 10;
-        /// <summary>
-        /// 上次生成亮度数据时间
-        /// </summary>
-        public DateTime LastGenerateDataTime { get; set; } = new DateTime();
-        /// <summary>
-        /// 亮度数据生成间隔（day）
-        /// </summary>
-        public int GenerateDataInterval { get; set; } = 7;
-        /// <summary>
-        /// 亮度数据文件路径
-        /// </summary>
-        public string BrightnessDataPath { get; set; }
-
-        public string ServerUrl { get; set; } = @"http://btapi.qizl.cn";
-        /// <summary>
-        /// 重连服务端间隔（min）
-        /// </summary>
-        public int ReconnectInterval { get; set; } = 30;
-
         public DateTime CreateTime { get; set; } = DateTime.Now;
         public DateTime UpdateTime { get; set; }
 
