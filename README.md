@@ -45,6 +45,24 @@ MSBuild.exe WindowsShade\WindowsShade.csproj /p:Configuration=Debug /p:Platform=
 - `SharpSerializer`：配置序列化依赖库。
 - `WindowsShade.Tests`：测试项目。
 
+## 发布包
+
+`apps\WindowsShade-Release.zip` 保存最新的一个用户下载版本。当前发布包基于 Release 配置构建，版本为 `1.0.0.5`。
+
+重新生成发布包：
+
+```powershell
+MSBuild.exe WindowsShade.slnx /p:Configuration=Release /p:Platform="Any CPU" /m
+Compress-Archive -LiteralPath WindowsShade\bin\Release\WindowsShade.exe,WindowsShade\bin\Release\WindowsShade.exe.config,WindowsShade\bin\Release\SharpSerializer.dll,WindowsShade\bin\Release\SharpSerializer.xml -DestinationPath apps\WindowsShade-Release.zip -CompressionLevel Optimal -Force
+```
+
+发布包内只保留运行所需文件：
+
+- `WindowsShade.exe`
+- `WindowsShade.exe.config`
+- `SharpSerializer.dll`
+- `SharpSerializer.xml`
+
 ## 说明
 
 截图排除依赖 Windows 的窗口显示亲和性能力，优先支持 Windows 10 2004+ 和 Windows 11。它适用于常见系统截图和多数基于 Windows 合成器的捕获方式，但不保证覆盖所有第三方、驱动级或外部拍摄场景。

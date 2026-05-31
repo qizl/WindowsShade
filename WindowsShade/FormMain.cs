@@ -28,6 +28,7 @@ namespace WindowsShade
         /// 遮罩置顶检测计时器
         /// </summary>
         private Timer _timerSetTopMost = new Timer();
+        private string _applicationTitle => $"WindowsShade v{Application.ProductVersion}";
         #endregion
 
         #region Structures & Initialize
@@ -59,7 +60,7 @@ namespace WindowsShade
             // 2.3 tabMain
             this.tabMain_SelectedIndexChanged(this, null);
 
-            // 2.4 tabMain - 亮度调整
+            // 2.4 tabMain - 亮度控制
             this.tbAlpha.Value = Common.Config.Alpha;
             this.lblAlphaValue.Text = Common.Config.Alpha.ToString();
             this.tbSystem.Enabled = this._screenBrightness.Initiazlie();
@@ -245,7 +246,7 @@ namespace WindowsShade
         private void btnApply_Click(object sender, EventArgs e) => this.apply();
         private void apply()
         {
-            // 1.获取亮度调整参数
+            // 1.获取亮度控制参数
             Common.Config.Alpha = (byte)this.tbAlpha.Value;
 
             // 2.获取多屏设置参数：自动更新
@@ -306,7 +307,7 @@ namespace WindowsShade
         /// <param name="e"></param>
         private void tabMain_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.Text = $"WindowsShade - {this.tabMain.SelectedTab.Text}";
+            this.Text = $"{this._applicationTitle} - {this.tabMain.SelectedTab.Text}";
 
             switch (this.tabMain.SelectedIndex)
             {
@@ -334,7 +335,7 @@ namespace WindowsShade
             }
         }
 
-        #region tab1 亮度调整
+        #region tab1 亮度控制
         /// <summary>
         /// 调整遮罩亮度
         /// </summary>

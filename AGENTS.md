@@ -81,6 +81,15 @@
 - `Monitor.No` obsolete 警告。
 - `SharpSerializer` 缺少 XML 注释警告。
 
+## 发布包维护
+
+- `apps\WindowsShade-Release.zip` 是用户下载用的最新发布包，`apps\` 目录默认只保留这一份 zip。
+- 重新生成发布包前先用 Release 配置构建 `WindowsShade.slnx`。
+- 发布包应基于 `WindowsShade\bin\Release`，保持扁平结构。
+- 包内只放运行所需文件：`WindowsShade.exe`、`WindowsShade.exe.config`、`SharpSerializer.dll`、`SharpSerializer.xml`。
+- 不把 `*.pdb`、`Config.xml`、测试程序集、旧依赖或临时解压目录放进发布包。
+- 更新发布包后，同步在 `README.md` 记录当前版本、生成方式和包内文件。
+
 ## 测试重点
 
 修改遮罩、主窗体或屏幕配置逻辑后，至少考虑以下场景：

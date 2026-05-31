@@ -243,7 +243,7 @@
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(542, 295);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "亮度调整";
+            this.tabPage1.Text = "亮度控制";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // tabPage2
