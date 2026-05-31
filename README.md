@@ -1,8 +1,8 @@
-# WindowsShade
+# 多屏亮度调整工具
 
-WindowsShade 是一个 Windows 多屏亮度调节工具。它通过在每个显示器上放置独立的系统级遮罩窗口来降低视觉亮度，适合显示器本身亮度调节不方便、或多屏亮度需要分别控制的场景。
+多屏亮度调整工具是一个 Windows 多屏亮度调节工具。它通过在每个显示器上放置独立的系统级遮罩窗口来降低视觉亮度，适合显示器本身亮度调节不方便、或多屏亮度需要分别控制的场景。
 
-<img src="https://qizl.cn/Images/WindowsShade/6366890016291518825946326.png" alt="WindowsShade" />
+<img src="https://www.enjoycodes.com/upload/ueditor/2026-05-31/6391582947181738095580133.png" alt="多屏亮度调整工具" width="500px"/>
 
 ## 功能
 
@@ -47,7 +47,7 @@ MSBuild.exe WindowsShade\WindowsShade.csproj /p:Configuration=Debug /p:Platform=
 
 ## 发布包
 
-`apps\WindowsShade-Release.zip` 保存最新的一个用户下载版本。当前发布包基于 Release 配置构建，版本为 `1.0.0.5`。
+`apps\WindowsShade-Release.zip` 保存最新的一个用户下载版本。当前发布包基于 Release 配置构建，显示名称为 `多屏亮度调整工具 v1.0.0.6`。
 
 重新生成发布包：
 
@@ -67,6 +67,6 @@ Compress-Archive -LiteralPath WindowsShade\bin\Release\WindowsShade.exe,WindowsS
 
 截图排除依赖 Windows 的窗口显示亲和性能力，优先支持 Windows 10 2004+ 和 Windows 11。它适用于常见系统截图和多数基于 Windows 合成器的捕获方式，但不保证覆盖所有第三方、驱动级或外部拍摄场景。
 
-项目原始介绍：
+项目功能文档：
 
-http://enjoycodes.com/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81
+https://www.enjoycodes.com/Share/G0gYqmgYSkBMI850D600oTSxYdWyHfemEAfaHWI3ZKU

@@ -28,7 +28,7 @@ namespace WindowsShade
         /// 遮罩置顶检测计时器
         /// </summary>
         private Timer _timerSetTopMost = new Timer();
-        private string _applicationTitle => $"WindowsShade v{Application.ProductVersion}";
+        private string _applicationTitle => $"多屏亮度调整工具 v{Application.ProductVersion}";
         #endregion
 
         #region Structures & Initialize
@@ -307,7 +307,7 @@ namespace WindowsShade
         /// <param name="e"></param>
         private void tabMain_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.Text = $"{this._applicationTitle} - {this.tabMain.SelectedTab.Text}";
+            this.Text = this._applicationTitle;
 
             switch (this.tabMain.SelectedIndex)
             {
