@@ -13,6 +13,7 @@
 - 遮罩窗口不抢焦点，不打断当前输入、拖拽或窗口操作。
 - 遮罩会维护顶层顺序，被其他窗口覆盖后会自动恢复。
 - 截图和常见系统捕获场景中默认排除遮罩，截图结果尽量保持原始屏幕内容。
+- 右键托盘图标可直接调整遮罩亮度和系统亮度。
 
 ## 当前实现
 
@@ -47,7 +48,7 @@ MSBuild.exe WindowsShade\WindowsShade.csproj /p:Configuration=Debug /p:Platform=
 
 ## 发布包
 
-`apps\WindowsShade-Release.zip` 保存最新的一个用户下载版本。当前发布包基于 Release 配置构建，显示名称为 `多屏亮度调整工具 v1.0.0.6`。
+`apps\WindowsShade-Release.zip` 保存最新的一个用户下载版本。当前发布包基于 Release 配置构建，显示名称为 `多屏亮度调整工具 v1.0.1.34`。
 
 重新生成发布包：
 
@@ -69,4 +70,4 @@ Compress-Archive -LiteralPath WindowsShade\bin\Release\WindowsShade.exe,WindowsS
 
 项目功能文档：
 
-https://www.enjoycodes.com/Share/G0gYqmgYSkBMI850D600oTSxYdWyHfemEAfaHWI3ZKU
+https://www.enjoycodes.com/Share/73IArAfxlFazchMm_UAR1Naw

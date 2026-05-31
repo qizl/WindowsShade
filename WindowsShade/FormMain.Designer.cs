@@ -136,9 +136,9 @@
             // lblSystem
             // 
             this.lblSystem.AutoSize = true;
-            this.lblSystem.Location = new System.Drawing.Point(410, 148);
+            this.lblSystem.Location = new System.Drawing.Point(410, 144);
             this.lblSystem.Name = "lblSystem";
-            this.lblSystem.Size = new System.Drawing.Size(21, 22);
+            this.lblSystem.Size = new System.Drawing.Size(21, 30);
             this.lblSystem.TabIndex = 6;
             this.lblSystem.Text = "0";
             // 
@@ -154,9 +154,9 @@
             // lblAlphaValue
             // 
             this.lblAlphaValue.AutoSize = true;
-            this.lblAlphaValue.Location = new System.Drawing.Point(410, 88);
+            this.lblAlphaValue.Location = new System.Drawing.Point(410, 84);
             this.lblAlphaValue.Name = "lblAlphaValue";
-            this.lblAlphaValue.Size = new System.Drawing.Size(21, 22);
+            this.lblAlphaValue.Size = new System.Drawing.Size(21, 30);
             this.lblAlphaValue.TabIndex = 6;
             this.lblAlphaValue.Text = "0";
             // 
@@ -171,11 +171,10 @@
             // 
             // notifyIcon1
             // 
-            this.notifyIcon1.ContextMenuStrip = this.cmxTray;
             this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
             this.notifyIcon1.Text = "多屏亮度调整工具";
             this.notifyIcon1.Visible = true;
-            this.notifyIcon1.Click += new System.EventHandler(this.notifyIcon1_Click);
+            this.notifyIcon1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseClick);
             // 
             // cmxTray
             // 

@@ -29,6 +29,7 @@ namespace WindowsShade
         /// </summary>
         private Timer _timerSetTopMost = new Timer();
         private string _applicationTitle => $"多屏亮度调整工具 v{Application.ProductVersion}";
+        private TrayBrightnessMenu _trayBrightnessMenu;
         #endregion
 
         #region Structures & Initialize
@@ -53,6 +54,7 @@ namespace WindowsShade
             this.btnHidden.Location = new System.Drawing.Point(0, -100);
             this._timerSetTopMost.Interval = 1000;
             this._timerSetTopMost.Tick += _timerSetTopMost_Tick;
+            this.initializeTrayBrightnessMenu();
 
             // 2.2 遮罩窗体
             //this._shade.Text = this.Text;
@@ -70,6 +72,7 @@ namespace WindowsShade
                 this._tbSystemToScreenBrightness = this._screenBrightness.GetBrightness();  // 读取系统亮度
                 this.lblSystem.Text = this.tbSystem.Value.ToString();
             }
+            this.refreshTrayBrightnessPanel();
 
             // 2.5 tabMain - 遮罩设置
             this.updateShades();
@@ -156,6 +159,7 @@ namespace WindowsShade
             for (int i = 0; i < this._shades.Count; i++)
                 this._shades[i].AdjustBrightness(Common.Config.Monitors[i].Alpha);
             this.ensureShadesTopMost();
+            this.refreshTrayBrightnessPanel();
         }
 
         /// <summary>
@@ -228,7 +232,61 @@ namespace WindowsShade
             }
 
             this.menuItemHidden.Text = showOrHidden ? "隐藏(&H)" : "显示(&D)"; // 托盘菜单
+            this._trayBrightnessMenu?.Invalidate();
 
+        }
+
+        private void initializeTrayBrightnessMenu()
+        {
+            this._trayBrightnessMenu = new TrayBrightnessMenu(
+                this.notifyIcon1,
+                this.cmxTray,
+                () => this.menuItemOpenMain_Click(this.menuItemOpenMain, EventArgs.Empty),
+                () => this.menuItemClose_Click(this.menuItemClose, EventArgs.Empty));
+            this._trayBrightnessMenu.ShadeEnabledChanged += this.applyTrayShadeEnabled;
+            this._trayBrightnessMenu.AlphaBrightnessChanged += this.applyTrayAlphaBrightness;
+            this._trayBrightnessMenu.SystemBrightnessChanged += this.applyTraySystemBrightness;
+            this._trayBrightnessMenu.Initialize();
+        }
+
+        private void refreshTrayBrightnessPanel()
+        {
+            if (this._trayBrightnessMenu == null || Common.Config == null)
+                return;
+
+            this._trayBrightnessMenu.SetState(Common.Config.Alpha, this.ckxAlpha.Checked, this.tbSystem.Enabled, this.tbSystem.Maximum, this.tbSystem.Value);
+        }
+
+        private void applyTrayShadeEnabled(bool enabled)
+        {
+            this.ckxAlpha.Checked = enabled;
+        }
+
+        private void applyTrayAlphaBrightness(int value)
+        {
+            this.changeTbAlpha(value);
+        }
+
+        private void applyTraySystemBrightness(int value)
+        {
+            this.tbSystem.Value = value;
+            this.changeSystemBrightness();
+            this.refreshTrayBrightnessPanel();
+        }
+
+        private void changeSystemBrightness()
+        {
+            this.lblSystem.Text = this.tbSystem.Value.ToString();
+
+            try
+            {
+                this._screenBrightness.SetBrightness(this._tbSystemToScreenBrightness);
+            }
+            catch
+            {
+                this.tbSystem.Enabled = false;
+                this.lblSystem.Text = "不可用";
+            }
         }
         #endregion
 
@@ -274,7 +332,7 @@ namespace WindowsShade
         /// <param name="e"></param>
         private void btnHidden_Click(object sender, EventArgs e) => this.Visible = false;
 
-        private void FormMain_HelpButtonClicked(object sender, System.ComponentModel.CancelEventArgs e) => Process.Start("http://enjoycodes.com/ViewNote/dc7e3d7e-c462-465e-b20e-e4726beafb81");
+        private void FormMain_HelpButtonClicked(object sender, System.ComponentModel.CancelEventArgs e) => Process.Start("https://www.enjoycodes.com/Share/GINXR8nZheKDVFYJN9Iqxvo9");
 
         private void _timerSetTopMost_Tick(object sender, EventArgs e)
         {
@@ -366,9 +424,8 @@ namespace WindowsShade
         /// <param name="e"></param>
         private void tbSystem_Scroll(object sender, EventArgs e)
         {
-            this.lblSystem.Text = this.tbSystem.Value.ToString();
-
-            this._screenBrightness.SetBrightness(this._tbSystemToScreenBrightness);
+            this.changeSystemBrightness();
+            this.refreshTrayBrightnessPanel();
         }
 
         /// <summary>
@@ -475,12 +532,17 @@ namespace WindowsShade
         #endregion
 
         #region Events - 托盘图标（notifyIcon1）
-        private void notifyIcon1_Click(object sender, EventArgs e)
+        private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
         {
-            if ((e as MouseEventArgs).Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
                 this.Visible = !this.Visible;
                 if (this.Visible) this.Activate();
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                this.refreshTrayBrightnessPanel();
+                this._trayBrightnessMenu.ShowAtCursor();
             }
         }
         #endregion
