@@ -128,7 +128,14 @@ namespace WindowsShade.Models
                 this._shadeEnabledCheckBox = this.createCheckBox(30, captionY + 2, captionHeight);
                 panel.Controls.Add(this._shadeEnabledCheckBox);
 
-                panel.Controls.Add(this.createCaptionLabel("亮度", 55, captionY, 60, captionHeight, ContentAlignment.MiddleLeft));
+                var alphaCaption = this.createCaptionLabel("亮度", 55, captionY, 60, captionHeight, ContentAlignment.MiddleLeft);
+                alphaCaption.Cursor = Cursors.Hand;
+                alphaCaption.Click += (sender, e) =>
+                {
+                    this._popup.KeepVisibleTemporarily();
+                    this._shadeEnabledCheckBox.Checked = !this._shadeEnabledCheckBox.Checked;
+                };
+                panel.Controls.Add(alphaCaption);
                 this._alphaValue = this.createCaptionValueLabel(264, captionY, captionHeight);
                 this._alphaTrackBar = this.createTrackBar(26, 58, 255);
                 panel.Controls.Add(this._alphaTrackBar);
