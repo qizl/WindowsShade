@@ -30,6 +30,8 @@ namespace WindowsShade
         private Timer _timerSetTopMost = new Timer();
         private string _applicationTitle => $"多屏亮度调整工具 v{Application.ProductVersion}";
         private TrayBrightnessMenu _trayBrightnessMenu;
+        private const string AutoStartRegistryPath = @"Software\Microsoft\Windows\CurrentVersion\Run";
+        private const string AutoStartRegistryName = "WindowsShade";
         #endregion
 
         #region Structures & Initialize
@@ -79,8 +81,10 @@ namespace WindowsShade
             this.txtResolution.BorderStyle = BorderStyle.None;
 
             // 2.6 tabMain - 软件设置
+            Common.Config.AutoStart = this.isAutoStartEnabled();
             this.ckxAutoHidden.Checked = Common.Config.AutoHidden;
             this.ckxAutoShowShade.Checked = Common.Config.AutoShowShade;
+            this.ckxAutoStart.Checked = Common.Config.AutoStart;
 
             // 3.主窗体显示控制
             if (Common.Config.AutoHidden) // 隐藏主窗体
@@ -312,10 +316,12 @@ namespace WindowsShade
             // 3.获取软件设置参数
             Common.Config.AutoHidden = this.ckxAutoHidden.Checked;
             Common.Config.AutoShowShade = this.ckxAutoShowShade.Checked;
+            Common.Config.AutoStart = this.ckxAutoStart.Checked;
 
             // 4.持久化配置
             Common.Config.UpdateTime = DateTime.Now;
             Common.Config.Save();
+            this.setAutoStartEnabled(Common.Config.AutoStart);
 
             /*
              * 5.调整屏幕亮度
@@ -323,6 +329,46 @@ namespace WindowsShade
             if (this.tabMain.SelectedIndex == 1)
                 this.showOrHiddenShade(Common.Config.Monitors.Any(m => m.Enabled));
 
+        }
+
+        private bool isAutoStartEnabled()
+        {
+            try
+            {
+                using (var key = Registry.CurrentUser.OpenSubKey(AutoStartRegistryPath, false))
+                {
+                    return string.Equals(key?.GetValue(AutoStartRegistryName) as string, this.getAutoStartCommand(), StringComparison.OrdinalIgnoreCase);
+                }
+            }
+            catch
+            {
+                return Common.Config?.AutoStart ?? false;
+            }
+        }
+
+        private void setAutoStartEnabled(bool enabled)
+        {
+            try
+            {
+                using (var key = Registry.CurrentUser.CreateSubKey(AutoStartRegistryPath))
+                {
+                    if (key == null)
+                        return;
+
+                    if (enabled)
+                        key.SetValue(AutoStartRegistryName, this.getAutoStartCommand());
+                    else
+                        key.DeleteValue(AutoStartRegistryName, false);
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private string getAutoStartCommand()
+        {
+            return $"\"{Application.ExecutablePath}\"";
         }
 
         /// <summary>
@@ -333,6 +379,16 @@ namespace WindowsShade
         private void btnHidden_Click(object sender, EventArgs e) => this.Visible = false;
 
         private void FormMain_HelpButtonClicked(object sender, System.ComponentModel.CancelEventArgs e) => Process.Start("https://www.enjoycodes.com/Share/GINXR8nZheKDVFYJN9Iqxvo9");
+
+        internal void ShowMainWindow()
+        {
+            this.Show();
+            this.Visible = true;
+            if (this.WindowState == FormWindowState.Minimized)
+                this.WindowState = FormWindowState.Normal;
+            this.Activate();
+            this.BringToFront();
+        }
 
         private void _timerSetTopMost_Tick(object sender, EventArgs e)
         {
@@ -520,8 +576,7 @@ namespace WindowsShade
 
         private void menuItemOpenMain_Click(object sender, EventArgs e)
         {
-            this.Visible = true;
-            this.Activate();
+            this.ShowMainWindow();
         }
 
         private void menuItemClose_Click(object sender, EventArgs e)

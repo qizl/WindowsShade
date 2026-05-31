@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
@@ -52,8 +53,9 @@ namespace WindowsShade.Models
                 this._popup.Bounds = bounds;
                 this._popup.PrepareForDisplay();
                 this._popup.Show();
-                this._popup.Refresh();
                 TrayNativeWindowHelper.ShowTopMostNoActivate(this._popup.Handle, bounds);
+                this._popup.Invalidate(true);
+                this._popup.Update();
             }
         }
 
@@ -138,8 +140,16 @@ namespace WindowsShade.Models
                 panel.Controls.Add(this._systemTrackBar);
                 panel.Controls.Add(this._systemValue);
 
-                this.createButton(panel, "打开主界面(&M)", 188, this._openMainClick);
-                this.createButton(panel, "退出(&C)", 243, this._closeClick);
+                panel.AddMenuItem("打开主界面(&M)", new Rectangle(8, 188, panel.Width - 16, 55), () =>
+                {
+                    this._popup.Hide();
+                    this._openMainClick();
+                });
+                panel.AddMenuItem("退出(&C)", new Rectangle(8, 243, panel.Width - 16, 55), () =>
+                {
+                    this._popup.Hide();
+                    this._closeClick();
+                });
 
                 this._shadeEnabledCheckBox.CheckedChanged += (sender, e) =>
                 {
@@ -179,24 +189,6 @@ namespace WindowsShade.Models
                 Location = new Point(x, y + (rowHeight - TrayCheckBox.PreferredControlHeight) / 2),
                 Size = new Size(checkBoxWidth, TrayCheckBox.PreferredControlHeight)
             };
-        }
-
-        private TrayMenuButton createButton(Control parent, string text, int y, Action clickHandler)
-        {
-            var button = new TrayMenuButton
-            {
-                Location = new Point(8, y),
-                Size = new Size(parent.Width - 16, 55),
-                Font = TrayNativeWindowHelper.CreateTrayMenuFont(),
-                Text = text
-            };
-            button.Click += (sender, e) =>
-            {
-                this._popup.Hide();
-                clickHandler();
-            };
-            parent.Controls.Add(button);
-            return button;
         }
 
         private Label createCaptionLabel(string text, int x, int y, int width, int height, ContentAlignment textAlign)
@@ -454,12 +446,12 @@ namespace WindowsShade.Models
     internal sealed class TrayBrightnessPopup : Form
     {
         private const int AutoHideMargin = 6;
-        private readonly Panel _contentPanel;
+        private readonly TrayMenuPanel _contentPanel;
         private readonly Timer _autoHideTimer;
         private bool _hasMouseEntered;
         private DateTime _ignoreDeactivateUntil = DateTime.MinValue;
 
-        public Panel ContentPanel => this._contentPanel;
+        public TrayMenuPanel ContentPanel => this._contentPanel;
 
         public void KeepVisibleTemporarily()
         {
@@ -476,8 +468,9 @@ namespace WindowsShade.Models
             if (!this.IsHandleCreated)
                 this.CreateControl();
 
-            this._contentPanel.Refresh();
-            this.Refresh();
+            this.UpdateRoundedRegion();
+            this.PerformLayout();
+            this.Invalidate(true);
         }
 
         public TrayBrightnessPopup()
@@ -486,8 +479,7 @@ namespace WindowsShade.Models
             this.FormBorderStyle = FormBorderStyle.None;
             this.ShowInTaskbar = false;
             this.StartPosition = FormStartPosition.Manual;
-            this.BackColor = Color.Fuchsia;
-            this.TransparencyKey = Color.Fuchsia;
+            this.BackColor = Color.White;
             this.Padding = new Padding(0);
             this.TopMost = true;
             this.AutoScaleMode = AutoScaleMode.None;
@@ -498,9 +490,9 @@ namespace WindowsShade.Models
             };
             this._autoHideTimer.Tick += this.autoHideTimer_Tick;
 
-            this._contentPanel = new Panel
+            this._contentPanel = new TrayMenuPanel
             {
-                BackColor = Color.Transparent,
+                BackColor = Color.White,
                 Dock = DockStyle.Fill
             };
             this.Controls.Add(this._contentPanel);
@@ -519,6 +511,7 @@ namespace WindowsShade.Models
             base.OnVisibleChanged(e);
             if (this.Visible)
             {
+                this.UpdateRoundedRegion();
                 this._hasMouseEntered = false;
                 this._autoHideTimer.Start();
             }
@@ -541,7 +534,7 @@ namespace WindowsShade.Models
         {
             base.OnPaint(e);
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            e.Graphics.Clear(Color.Fuchsia);
+            e.Graphics.Clear(Color.White);
             var bounds = new Rectangle(1, 1, this.Width - 3, this.Height - 3);
             using (var path = TrayMenuGeometry.CreateRoundRect(bounds, 12))
             using (var brush = new SolidBrush(Color.White))
@@ -550,6 +543,21 @@ namespace WindowsShade.Models
             using (var path = TrayMenuGeometry.CreateRoundRect(bounds, 12))
             using (var pen = new Pen(Color.FromArgb(212, 212, 212)))
                 e.Graphics.DrawPath(pen, path);
+        }
+
+        protected override void OnSizeChanged(EventArgs e)
+        {
+            base.OnSizeChanged(e);
+            this.UpdateRoundedRegion();
+        }
+
+        public void UpdateRoundedRegion()
+        {
+            if (this.Width <= 0 || this.Height <= 0)
+                return;
+
+            using (var path = TrayMenuGeometry.CreateRoundRect(new Rectangle(0, 0, this.Width, this.Height), 12))
+                this.Region = new Region(path);
         }
 
         private void autoHideTimer_Tick(object sender, EventArgs e)
@@ -582,61 +590,124 @@ namespace WindowsShade.Models
         }
     }
 
-    internal sealed class TrayMenuButton : Control
+    internal sealed class TrayMenuPanel : Panel
     {
         private const int TextVerticalPadding = 8;
         private const int HoverVerticalPadding = 1;
-        private bool _hovering;
+        private readonly List<TrayMenuItem> _items = new List<TrayMenuItem>();
+        private int _hoveredIndex = -1;
 
-        public TrayMenuButton()
+        public TrayMenuPanel()
         {
-            this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.UserPaint, true);
-            this.Cursor = Cursors.Hand;
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.UserPaint | ControlStyles.ContainerControl, true);
+            this.Font = TrayNativeWindowHelper.CreateTrayMenuFont();
         }
 
-        protected override void OnPaintBackground(PaintEventArgs pevent)
+        public void AddMenuItem(string text, Rectangle bounds, Action clickHandler)
         {
-        }
-
-        protected override void OnMouseEnter(EventArgs e)
-        {
-            base.OnMouseEnter(e);
-            this._hovering = true;
-            this.Invalidate();
+            this._items.Add(new TrayMenuItem(text, bounds, clickHandler));
+            this.Invalidate(bounds);
         }
 
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            this._hovering = false;
-            this.Invalidate();
+            this.setHoveredIndex(-1);
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            var index = this.getItemIndex(e.Location);
+            this.setHoveredIndex(index);
+            this.Cursor = index >= 0 ? Cursors.Hand : Cursors.Default;
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            if (e.Button != MouseButtons.Left)
+                return;
+
+            var index = this.getItemIndex(e.Location);
+            if (index >= 0)
+                this._items[index].ClickHandler();
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            base.OnPaint(e);
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            using (var brush = new SolidBrush(Color.White))
-                e.Graphics.FillRectangle(brush, this.ClientRectangle);
-
-            if (this._hovering)
+            using (var pen = new Pen(Color.FromArgb(222, 222, 222)))
             {
-                var shadowBounds = new Rectangle(4, HoverVerticalPadding + 1, this.Width - 8, this.Height - HoverVerticalPadding * 2);
-                var hoverBounds = new Rectangle(3, HoverVerticalPadding, this.Width - 6, this.Height - HoverVerticalPadding * 2);
-                using (var path = TrayMenuGeometry.CreateRoundRect(shadowBounds, 5))
-                using (var brush = new SolidBrush(Color.FromArgb(22, 0, 0, 0)))
-                    e.Graphics.FillPath(brush, path);
-                using (var path = TrayMenuGeometry.CreateRoundRect(hoverBounds, 5))
-                using (var brush = new SolidBrush(Color.FromArgb(244, 244, 244)))
-                    e.Graphics.FillPath(brush, path);
+                foreach (var item in this._items)
+                    e.Graphics.DrawLine(pen, item.Bounds.Left, item.Bounds.Top, item.Bounds.Right, item.Bounds.Top);
             }
 
-            TextRenderer.DrawText(
-                e.Graphics,
-                this.Text,
-                this.Font,
-                new Rectangle(18, TextVerticalPadding, this.Width - 36, this.Height - TextVerticalPadding * 2),
-                Color.FromArgb(32, 32, 32),
-                TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
+            for (var i = 0; i < this._items.Count; i++)
+            {
+                var item = this._items[i];
+                if (i == this._hoveredIndex)
+                {
+                    var shadowBounds = new Rectangle(item.Bounds.Left + 4, item.Bounds.Top + HoverVerticalPadding + 1, item.Bounds.Width - 8, item.Bounds.Height - HoverVerticalPadding * 2);
+                    var hoverBounds = new Rectangle(item.Bounds.Left + 3, item.Bounds.Top + HoverVerticalPadding, item.Bounds.Width - 6, item.Bounds.Height - HoverVerticalPadding * 2);
+                    using (var path = TrayMenuGeometry.CreateRoundRect(shadowBounds, 5))
+                    using (var brush = new SolidBrush(Color.FromArgb(22, 0, 0, 0)))
+                        e.Graphics.FillPath(brush, path);
+                    using (var path = TrayMenuGeometry.CreateRoundRect(hoverBounds, 5))
+                    using (var brush = new SolidBrush(Color.FromArgb(244, 244, 244)))
+                        e.Graphics.FillPath(brush, path);
+                }
+
+                TextRenderer.DrawText(
+                    e.Graphics,
+                    item.Text,
+                    this.Font,
+                    new Rectangle(item.Bounds.Left + 18, item.Bounds.Top + TextVerticalPadding, item.Bounds.Width - 36, item.Bounds.Height - TextVerticalPadding * 2),
+                    Color.FromArgb(32, 32, 32),
+                    TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
+            }
+        }
+
+        private int getItemIndex(Point point)
+        {
+            for (var i = 0; i < this._items.Count; i++)
+            {
+                if (this._items[i].Bounds.Contains(point))
+                    return i;
+            }
+
+            return -1;
+        }
+
+        private void setHoveredIndex(int index)
+        {
+            if (this._hoveredIndex == index)
+                return;
+
+            this.invalidateItem(this._hoveredIndex);
+            this._hoveredIndex = index;
+            this.invalidateItem(this._hoveredIndex);
+        }
+
+        private void invalidateItem(int index)
+        {
+            if (index >= 0 && index < this._items.Count)
+                this.Invalidate(this._items[index].Bounds);
+        }
+
+        private sealed class TrayMenuItem
+        {
+            public readonly string Text;
+            public readonly Rectangle Bounds;
+            public readonly Action ClickHandler;
+
+            public TrayMenuItem(string text, Rectangle bounds, Action clickHandler)
+            {
+                this.Text = text;
+                this.Bounds = bounds;
+                this.ClickHandler = clickHandler;
+            }
         }
     }
 

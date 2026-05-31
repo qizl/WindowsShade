@@ -30,6 +30,10 @@ namespace WindowsShade.Models
         /// 软件启动自动隐藏主窗体
         /// </summary>
         public bool AutoHidden { get; set; }
+        /// <summary>
+        /// Windows 登录后自动启动软件
+        /// </summary>
+        public bool AutoStart { get; set; }
 
         public DateTime CreateTime { get; set; } = DateTime.Now;
         public DateTime UpdateTime { get; set; }

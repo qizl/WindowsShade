@@ -63,6 +63,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.ckxAutoStart = new System.Windows.Forms.CheckBox();
             this.ckxAutoShowShade = new System.Windows.Forms.CheckBox();
             this.ckxAutoHidden = new System.Windows.Forms.CheckBox();
             this.plFoot = new System.Windows.Forms.Panel();
@@ -384,6 +385,7 @@
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.ckxAutoStart);
             this.tabPage4.Controls.Add(this.ckxAutoShowShade);
             this.tabPage4.Controls.Add(this.ckxAutoHidden);
             this.tabPage4.Font = new System.Drawing.Font("宋体", 16F);
@@ -394,6 +396,17 @@
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "软件设置";
             this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // 
+            // ckxAutoStart
+            // 
+            this.ckxAutoStart.AutoSize = true;
+            this.ckxAutoStart.Location = new System.Drawing.Point(89, 144);
+            this.ckxAutoStart.Name = "ckxAutoStart";
+            this.ckxAutoStart.Size = new System.Drawing.Size(183, 26);
+            this.ckxAutoStart.TabIndex = 2;
+            this.ckxAutoStart.Text = "开机自动启动";
+            this.ckxAutoStart.UseVisualStyleBackColor = true;
             // 
             // 
             // ckxAutoShowShade
@@ -528,6 +541,7 @@
         private System.Windows.Forms.Button btnHidden;
         private System.Windows.Forms.CheckBox ckxAutoHidden;
         private System.Windows.Forms.CheckBox ckxAutoShowShade;
+        private System.Windows.Forms.CheckBox ckxAutoStart;
         private System.Windows.Forms.Panel plScreens;
         private System.Windows.Forms.Panel plScreenSettings;
         private System.Windows.Forms.CheckBox ckxIsMainScreen;
