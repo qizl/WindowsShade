@@ -48,7 +48,7 @@ MSBuild.exe WindowsShade\WindowsShade.csproj /p:Configuration=Debug /p:Platform=
 
 ## 发布包
 
-`apps\WindowsShade-Release.zip` 保存最新的一个用户下载版本。当前发布包基于 Release 配置构建，显示名称为 `多屏亮度调整工具 v1.0.1.41`。
+`apps\WindowsShade-Release.zip` 保存最新的一个用户下载版本。当前发布包基于 Release 配置构建，显示名称为 `多屏亮度调整工具 v1.0.1.42`。
 
 重新生成发布包：
 
