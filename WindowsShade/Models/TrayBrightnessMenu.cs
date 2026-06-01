@@ -35,6 +35,7 @@ namespace WindowsShade.Models
 
         public void Initialize()
         {
+            // 托盘菜单使用自绘弹窗，避免 ContextMenuStrip 在遮罩置顶和 DPI 切换时出现缩放、阴影或定位不一致。
             this._contextMenu.Opening += (sender, e) => e.Cancel = true;
             this._notifyIcon.ContextMenuStrip = null;
             this.ensurePopup();
@@ -46,7 +47,12 @@ namespace WindowsShade.Models
 
             using (TrayNativeWindowHelper.EnterTrayDpiAwareness())
             {
-                var bounds = this.getBounds(TrayNativeWindowHelper.GetCursorPosition(), this._popup.Size);
+                var cursor = TrayNativeWindowHelper.GetCursorPosition();
+                var workingArea = TrayNativeWindowHelper.GetMonitorWorkingArea(cursor);
+                // 每次打开都按鼠标所在屏幕重新布局，支持 1080p 与 4K 缩放屏幕来回切换。
+                this.applyLayout(TrayNativeWindowHelper.GetDpiScale(cursor), workingArea);
+
+                var bounds = this.getBounds(cursor, this._popup.Size, workingArea);
                 if (this._popup.Visible)
                     this._popup.Hide();
 
@@ -108,10 +114,7 @@ namespace WindowsShade.Models
 
             using (TrayNativeWindowHelper.EnterTrayDpiAwareness())
             {
-                var popup = new TrayBrightnessPopup
-                {
-                    Size = new Size(344, 310)
-                };
+                var popup = new TrayBrightnessPopup();
 
                 popup.Deactivate += (sender, e) =>
                 {
@@ -120,15 +123,11 @@ namespace WindowsShade.Models
                 };
 
                 var panel = popup.ContentPanel;
-                panel.Padding = new Padding(26, 14, 26, 14);
 
-                const int captionY = 12;
-                const int captionHeight = 30;
-
-                this._shadeEnabledCheckBox = this.createCheckBox(30, captionY + 2, captionHeight);
+                this._shadeEnabledCheckBox = this.createCheckBox();
                 panel.Controls.Add(this._shadeEnabledCheckBox);
 
-                var alphaCaption = this.createCaptionLabel("亮度", 55, captionY, 60, captionHeight, ContentAlignment.MiddleLeft);
+                var alphaCaption = this.createCaptionLabel("亮度", ContentAlignment.MiddleLeft);
                 alphaCaption.Cursor = Cursors.Hand;
                 alphaCaption.Click += (sender, e) =>
                 {
@@ -136,14 +135,14 @@ namespace WindowsShade.Models
                     this._shadeEnabledCheckBox.Checked = !this._shadeEnabledCheckBox.Checked;
                 };
                 panel.Controls.Add(alphaCaption);
-                this._alphaValue = this.createCaptionValueLabel(264, captionY, captionHeight);
-                this._alphaTrackBar = this.createTrackBar(26, 58, 255);
+                this._alphaValue = this.createCaptionValueLabel();
+                this._alphaTrackBar = this.createTrackBar(255);
                 panel.Controls.Add(this._alphaTrackBar);
                 panel.Controls.Add(this._alphaValue);
 
-                panel.Controls.Add(this.createCaptionLabel("系统亮度", 26, 102, 210, captionHeight, ContentAlignment.MiddleLeft));
-                this._systemValue = this.createCaptionValueLabel(264, 102, captionHeight);
-                this._systemTrackBar = this.createTrackBar(26, 148, 100);
+                panel.Controls.Add(this.createCaptionLabel("系统亮度", ContentAlignment.MiddleLeft));
+                this._systemValue = this.createCaptionValueLabel();
+                this._systemTrackBar = this.createTrackBar(100);
                 panel.Controls.Add(this._systemTrackBar);
                 panel.Controls.Add(this._systemValue);
 
@@ -185,60 +184,100 @@ namespace WindowsShade.Models
                 };
 
                 this._popup = popup;
+                this.applyLayout(1F, Screen.PrimaryScreen.WorkingArea);
             }
         }
 
-        private TrayCheckBox createCheckBox(int x, int y, int rowHeight)
+        private void applyLayout(float scale, Rectangle workingArea)
         {
-            const int checkBoxWidth = 22;
+            var layout = TrayLayout.Create(scale, workingArea);
+
+            // 所有坐标由 TrayLayout 统一下发，避免 1080 compact 和 4K regular 的微调互相影响。
+            var panel = this._popup.ContentPanel;
+            this._popup.ClientSize = layout.PopupSize;
+            panel.Padding = layout.PanelPadding;
+
+            this._shadeEnabledCheckBox.Location = layout.ShadeCheckBoxBounds.Location;
+            this._shadeEnabledCheckBox.Size = layout.ShadeCheckBoxBounds.Size;
+
+            var alphaCaption = (Label)panel.Controls[1];
+            alphaCaption.Font = TrayNativeWindowHelper.CreateTrayCaptionFont(layout.CaptionFontSize);
+            alphaCaption.Location = layout.AlphaCaptionBounds.Location;
+            alphaCaption.Size = layout.AlphaCaptionBounds.Size;
+
+            this._alphaValue.Font = TrayNativeWindowHelper.CreateTrayCaptionFont(layout.ValueFontSize);
+            this._alphaValue.Location = layout.AlphaValueBounds.Location;
+            this._alphaValue.Size = layout.AlphaValueBounds.Size;
+
+            this._alphaTrackBar.Location = layout.AlphaTrackBarBounds.Location;
+            this._alphaTrackBar.Size = layout.AlphaTrackBarBounds.Size;
+            this._alphaTrackBar.TrackHeight = layout.SliderTrackHeight;
+            this._alphaTrackBar.ThumbRadius = layout.SliderThumbRadius;
+
+            var systemCaption = (Label)panel.Controls[4];
+            systemCaption.Font = TrayNativeWindowHelper.CreateTrayCaptionFont(layout.CaptionFontSize);
+            systemCaption.Location = layout.SystemCaptionBounds.Location;
+            systemCaption.Size = layout.SystemCaptionBounds.Size;
+
+            this._systemValue.Font = TrayNativeWindowHelper.CreateTrayCaptionFont(layout.ValueFontSize);
+            this._systemValue.Location = layout.SystemValueBounds.Location;
+            this._systemValue.Size = layout.SystemValueBounds.Size;
+
+            this._systemTrackBar.Location = layout.SystemTrackBarBounds.Location;
+            this._systemTrackBar.Size = layout.SystemTrackBarBounds.Size;
+            this._systemTrackBar.TrackHeight = layout.SliderTrackHeight;
+            this._systemTrackBar.ThumbRadius = layout.SliderThumbRadius;
+
+            panel.Font = TrayNativeWindowHelper.CreateTrayMenuFont(layout.MenuFontSize);
+            panel.TextVerticalPadding = layout.MenuTextVerticalPadding;
+            panel.TextLeftPadding = layout.MenuTextLeftPadding;
+            panel.SetMenuItemBounds(0, layout.OpenMainBounds);
+            panel.SetMenuItemBounds(1, layout.CloseBounds);
+        }
+
+        private TrayCheckBox createCheckBox()
+        {
             return new TrayCheckBox
             {
-                Location = new Point(x, y + (rowHeight - TrayCheckBox.PreferredControlHeight) / 2),
-                Size = new Size(checkBoxWidth, TrayCheckBox.PreferredControlHeight)
+                Size = new Size(22, TrayCheckBox.PreferredControlHeight)
             };
         }
 
-        private Label createCaptionLabel(string text, int x, int y, int width, int height, ContentAlignment textAlign)
+        private Label createCaptionLabel(string text, ContentAlignment textAlign)
         {
             return new Label
             {
                 AutoSize = false,
-                Location = new Point(x, y),
                 Font = TrayNativeWindowHelper.CreateTrayCaptionFont(),
                 ForeColor = Color.FromArgb(88, 88, 88),
-                Size = new Size(width, height),
                 Text = text,
                 TextAlign = textAlign
             };
         }
 
-        private Label createCaptionValueLabel(int x, int y, int height)
+        private Label createCaptionValueLabel()
         {
             return new Label
             {
                 AutoSize = false,
-                Location = new Point(x, y),
                 Font = TrayNativeWindowHelper.CreateTrayCaptionFont(),
                 ForeColor = Color.FromArgb(88, 88, 88),
-                Size = new Size(54, height),
                 TextAlign = ContentAlignment.MiddleRight
             };
         }
 
-        private TrayBrightnessSlider createTrackBar(int x, int y, int maximum)
+        private TrayBrightnessSlider createTrackBar(int maximum)
         {
             return new TrayBrightnessSlider
             {
-                Location = new Point(x, y),
                 Maximum = maximum,
                 Minimum = 0,
                 Size = new Size(292, 22)
             };
         }
 
-        private Rectangle getBounds(Point anchor, Size size)
+        private Rectangle getBounds(Point anchor, Size size, Rectangle area)
         {
-            var area = TrayNativeWindowHelper.GetMonitorWorkingArea(anchor);
             var width = size.Width;
             var height = size.Height;
             var showAbove = anchor.Y >= area.Top + area.Height / 2;
@@ -268,10 +307,157 @@ namespace WindowsShade.Models
         }
     }
 
+    internal struct TrayLayout
+    {
+        private const float BaseDpi = 144F;
+
+        public Size PopupSize;
+        public Padding PanelPadding;
+        public Rectangle ShadeCheckBoxBounds;
+        public Rectangle AlphaCaptionBounds;
+        public Rectangle AlphaValueBounds;
+        public Rectangle AlphaTrackBarBounds;
+        public Rectangle SystemCaptionBounds;
+        public Rectangle SystemValueBounds;
+        public Rectangle SystemTrackBarBounds;
+        public Rectangle OpenMainBounds;
+        public Rectangle CloseBounds;
+        public float CaptionFontSize;
+        public float ValueFontSize;
+        public float MenuFontSize;
+        public int MenuTextVerticalPadding;
+        public int MenuTextLeftPadding;
+        public int SliderTrackHeight;
+        public int SliderThumbRadius;
+
+        public static TrayLayout Create(float dpiScale, Rectangle workingArea)
+        {
+            // 低 DPI 与高 DPI 菜单的视觉调参完全拆开，后续修 1080 不应改动 4K 布局。
+            if (dpiScale < 1.25F)
+                return CreateCompact(workingArea);
+
+            return CreateRegular(dpiScale, workingArea);
+        }
+
+        private static TrayLayout CreateCompact(Rectangle workingArea)
+        {
+            // 1080p/100% 菜单需要更小字体、更细滑块和更紧凑高度，避免托盘附近显得过大。
+            const float scale = 0.70F;
+            var minWidth = scaleValue(292, scale);
+            var preferredWidth = scaleValue(310, scale);
+            var maxWidth = Math.Max(minWidth, workingArea.Width - scaleValue(24, scale));
+            var popupWidth = clamp(preferredWidth, minWidth, maxWidth);
+            var horizontalPadding = scaleValue(22, scale);
+            var checkWidth = scaleValue(22, scale);
+            var contentLeft = horizontalPadding + scaleValue(10, scale);
+            var captionLeft = contentLeft;
+            var alphaCaptionLeft = contentLeft + checkWidth + scaleValue(6, scale);
+            var valueWidth = scaleValue(54, scale);
+            var sliderWidth = Math.Max(scaleValue(150, scale), popupWidth - captionLeft - horizontalPadding);
+            var captionY = scaleValue(14, scale);
+            var captionHeight = scaleValue(32, scale);
+            var alphaTrackY = scaleValue(52, scale);
+            var systemCaptionY = scaleValue(94, scale);
+            var systemTrackY = scaleValue(134, scale);
+            var menuTop = scaleValue(174, scale);
+            var menuHeight = scaleValue(49, scale);
+            var checkHeight = scaleValue(TrayCheckBox.PreferredControlHeight, scale);
+            var contentHeight = menuTop + menuHeight * 2 + scaleValue(8, scale);
+            var popupHeight = Math.Min(contentHeight, Math.Max(contentHeight, workingArea.Height - scaleValue(24, scale)));
+            var trackBarHeight = scaleValue(22, scale);
+            var trackBarBounds = new Rectangle(captionLeft, 0, sliderWidth, trackBarHeight);
+            var valueX = popupWidth - horizontalPadding - valueWidth;
+
+            return new TrayLayout
+            {
+                PopupSize = new Size(popupWidth, popupHeight),
+                PanelPadding = new Padding(horizontalPadding, scaleValue(10, scale), horizontalPadding, scaleValue(10, scale)),
+                ShadeCheckBoxBounds = new Rectangle(contentLeft, captionY + scaleValue(2, scale) + (captionHeight - checkHeight) / 2, checkWidth, checkHeight),
+                AlphaCaptionBounds = new Rectangle(alphaCaptionLeft, captionY, scaleValue(80, scale), captionHeight),
+                AlphaValueBounds = new Rectangle(valueX, captionY, valueWidth, captionHeight),
+                AlphaTrackBarBounds = new Rectangle(trackBarBounds.X, alphaTrackY, trackBarBounds.Width, trackBarBounds.Height),
+                SystemCaptionBounds = new Rectangle(captionLeft, systemCaptionY, valueX - captionLeft, captionHeight),
+                SystemValueBounds = new Rectangle(valueX, systemCaptionY, valueWidth, captionHeight),
+                SystemTrackBarBounds = new Rectangle(trackBarBounds.X, systemTrackY, trackBarBounds.Width, trackBarBounds.Height),
+                OpenMainBounds = new Rectangle(scaleValue(8, scale), menuTop, popupWidth - scaleValue(16, scale), menuHeight),
+                CloseBounds = new Rectangle(scaleValue(8, scale), menuTop + menuHeight, popupWidth - scaleValue(16, scale), menuHeight),
+                CaptionFontSize = 9F,
+                ValueFontSize = 9F,
+                MenuFontSize = 10F,
+                MenuTextVerticalPadding = 8,
+                MenuTextLeftPadding = contentLeft - scaleValue(8, scale),
+                SliderTrackHeight = 3,
+                SliderThumbRadius = 5
+            };
+        }
+
+        private static TrayLayout CreateRegular(float dpiScale, Rectangle workingArea)
+        {
+            // 4K/150% 等高 DPI 菜单保持较宽松布局，优先保证字体和控件观感稳定。
+            var scale = Math.Max(1F, dpiScale / (BaseDpi / 96F));
+            var minWidth = scaleValue(300, scale);
+            var preferredWidth = scaleValue(344, scale);
+            var maxWidth = Math.Max(minWidth, workingArea.Width - scaleValue(24, scale));
+            var popupWidth = clamp(preferredWidth, minWidth, maxWidth);
+            var horizontalPadding = scaleValue(26, scale);
+            var checkWidth = scaleValue(22, scale);
+            var contentLeft = scaleValue(30, scale);
+            var captionLeft = scaleValue(55, scale);
+            var valueWidth = scaleValue(54, scale);
+            var valueGap = scaleValue(10, scale);
+            var sliderWidth = Math.Max(scaleValue(150, scale), popupWidth - horizontalPadding * 2);
+            var captionY = scaleValue(12, scale);
+            var captionHeight = scaleValue(30, scale);
+            var alphaTrackY = scaleValue(58, scale);
+            var systemCaptionY = scaleValue(102, scale);
+            var systemTrackY = scaleValue(148, scale);
+            var menuTop = scaleValue(188, scale);
+            var menuHeight = scaleValue(55, scale);
+            var checkHeight = scaleValue(TrayCheckBox.PreferredControlHeight, scale);
+            var contentHeight = menuTop + menuHeight * 2 + scaleValue(12, scale);
+            var popupHeight = Math.Min(scaleValue(310, scale), Math.Max(contentHeight, workingArea.Height - scaleValue(24, scale)));
+            var trackBarHeight = scaleValue(22, scale);
+            var trackBarWidth = sliderWidth;
+            var valueX = popupWidth - horizontalPadding - valueWidth;
+
+            return new TrayLayout
+            {
+                PopupSize = new Size(popupWidth, popupHeight),
+                PanelPadding = new Padding(horizontalPadding, scaleValue(14, scale), horizontalPadding, scaleValue(14, scale)),
+                ShadeCheckBoxBounds = new Rectangle(contentLeft, captionY + scaleValue(2, scale) + (captionHeight - checkHeight) / 2, checkWidth, checkHeight),
+                AlphaCaptionBounds = new Rectangle(captionLeft, captionY, scaleValue(60, scale), captionHeight),
+                AlphaValueBounds = new Rectangle(valueX, captionY, valueWidth, captionHeight),
+                AlphaTrackBarBounds = new Rectangle(horizontalPadding, alphaTrackY, trackBarWidth, trackBarHeight),
+                SystemCaptionBounds = new Rectangle(horizontalPadding, systemCaptionY, valueX - horizontalPadding, captionHeight),
+                SystemValueBounds = new Rectangle(valueX, systemCaptionY, valueWidth, captionHeight),
+                SystemTrackBarBounds = new Rectangle(horizontalPadding, systemTrackY, sliderWidth, trackBarHeight),
+                OpenMainBounds = new Rectangle(scaleValue(8, scale), menuTop, popupWidth - scaleValue(16, scale), menuHeight),
+                CloseBounds = new Rectangle(scaleValue(8, scale), menuTop + menuHeight, popupWidth - scaleValue(16, scale), menuHeight),
+                CaptionFontSize = 11F,
+                ValueFontSize = 11F,
+                MenuFontSize = 13F,
+                MenuTextVerticalPadding = 8,
+                MenuTextLeftPadding = 22,
+                SliderTrackHeight = 4,
+                SliderThumbRadius = 7
+            };
+        }
+
+        private static int clamp(int value, int minimum, int maximum)
+        {
+            return Math.Max(minimum, Math.Min(maximum, value));
+        }
+
+        private static int scaleValue(int value, float scale)
+        {
+            return Math.Max(1, (int)Math.Round(value * scale));
+        }
+    }
+
     internal sealed class TrayBrightnessSlider : Control
     {
-        private const int ThumbRadius = 7;
-        private const int TrackHeight = 4;
+        private int _thumbRadius = 7;
+        private int _trackHeight = 4;
         private bool _dragging;
         private bool _hovering;
         private int _minimum;
@@ -279,6 +465,26 @@ namespace WindowsShade.Models
         private int _value;
 
         public event EventHandler ValueChanged;
+
+        public int ThumbRadius
+        {
+            get { return this._thumbRadius; }
+            set
+            {
+                this._thumbRadius = Math.Max(3, value);
+                this.Invalidate();
+            }
+        }
+
+        public int TrackHeight
+        {
+            get { return this._trackHeight; }
+            set
+            {
+                this._trackHeight = Math.Max(2, value);
+                this.Invalidate();
+            }
+        }
 
         public bool IsDragging
         {
@@ -397,7 +603,7 @@ namespace WindowsShade.Models
 
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             var bounds = this.getTrackBounds();
-            var radius = TrackHeight / 2;
+            var radius = this._trackHeight / 2;
             var thumbX = this.valueToX();
             var activeBounds = new Rectangle(bounds.Left, bounds.Top, Math.Max(0, thumbX - bounds.Left), bounds.Height);
             var disabled = !this.Enabled;
@@ -416,7 +622,7 @@ namespace WindowsShade.Models
                     e.Graphics.FillPath(brush, path);
             }
 
-            var currentThumbRadius = this._dragging || this._hovering ? ThumbRadius + 1 : ThumbRadius;
+            var currentThumbRadius = this._dragging || this._hovering ? this._thumbRadius + 1 : this._thumbRadius;
             var thumbBounds = new Rectangle(thumbX - currentThumbRadius, bounds.Top + bounds.Height / 2 - currentThumbRadius, currentThumbRadius * 2, currentThumbRadius * 2);
             using (var shadowBrush = new SolidBrush(Color.FromArgb(35, 0, 0, 0)))
                 e.Graphics.FillEllipse(shadowBrush, new Rectangle(thumbBounds.X, thumbBounds.Y + 1, thumbBounds.Width, thumbBounds.Height));
@@ -426,9 +632,9 @@ namespace WindowsShade.Models
 
         private Rectangle getTrackBounds()
         {
-            var left = ThumbRadius + 2;
-            var width = Math.Max(1, this.Width - (ThumbRadius + 2) * 2);
-            return new Rectangle(left, (this.Height - TrackHeight) / 2, width, TrackHeight);
+            var left = this._thumbRadius + 2;
+            var width = Math.Max(1, this.Width - (this._thumbRadius + 2) * 2);
+            return new Rectangle(left, (this.Height - this._trackHeight) / 2, width, this._trackHeight);
         }
 
         private int valueToX()
@@ -572,6 +778,7 @@ namespace WindowsShade.Models
             if (!this.Visible || this.isSliderDragging() || MouseButtons == MouseButtons.Left)
                 return;
 
+            // 初次打开时鼠标可能还没进入弹窗，只有进入后再移出才自动隐藏。
             var bounds = this.Bounds;
             bounds.Inflate(AutoHideMargin, AutoHideMargin);
             if (bounds.Contains(TrayNativeWindowHelper.GetCursorPosition()))
@@ -599,10 +806,12 @@ namespace WindowsShade.Models
 
     internal sealed class TrayMenuPanel : Panel
     {
-        private const int TextVerticalPadding = 8;
         private const int HoverVerticalPadding = 1;
         private readonly List<TrayMenuItem> _items = new List<TrayMenuItem>();
         private int _hoveredIndex = -1;
+
+        public int TextVerticalPadding { get; set; } = 8;
+        public int TextLeftPadding { get; set; } = 22;
 
         public TrayMenuPanel()
         {
@@ -613,6 +822,16 @@ namespace WindowsShade.Models
         public void AddMenuItem(string text, Rectangle bounds, Action clickHandler)
         {
             this._items.Add(new TrayMenuItem(text, bounds, clickHandler));
+            this.Invalidate(bounds);
+        }
+
+        public void SetMenuItemBounds(int index, Rectangle bounds)
+        {
+            if (index < 0 || index >= this._items.Count)
+                return;
+
+            this.Invalidate(this._items[index].Bounds);
+            this._items[index].Bounds = bounds;
             this.Invalidate(bounds);
         }
 
@@ -656,6 +875,7 @@ namespace WindowsShade.Models
                 var item = this._items[i];
                 if (i == this._hoveredIndex)
                 {
+                    // hover 背景与阴影由同一面板绘制，避免子控件透明背景造成首帧样式不一致。
                     var shadowBounds = new Rectangle(item.Bounds.Left + 4, item.Bounds.Top + HoverVerticalPadding + 1, item.Bounds.Width - 8, item.Bounds.Height - HoverVerticalPadding * 2);
                     var hoverBounds = new Rectangle(item.Bounds.Left + 3, item.Bounds.Top + HoverVerticalPadding, item.Bounds.Width - 6, item.Bounds.Height - HoverVerticalPadding * 2);
                     using (var path = TrayMenuGeometry.CreateRoundRect(shadowBounds, 5))
@@ -670,7 +890,7 @@ namespace WindowsShade.Models
                     e.Graphics,
                     item.Text,
                     this.Font,
-                    new Rectangle(item.Bounds.Left + 18, item.Bounds.Top + TextVerticalPadding, item.Bounds.Width - 36, item.Bounds.Height - TextVerticalPadding * 2),
+                    new Rectangle(item.Bounds.Left + this.TextLeftPadding, item.Bounds.Top + this.TextVerticalPadding, item.Bounds.Width - this.TextLeftPadding * 2, item.Bounds.Height - this.TextVerticalPadding * 2),
                     Color.FromArgb(32, 32, 32),
                     TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.SingleLine);
             }
@@ -706,8 +926,8 @@ namespace WindowsShade.Models
         private sealed class TrayMenuItem
         {
             public readonly string Text;
-            public readonly Rectangle Bounds;
             public readonly Action ClickHandler;
+            public Rectangle Bounds;
 
             public TrayMenuItem(string text, Rectangle bounds, Action clickHandler)
             {
@@ -718,14 +938,32 @@ namespace WindowsShade.Models
         }
     }
 
-    internal sealed class TrayCheckBox : CheckBox
+    internal sealed class TrayCheckBox : Control
     {
         private const int BoxSize = 15;
+        private bool _checked;
         public const int PreferredControlHeight = 30;
+
+        public event EventHandler CheckedChanged;
+
+        public bool Checked
+        {
+            get { return this._checked; }
+            set
+            {
+                if (this._checked == value)
+                    return;
+
+                this._checked = value;
+                this.Invalidate();
+                this.CheckedChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
         public TrayCheckBox()
         {
-            this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.UserPaint, true);
+            // 纯自绘控件可避免原生 CheckBox 首次创建句柄时闪现凹陷系统样式。
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.UserPaint | ControlStyles.Selectable, true);
             this.Cursor = Cursors.Hand;
             this.TabStop = false;
         }
@@ -741,8 +979,8 @@ namespace WindowsShade.Models
                 e.Graphics.FillRectangle(brush, this.ClientRectangle);
 
             var boxBounds = new Rectangle(0, (this.Height - BoxSize) / 2, BoxSize, BoxSize);
-            var borderColor = this.Checked ? Color.FromArgb(0, 120, 215) : Color.FromArgb(118, 118, 118);
-            var fillColor = this.Checked ? Color.FromArgb(0, 120, 215) : Color.White;
+            var borderColor = this._checked ? Color.FromArgb(0, 120, 215) : Color.FromArgb(118, 118, 118);
+            var fillColor = this._checked ? Color.FromArgb(0, 120, 215) : Color.White;
 
             using (var path = TrayMenuGeometry.CreateRoundRect(boxBounds, 3))
             using (var brush = new SolidBrush(fillColor))
@@ -752,7 +990,7 @@ namespace WindowsShade.Models
             using (var pen = new Pen(borderColor))
                 e.Graphics.DrawPath(pen, path);
 
-            if (!this.Checked)
+            if (!this._checked)
                 return;
 
             using (var pen = new Pen(Color.White, 2F))
@@ -766,6 +1004,12 @@ namespace WindowsShade.Models
                     new Point(boxBounds.Left + 12, boxBounds.Top + 5)
                 });
             }
+        }
+
+        protected override void OnClick(EventArgs e)
+        {
+            base.OnClick(e);
+            this.Checked = !this.Checked;
         }
     }
 
@@ -786,9 +1030,13 @@ namespace WindowsShade.Models
         [DllImport("user32.dll")]
         private static extern IntPtr SetThreadDpiAwarenessContext(IntPtr dpiContext);
 
+        [DllImport("shcore.dll")]
+        private static extern int GetDpiForMonitor(IntPtr hmonitor, int dpiType, out uint dpiX, out uint dpiY);
+
         private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
         private static readonly IntPtr DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 = new IntPtr(-4);
         private const uint MONITOR_DEFAULTTONEAREST = 0x00000002;
+        private const int MDT_EFFECTIVE_DPI = 0;
         private const uint SWP_NOACTIVATE = 0x0010;
         private const uint SWP_SHOWWINDOW = 0x0040;
 
@@ -812,14 +1060,41 @@ namespace WindowsShade.Models
             }
         }
 
+        public static float GetDpiScale(Point point)
+        {
+            try
+            {
+                var monitor = MonitorFromPoint(new POINT(point), MONITOR_DEFAULTTONEAREST);
+                uint dpiX;
+                uint dpiY;
+                if (monitor != IntPtr.Zero && GetDpiForMonitor(monitor, MDT_EFFECTIVE_DPI, out dpiX, out dpiY) == 0 && dpiX > 0)
+                    return dpiX / 96F;
+            }
+            catch
+            {
+            }
+
+            return 1F;
+        }
+
         public static Font CreateTrayMenuFont()
         {
-            return new Font("Segoe UI", 13F, FontStyle.Regular, GraphicsUnit.Pixel);
+            return CreateTrayMenuFont(13F);
+        }
+
+        public static Font CreateTrayMenuFont(float size)
+        {
+            return new Font("Segoe UI", size, FontStyle.Regular, GraphicsUnit.Pixel);
         }
 
         public static Font CreateTrayCaptionFont()
         {
-            return new Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Pixel);
+            return CreateTrayCaptionFont(11F);
+        }
+
+        public static Font CreateTrayCaptionFont(float size)
+        {
+            return new Font("Segoe UI", size, FontStyle.Regular, GraphicsUnit.Pixel);
         }
 
         public static Point GetCursorPosition()
