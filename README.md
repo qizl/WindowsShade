@@ -4,6 +4,8 @@
 
 <img src="https://www.enjoycodes.com/upload/ueditor/2026-05-31/6391582947181738095580133.png" alt="多屏亮度调整工具" width="500px"/>
 
+<img src="https://www.enjoycodes.com/upload/ueditor/2026-06-02/6391601086742096052607280.png" alt="多屏亮度调整工具" width="300px"/>
+
 ## 功能
 
 - 支持多显示器独立启用、禁用遮罩。
