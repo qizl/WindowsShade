@@ -8,6 +8,9 @@ namespace WindowsShade.Models
     /// </summary>
     public class Monitor
     {
+        private byte _alpha = 128;
+        private int? _globalAlphaOffset;
+
         [Obsolete]
         public int No { get; set; }
         public bool Enabled { get; set; }
@@ -19,7 +22,25 @@ namespace WindowsShade.Models
         /// 透明度
         ///     0~255
         /// </summary>
-        public byte Alpha { get; set; } = 128;
+        public byte Alpha
+        {
+            get => this._alpha;
+            set
+            {
+                this._alpha = value;
+                this._globalAlphaOffset = null;
+            }
+        }
+
+        /// <summary>
+        /// 随总亮度调整透明度，并保留逐屏偏移以便从上下限恢复。
+        /// </summary>
+        internal void ApplyGlobalAlpha(byte previous, byte current)
+        {
+            var offset = this._globalAlphaOffset ?? (this._alpha - previous);
+            this._globalAlphaOffset = offset;
+            this._alpha = (byte)Math.Max(byte.MinValue, Math.Min(byte.MaxValue, current + offset));
+        }
         /// <summary>
         /// 是否主显
         /// </summary>

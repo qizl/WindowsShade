@@ -431,14 +431,11 @@ namespace WindowsShade
                 this.tbAlpha.Value = value;
             this.lblAlphaValue.Text = value.ToString();
 
-            var delta = value - Common.Config.Alpha;
-            Common.Config.Monitors.ForEach(m =>
-            {
-                var v = m.Alpha + delta;
-                if (v >= 0 && v <= 255) m.Alpha = (byte)v;
-            });
+            var newAlpha = (byte)value;
+            foreach (var monitor in Common.Config.Monitors)
+                monitor.ApplyGlobalAlpha(Common.Config.Alpha, newAlpha);
 
-            Common.Config.Alpha = (byte)value;
+            Common.Config.Alpha = newAlpha;
             this.setBrightness();
         }
 
