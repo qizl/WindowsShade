@@ -19,7 +19,8 @@ namespace WindowsShade
         /// 是否允许关闭主程序
         /// </summary>
         private bool _isClosed = false;
-        private ScreenBrightness _screenBrightness = new ScreenBrightness();
+        private readonly ScreenBrightness _screenBrightness = new ScreenBrightness();
+        private int _lastSystemSliderValue;
         private int _tbSystemToScreenBrightness
         {
             get { return this.tbSystem.Maximum - this.tbSystem.Value; }
@@ -62,13 +63,16 @@ namespace WindowsShade
             // 2.4 tabMain - 亮度控制
             this.tbAlpha.Value = Common.Config.Alpha;
             this.lblAlphaValue.Text = Common.Config.Alpha.ToString();
-            this.tbSystem.Enabled = this._screenBrightness.Initiazlie();
+            this.tbSystem.Enabled = this._screenBrightness.TryInitialize(out var systemBrightness);
             if (this.tbSystem.Enabled)
             {
                 this.tbSystem.Maximum = this._screenBrightness.Maximum;
-                this._tbSystemToScreenBrightness = this._screenBrightness.GetBrightness();  // 读取系统亮度
+                this._tbSystemToScreenBrightness = systemBrightness;
+                this._lastSystemSliderValue = this.tbSystem.Value;
                 this.lblSystem.Text = this.tbSystem.Value.ToString();
             }
+            else
+                this.lblSystem.Text = "不可用";
             this.refreshTrayBrightnessPanel();
 
             // 2.5 tabMain - 遮罩设置
@@ -277,16 +281,18 @@ namespace WindowsShade
 
         private void changeSystemBrightness()
         {
-            this.lblSystem.Text = this.tbSystem.Value.ToString();
-
             try
             {
                 this._screenBrightness.SetBrightness(this._tbSystemToScreenBrightness);
+                this._lastSystemSliderValue = this.tbSystem.Value;
+                this.lblSystem.Text = this.tbSystem.Value.ToString();
             }
-            catch
+            catch (Exception ex) when (ex is System.Management.ManagementException ||
+                ex is System.Runtime.InteropServices.COMException ||
+                ex is UnauthorizedAccessException || ex is InvalidOperationException)
             {
-                this.tbSystem.Enabled = false;
-                this.lblSystem.Text = "不可用";
+                this.tbSystem.Value = this._lastSystemSliderValue;
+                this.lblSystem.Text = "设置失败";
             }
         }
         #endregion

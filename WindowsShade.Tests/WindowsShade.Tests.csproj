@@ -49,6 +49,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BrightnessTests.cs" />
     <Compile Include="ConfigTests.cs" />
     <Compile Include="GetNumber.cs" />
     <Compile Include="MonitorConfigurationTests.cs" />
