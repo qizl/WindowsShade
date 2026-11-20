@@ -19,6 +19,9 @@ namespace WindowsShade.Models
         private Label _systemCaption;
         private TrayBrightnessSlider _systemTrackBar;
         private Label _systemValue;
+        private Font _captionFont;
+        private Font _valueFont;
+        private Font _menuFont;
         private bool _isRefreshing;
 
         public TrayBrightnessMenuView(
@@ -97,8 +100,18 @@ namespace WindowsShade.Models
 
         public void Dispose()
         {
-            if (this._popup != null)
-                this._popup.Dispose();
+            this._popup?.Dispose();
+            this._popup = null;
+        }
+
+        private void releaseFonts()
+        {
+            this._captionFont?.Dispose();
+            this._captionFont = null;
+            this._valueFont?.Dispose();
+            this._valueFont = null;
+            this._menuFont?.Dispose();
+            this._menuFont = null;
         }
 
         private void ensurePopup()
@@ -109,6 +122,7 @@ namespace WindowsShade.Models
             using (TrayNativeWindowHelper.EnterTrayDpiAwareness())
             {
                 var popup = new TrayBrightnessPopup();
+                popup.Disposed += (sender, e) => this.releaseFonts();
 
                 popup.Deactivate += (sender, e) =>
                 {
@@ -192,16 +206,17 @@ namespace WindowsShade.Models
             var panel = this._popup.ContentPanel;
             this._popup.ClientSize = layout.PopupSize;
             panel.Padding = layout.PanelPadding;
+            applyFont(ref this._captionFont, layout.CaptionFontSize, this._alphaCaption, this._systemCaption);
+            applyFont(ref this._valueFont, layout.ValueFontSize, this._alphaValue, this._systemValue);
+            applyFont(ref this._menuFont, layout.MenuFontSize, panel);
 
             this._shadeEnabledCheckBox.Location = layout.ShadeCheckBoxBounds.Location;
             this._shadeEnabledCheckBox.Size = layout.ShadeCheckBoxBounds.Size;
             this._shadeEnabledCheckBox.PrepareForDisplay();
 
-            this._alphaCaption.Font = TrayNativeWindowHelper.CreateTrayCaptionFont(layout.CaptionFontSize);
             this._alphaCaption.Location = layout.AlphaCaptionBounds.Location;
             this._alphaCaption.Size = layout.AlphaCaptionBounds.Size;
 
-            this._alphaValue.Font = TrayNativeWindowHelper.CreateTrayCaptionFont(layout.ValueFontSize);
             this._alphaValue.Location = layout.AlphaValueBounds.Location;
             this._alphaValue.Size = layout.AlphaValueBounds.Size;
 
@@ -210,11 +225,9 @@ namespace WindowsShade.Models
             this._alphaTrackBar.TrackHeight = layout.SliderTrackHeight;
             this._alphaTrackBar.ThumbRadius = layout.SliderThumbRadius;
 
-            this._systemCaption.Font = TrayNativeWindowHelper.CreateTrayCaptionFont(layout.CaptionFontSize);
             this._systemCaption.Location = layout.SystemCaptionBounds.Location;
             this._systemCaption.Size = layout.SystemCaptionBounds.Size;
 
-            this._systemValue.Font = TrayNativeWindowHelper.CreateTrayCaptionFont(layout.ValueFontSize);
             this._systemValue.Location = layout.SystemValueBounds.Location;
             this._systemValue.Size = layout.SystemValueBounds.Size;
 
@@ -223,11 +236,24 @@ namespace WindowsShade.Models
             this._systemTrackBar.TrackHeight = layout.SliderTrackHeight;
             this._systemTrackBar.ThumbRadius = layout.SliderThumbRadius;
 
-            panel.Font = TrayNativeWindowHelper.CreateTrayMenuFont(layout.MenuFontSize);
             panel.TextVerticalPadding = layout.MenuTextVerticalPadding;
             panel.TextLeftPadding = layout.MenuTextLeftPadding;
             panel.SetMenuItemBounds(0, layout.OpenMainBounds);
             panel.SetMenuItemBounds(1, layout.CloseBounds);
+        }
+
+        private static void applyFont(ref Font font, float size, Control control, Control secondControl = null)
+        {
+            if (font?.Size == size)
+                return;
+
+            // 控件不接管外部 Font 的生命周期。切换 DPI 时先替换两个控件的引用，再释放旧字体。
+            var previousFont = font;
+            font = TrayNativeWindowHelper.CreateTrayFont(size);
+            control.Font = font;
+            if (secondControl != null)
+                secondControl.Font = font;
+            previousFont?.Dispose();
         }
 
         private TrayCheckBox createCheckBox()
@@ -243,7 +269,6 @@ namespace WindowsShade.Models
             return new Label
             {
                 AutoSize = false,
-                Font = TrayNativeWindowHelper.CreateTrayCaptionFont(),
                 ForeColor = Color.FromArgb(88, 88, 88),
                 Text = text,
                 TextAlign = textAlign
@@ -255,7 +280,6 @@ namespace WindowsShade.Models
             return new Label
             {
                 AutoSize = false,
-                Font = TrayNativeWindowHelper.CreateTrayCaptionFont(),
                 ForeColor = Color.FromArgb(88, 88, 88),
                 TextAlign = ContentAlignment.MiddleRight
             };

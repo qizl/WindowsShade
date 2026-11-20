@@ -69,22 +69,10 @@ namespace WindowsShade.Models
             return 1F;
         }
 
-        public static Font CreateTrayMenuFont()
-        {
-            return CreateTrayMenuFont(13F);
-        }
-
-        public static Font CreateTrayMenuFont(float size)
-        {
-            return new Font("Segoe UI", size, FontStyle.Regular, GraphicsUnit.Pixel);
-        }
-
-        public static Font CreateTrayCaptionFont()
-        {
-            return CreateTrayCaptionFont(11F);
-        }
-
-        public static Font CreateTrayCaptionFont(float size)
+        /// <summary>
+        /// 按托盘布局的像素尺寸创建字体，由调用方负责释放。
+        /// </summary>
+        public static Font CreateTrayFont(float size)
         {
             return new Font("Segoe UI", size, FontStyle.Regular, GraphicsUnit.Pixel);
         }

@@ -18,7 +18,6 @@ namespace WindowsShade.Models
         public TrayMenuPanel()
         {
             this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.ResizeRedraw | ControlStyles.UserPaint | ControlStyles.ContainerControl, true);
-            this.Font = TrayNativeWindowHelper.CreateTrayMenuFont();
         }
 
         public void AddMenuItem(string text, Rectangle bounds, Action clickHandler)

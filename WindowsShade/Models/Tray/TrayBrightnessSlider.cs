@@ -90,6 +90,8 @@ namespace WindowsShade.Models
         protected override void OnEnabledChanged(EventArgs e)
         {
             base.OnEnabledChanged(e);
+            if (!this.Enabled && this.Capture)
+                this.Capture = false;
             this.Cursor = this.Enabled ? Cursors.Hand : Cursors.Default;
             this.Invalidate();
         }
@@ -116,8 +118,8 @@ namespace WindowsShade.Models
                 return;
 
             this.Focus();
-            this._dragging = true;
             this.Capture = true;
+            this._dragging = this.Capture;
             this.updateValueFromX(e.X);
         }
 
@@ -144,8 +146,18 @@ namespace WindowsShade.Models
             if (e.Button != MouseButtons.Left)
                 return;
 
-            this._dragging = false;
             this.Capture = false;
+        }
+
+        protected override void OnMouseCaptureChanged(EventArgs e)
+        {
+            base.OnMouseCaptureChanged(e);
+            // 系统夺走捕获时可能没有 MouseUp，必须结束拖动以恢复弹窗自动隐藏。
+            if (!this.Capture && this._dragging)
+            {
+                this._dragging = false;
+                this.Invalidate();
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)
