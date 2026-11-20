@@ -12,6 +12,10 @@ namespace WindowsShade.Models
         public int No { get; set; }
         public bool Enabled { get; set; }
         /// <summary>
+        /// Windows 显示设备名。旧配置首次加载时按屏幕顺序补齐。
+        /// </summary>
+        public string DeviceName { get; set; }
+        /// <summary>
         /// 透明度
         ///     0~255
         /// </summary>

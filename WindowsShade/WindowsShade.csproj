@@ -84,6 +84,7 @@
     <Compile Include="Models\Config.cs" />
     <Compile Include="Models\HardwareClass.cs" />
     <Compile Include="Models\Monitor.cs" />
+    <Compile Include="Models\MonitorConfiguration.cs" />
     <Compile Include="Models\Resolution.cs" />
     <Compile Include="Models\ScreenBrightness.cs" />
     <Compile Include="Models\Tray\TrayBrightnessPopup.cs">

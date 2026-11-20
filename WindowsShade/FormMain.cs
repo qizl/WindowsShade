@@ -11,9 +11,10 @@ namespace WindowsShade
     public partial class FormMain : Form
     {
         #region Members & Properties
-        private List<FormShade> _shades = new List<FormShade>();
+        private readonly List<FormShade> _shades = new List<FormShade>();
+        private readonly MonitorConfiguration _monitorConfiguration = new MonitorConfiguration();
         private Screen[] _shadeScreens = Array.Empty<Screen>();
-        private HashSet<string> _enabledScreensBeforeHide;
+        private HashSet<Monitor> _enabledScreensBeforeHide;
         /// <summary>
         /// 是否允许关闭主程序
         /// </summary>
@@ -43,8 +44,6 @@ namespace WindowsShade
             Common.Config = Config.Load(Common.ConfigPath);
             if (Common.Config == null)
                 Common.Config = new Config(true);
-            Common.Config.UpdateTime = DateTime.Now;
-            Common.Config.Save();
 
             /*
              * 2.初始化控件
@@ -56,9 +55,6 @@ namespace WindowsShade
             this._timerSetTopMost.Interval = 1000;
             this._timerSetTopMost.Tick += _timerSetTopMost_Tick;
             this.initializeTrayBrightnessMenu();
-
-            // 2.2 遮罩窗体
-            //this._shade.Text = this.Text;
 
             // 2.3 tabMain
             this.tabMain_SelectedIndexChanged(this, null);
@@ -77,7 +73,7 @@ namespace WindowsShade
 
             // 2.5 tabMain - 遮罩设置
             this.updateShades();
-            this.showOrHiddenShade(Common.Config.IsFirtConfig || this.hasEnabledScreen() || Common.Config.AutoShowShade);
+            this.showOrHiddenShade(Common.Config.IsFirtConfig || this.hasEnabledMonitor() || Common.Config.AutoShowShade);
             this.txtResolution.BorderStyle = BorderStyle.None;
 
             // 2.6 tabMain - 软件设置
@@ -103,47 +99,62 @@ namespace WindowsShade
         /// </summary>
         private void updateShades()
         {
-            this.listView1.Items.Clear();
+            var monitors = Common.Config.Monitors;
+            var selectedIndex = this.listView1.SelectedIndices.Count > 0 ? this.listView1.SelectedIndices[0] : -1;
+            var selectedMonitor = selectedIndex >= 0 && selectedIndex < monitors.Count ? monitors[selectedIndex] : null;
+            var existingShades = new Dictionary<Monitor, FormShade>();
+            for (int i = 0; i < this._shades.Count; i++)
+                existingShades.Add(monitors[i], this._shades[i]);
 
-            if (this._shades.Any())
-            {
-                foreach (var shade in this._shades)
-                    shade.Close();
-            }
+            var screens = Screen.AllScreens.OrderBy(screen => screen.Bounds.X).ToArray();
+            this._monitorConfiguration.Reconcile(monitors, screens.Select(screen => screen.DeviceName), Common.Config.Alpha);
+            this._shadeScreens = screens;
             this._shades.Clear();
 
-            var screens = Screen.AllScreens.OrderBy(m => m.Bounds.X).ToArray(); // 按屏幕X轴位置排序
-            this._shadeScreens = screens;
-            var monitorCount = Math.Max(Common.Config.Monitors.Count, screens.Length); // 读取配置文件和系统屏幕中屏幕数量多的，作为显示器控件数量添加到listview中
-            for (int i = 0; i < monitorCount; i++)
+            this.listView1.BeginUpdate();
+            try
             {
-                if (i == Common.Config.Monitors.Count)
-                    Common.Config.Monitors.Add(new Monitor()); // 将缺少的屏幕添加到配置文件
-
-                var m = Common.Config.Monitors[i];
-                this.listView1.Items.Add(new ListViewItem() { ImageIndex = m.Enabled ? 0 : 1 });
-                if (i < screens.Length)
+                this.listView1.Items.Clear();
+                for (int i = 0; i < monitors.Count; i++)
                 {
-                    m.Primary = screens[i].Primary; // 设置主显
-                    m.Width = screens[i].Bounds.Width;
-                    m.Height = screens[i].Bounds.Height;
-                    m.X = screens[i].Bounds.X;
-                    m.Y = screens[i].Bounds.Y;
-                }
-                else
-                {
-                    if (m.Width == 0)
+                    var monitor = monitors[i];
+                    var connected = i < screens.Length;
+                    this.listView1.Items.Add(new ListViewItem { ImageIndex = connected && monitor.Enabled ? 0 : 1 });
+                    monitor.Primary = connected && screens[i].Primary;
+                    if (!connected)
                     {
-                        m.Width = Screen.PrimaryScreen.Bounds.Width;
-                        m.Height = Screen.PrimaryScreen.Bounds.Height;
+                        if (monitor.Width == 0 && Screen.PrimaryScreen != null)
+                        {
+                            monitor.Width = Screen.PrimaryScreen.Bounds.Width;
+                            monitor.Height = Screen.PrimaryScreen.Bounds.Height;
+                        }
+                        continue;
                     }
-                }
-                if (i < screens.Length)
-                    this._shades.Add(new FormShade() { Text = this.Text });
-            }
-            this.listView1.Items[0].Selected = true;
 
-            this.setBrightness(); // 调整遮罩亮度
+                    var bounds = screens[i].Bounds;
+                    monitor.Width = bounds.Width;
+                    monitor.Height = bounds.Height;
+                    monitor.X = bounds.X;
+                    monitor.Y = bounds.Y;
+
+                    // 继续使用仍连接的遮罩，避免分辨率或排列变化时重建窗口。
+                    if (existingShades.TryGetValue(monitor, out var shade))
+                        existingShades.Remove(monitor);
+                    else
+                        shade = new FormShade { Text = this.Text };
+                    shade.AdjustBrightness(monitor.Alpha);
+                    this._shades.Add(shade);
+                }
+                if (monitors.Count > 0)
+                    this.listView1.Items[Math.Max(0, monitors.IndexOf(selectedMonitor))].Selected = true;
+            }
+            finally
+            {
+                this.listView1.EndUpdate();
+            }
+
+            foreach (var shade in existingShades.Values)
+                shade.Dispose();
         }
 
         /// <summary>
@@ -192,36 +203,32 @@ namespace WindowsShade
             if (showOrHidden)
             {
                 // 若用户在屏幕设置中直接启用了某一屏，采用当前的逐屏设置。
-                if (!this.hasEnabledScreen())
+                if (!this.hasEnabledMonitor())
                 {
                     var enableAll = this._enabledScreensBeforeHide == null || this._enabledScreensBeforeHide.Count == 0;
-                    for (int i = 0; i < this._shadeScreens.Length; i++)
-                        monitors[i].Enabled = enableAll || this._enabledScreensBeforeHide.Contains(this._shadeScreens[i].DeviceName);
+                    for (int i = 0; i < monitors.Count; i++)
+                        monitors[i].Enabled = enableAll ? i < this._shadeScreens.Length : this._enabledScreensBeforeHide.Contains(monitors[i]);
                 }
                 this._enabledScreensBeforeHide = null;
             }
             else
             {
-                // 使用设备名匹配屏幕，避免关闭期间调整排列导致恢复到另一屏。
+                // 显示器配置会随设备重排，保留配置对象可恢复同一台显示器。
                 if (this._enabledScreensBeforeHide == null)
-                {
-                    var enabledScreens = this._shadeScreens.Where((screen, index) => monitors[index].Enabled)
-                        .Select(screen => screen.DeviceName);
-                    this._enabledScreensBeforeHide = new HashSet<string>(enabledScreens, StringComparer.OrdinalIgnoreCase);
-                }
+                    this._enabledScreensBeforeHide = new HashSet<Monitor>(monitors.Where(m => m.Enabled));
                 monitors.ForEach(m => m.Enabled = false);
             }
 
             this.refreshShadeWindows();
             for (int i = 0; i < this.listView1.Items.Count; i++)
-                this.listView1.Items[i].ImageIndex = monitors[i].Enabled ? 0 : 1;
+                this.listView1.Items[i].ImageIndex = i < this._shadeScreens.Length && monitors[i].Enabled ? 0 : 1;
             this.refreshSelectedMonitorEnabledState();
 
             this.menuItemHidden.Text = showOrHidden ? "隐藏(&H)" : "显示(&D)"; // 托盘菜单
             this.refreshTrayBrightnessPanel();
         }
 
-        private bool hasEnabledScreen() => Common.Config.Monitors.Take(this._shadeScreens.Length).Any(m => m.Enabled);
+        private bool hasEnabledMonitor() => Common.Config.Monitors.Exists(m => m.Enabled);
 
         private void refreshShadeWindows()
         {
@@ -287,6 +294,27 @@ namespace WindowsShade
         #region Events - FormMain
         private void SystemEvents_DisplaySettingsChanged(object sender, EventArgs e)
         {
+            if (this.InvokeRequired)
+            {
+                try
+                {
+                    this.BeginInvoke(new Action(this.refreshDisplays));
+                }
+                catch (InvalidOperationException) when (this.Disposing || this.IsDisposed || !this.IsHandleCreated)
+                {
+                    // 显示器事件可能在主窗体释放句柄时仍在派发。
+                }
+                return;
+            }
+
+            this.refreshDisplays();
+        }
+
+        private void refreshDisplays()
+        {
+            if (this.Disposing || this.IsDisposed || !this.IsHandleCreated)
+                return;
+
             this.updateShades();
             this.refreshShadeWindows();
         }
@@ -299,25 +327,11 @@ namespace WindowsShade
         private void btnApply_Click(object sender, EventArgs e) => this.apply();
         private void apply()
         {
-            // 1.获取亮度控制参数
             Common.Config.Alpha = (byte)this.tbAlpha.Value;
-
-            // 2.获取多屏设置参数：自动更新
-
-            // 3.获取软件设置参数
             Common.Config.AutoHidden = this.ckxAutoHidden.Checked;
             Common.Config.AutoShowShade = this.ckxAutoShowShade.Checked;
-
-            // 4.持久化配置
             Common.Config.UpdateTime = DateTime.Now;
             Common.Config.Save();
-
-            /*
-             * 5.调整屏幕亮度
-             */
-            if (this.tabMain.SelectedIndex == 1)
-                this.showOrHiddenShade(this.hasEnabledScreen());
-
         }
 
         /// <summary>
@@ -499,9 +513,7 @@ namespace WindowsShade
                 return; // 刷新复选框状态时无需再次应用配置。
 
             monitor.Enabled = this.ckxEnabled.Checked;
-            this.listView1.SelectedItems[0].ImageIndex = monitor.Enabled ? 0 : 1;
-            this.refreshSelectedMonitorEnabledState();
-
+            this.showOrHiddenShade(this.hasEnabledMonitor());
             this.apply();
         }
 
@@ -511,20 +523,12 @@ namespace WindowsShade
 
             var index = this.listView1.SelectedItems[0].Index; // 当前选中屏幕索引
 
-            // 1.保存屏幕配置
-            Common.Config.Monitors[index].Alpha = (byte)this.tbAlphaChild.Value;
-            Common.Config.Monitors[index].Enabled = true;
-            this.listView1.SelectedItems[0].ImageIndex = 0; // 启用显示器时，图标彩色，否则灰色
-            this.lblAlphaChildValue.Text = this.tbAlphaChild.Value.ToString();
-
-            // 2.调整屏幕亮度
-            this._shades[index].AdjustBrightness(Common.Config.Monitors[index].Alpha);
-            this.ensureShadesTopMost();
-
-            // 3.更新屏幕配置信息
-            this.refreshSelectedMonitorEnabledState();
-
-            // 4.应用
+            var monitor = Common.Config.Monitors[index];
+            monitor.Alpha = (byte)this.tbAlphaChild.Value;
+            monitor.Enabled = true;
+            this.lblAlphaChildValue.Text = monitor.Alpha.ToString();
+            this._shades[index].AdjustBrightness(monitor.Alpha);
+            this.showOrHiddenShade(true);
             this.apply();
         }
         #endregion
