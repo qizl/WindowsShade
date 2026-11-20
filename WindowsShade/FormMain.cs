@@ -28,7 +28,7 @@ namespace WindowsShade
         /// <summary>
         /// 遮罩置顶检测计时器
         /// </summary>
-        private Timer _timerSetTopMost = new Timer();
+        private readonly Timer _timerSetTopMost = new Timer();
         private string _applicationTitle => $"多屏亮度调整工具 v{Application.ProductVersion}";
         private TrayBrightnessMenu _trayBrightnessMenu;
         #endregion
@@ -346,19 +346,25 @@ namespace WindowsShade
 
         private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // 1.取消屏幕关闭
-            if (!this._isClosed) e.Cancel = true;
+            // 只有用户关闭主界面时才隐藏到托盘，系统关机和应用退出照常关闭。
+            if (!this._isClosed && e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                this.Visible = false;
+            }
 
-            // 2.应用
-            this.apply();
-
-            // 3.隐藏主窗体
-            this.Visible = false;
+            if (Common.Config != null)
+                this.apply();
         }
 
         private void FormMain_FormClosed(object sender, FormClosedEventArgs e)
         {
-            this._timerSetTopMost.Stop(); // 停止遮罩置顶
+            Microsoft.Win32.SystemEvents.DisplaySettingsChanged -= SystemEvents_DisplaySettingsChanged;
+            this._timerSetTopMost.Dispose();
+            this._trayBrightnessMenu?.Dispose();
+            foreach (var shade in this._shades)
+                shade.Dispose();
+            this._shades.Clear();
         }
         #endregion
 
